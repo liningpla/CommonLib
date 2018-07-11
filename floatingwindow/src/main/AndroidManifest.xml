@@ -3,7 +3,9 @@
 
     <application android:allowBackup="true">
 
-        <activity android:name=".FloatingWindowActivity">
+        <activity android:name=".FloatingWindowActivity"
+            android:theme="@style/AppTheme"
+            >
             <intent-filter>
                 <data android:host="window.com"  android:scheme="floating" android:pathPrefix="/floatingwindowactivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -11,7 +13,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
-
+        <service android:name=".services.AssistantService"></service>
     </application>
 
 

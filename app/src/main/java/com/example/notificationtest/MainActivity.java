@@ -123,6 +123,7 @@ public class MainActivity extends BaseAcivity {
         Uri uri= Uri.parse("floating://window.com/floatingwindowactivity");
         Intent intent=new Intent(Intent.ACTION_VIEW,uri);
         startActivity(intent);
+        finish();
 
     }
 

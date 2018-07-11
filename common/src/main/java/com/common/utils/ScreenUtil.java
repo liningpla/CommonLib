@@ -21,46 +21,46 @@ public class ScreenUtil {
     private static int screen_height = NO_VALUE;
     private static DisplayMetrics metric;
 
-    public static int getScreenWidth(Application application) {
+    public static int getScreenWidth(Context context) {
         if (screen_widht == NO_VALUE) {
-            init(application);
+            init(context);
         }
         return screen_widht;
     }
 
-    public static int getScreenHeight(Application application) {
+    public static int getScreenHeight(Context context) {
         if (screen_height == NO_VALUE) {
-            init(application);
+            init(context);
         }
         return screen_height;
     }
 
-    private static void init(Application application) {
-        WindowManager wm = (WindowManager) application.getSystemService(Context.WINDOW_SERVICE);
+    private static void init(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display ds = wm.getDefaultDisplay();
         screen_widht = ds.getWidth();
         screen_height = ds.getHeight();
     }
 
-    private static void getDisplayMetrics(Application application) {
-        WindowManager wm = (WindowManager) application.getSystemService(Context.WINDOW_SERVICE);
+    private static void getDisplayMetrics(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         metric = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metric);
     }
 
-    public static int dip2px(Application application, float dpValue) {
-        final float scale = application.getResources().getDisplayMetrics().density;
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
-    public static int dp2px(Application application, float dp) {
-        Resources r = application.getResources();
+    public static int dp2px(Context context, float dp) {
+        Resources r = context.getResources();
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
         return (int) px;
     }
 
-    public static int sp2px(Application application, float spValue) {
-        Resources r = application.getResources();
+    public static int sp2px(Context context, float spValue) {
+        Resources r = context.getResources();
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, r.getDisplayMetrics());
     }
 
