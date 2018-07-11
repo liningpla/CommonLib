@@ -4,11 +4,11 @@
     <application android:allowBackup="true">
 
         <activity android:name=".FloatingWindowActivity">
-            <intent-filter android:order="2">
-                <data
-                    android:host="window.com"
-                    android:scheme="floating"
-                    android:pathPrefix="/FloatingWindowActivity"/>
+            <intent-filter>
+                <data android:host="window.com"  android:scheme="floating" android:pathPrefix="/floatingwindowactivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
 
