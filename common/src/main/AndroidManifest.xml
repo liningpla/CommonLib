@@ -2,10 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.captureinfo">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.common.CommonActivity"></activity>
+        <activity android:name="com.common.CommonActivity">
+            <intent-filter>
+                <data android:host="common.com" android:scheme="common" android:pathPrefix="/commonactivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

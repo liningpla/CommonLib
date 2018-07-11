@@ -1,0 +1,24 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.floatingwindow">
+
+    <application android:allowBackup="true">
+
+        <activity android:name=".FloatingWindowActivity">
+            <intent-filter android:order="2">
+                <data
+                    android:host="window.com"
+                    android:scheme="floating"
+                    android:pathPrefix="/FloatingWindowActivity"/>
+            </intent-filter>
+        </activity>
+
+    </application>
+
+
+
+    <!--悬浮窗权限-->
+    <!-- 显示系统窗口权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- 在 屏幕最顶部显示addview-->
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+</manifest>

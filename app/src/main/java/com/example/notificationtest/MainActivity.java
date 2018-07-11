@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.common.CommonActivity;
 import com.common.log.SDCardLogHelper;
 import com.common.threadPool.PauseAbleCountDownTimer;
 
@@ -108,6 +110,14 @@ public class MainActivity extends AppCompatActivity {
                 .setNumber(2)
                 .build();
         manager.notify(2, notification);
+    }
+
+    public void intentCommon(View view){
+        SDCardLogHelper.getInstance().writeMessage("app","MainActivity","--intentCommon--");
+        Uri uri= Uri.parse("common://common.com/commonactivity");
+        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
+
     }
 
 }
