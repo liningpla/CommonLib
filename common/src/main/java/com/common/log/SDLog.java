@@ -12,14 +12,14 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SDCardLogHelper {
+public class SDLog {
 
     public static final boolean SDCARD_LOG = true;//true;
     private static final String PATH = "/sdcard/capture/logs/";
     private static final int MAX_FILE_COUNT = 10;
     private ExecutorService threadPool;
 
-    private static SDCardLogHelper instance;
+    private static SDLog instance;
 
     public void init() {
         threadPool.execute(new Runnable() {
@@ -31,9 +31,9 @@ public class SDCardLogHelper {
 
     }
 
-    public static SDCardLogHelper getInstance() {
+    public static SDLog create() {
         if (instance == null) {
-            instance = new SDCardLogHelper();
+            instance = new SDLog();
         }
 
         return instance;
@@ -43,7 +43,7 @@ public class SDCardLogHelper {
     SimpleDateFormat fmt1 = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
     String fileName;
 
-    private SDCardLogHelper() {
+    private SDLog() {
         threadPool = Executors.newSingleThreadExecutor();
         fileName = fmt1.format(System.currentTimeMillis());
     }
@@ -79,7 +79,7 @@ public class SDCardLogHelper {
      * @param keyword 日志类型
      * @param message 日志类型
      * */
-    public void writeMessage(String tag, String keyword, String message) {
+    public void i(String tag, String keyword, String message) {
         if(SDCARD_LOG){
             Log.i(tag, keyword + "::" + message);
         }

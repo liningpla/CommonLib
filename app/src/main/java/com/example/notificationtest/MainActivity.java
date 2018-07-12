@@ -10,16 +10,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.common.BaseAcivity;
-import com.common.CommonActivity;
-import com.common.log.SDCardLogHelper;
-import com.common.threadPool.PauseAbleCountDownTimer;
+import com.common.log.SDLog;
 
 
 public class MainActivity extends BaseAcivity {
@@ -43,7 +40,7 @@ public class MainActivity extends BaseAcivity {
 
         tv_countdown = findViewById(R.id.tv_countdown);
 
-        SDCardLogHelper.getInstance().writeMessage("lining","test","启动MainActivity 线程ID："+Thread.currentThread().getId());
+        SDLog.create().i("lining","test","启动MainActivity 线程ID："+Thread.currentThread().getId());
 //        PauseAbleCountDownTimer countDownTimer = new PauseAbleCountDownTimer(1000*1000, 10*1000, true) {
 //            @Override
 //            public void onTick(final long millisUntilFinished) {
@@ -53,7 +50,7 @@ public class MainActivity extends BaseAcivity {
 //                        tv_countdown.setText("倒计时剩余时间："+millisUntilFinished);
 //                    }
 //                });
-//                SDCardLogHelper.getInstance().writeMessage("lining","test","启动MainActivity" +millisUntilFinished+" 当前线程ID："+Thread.currentThread().getId());
+//                SDLog.create().i("lining","test","启动MainActivity" +millisUntilFinished+" 当前线程ID："+Thread.currentThread().getId());
 //            }
 //
 //            @Override
@@ -114,12 +111,12 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-//        SDCardLogHelper.getInstance().writeMessage("app","MainActivity","--intentCommon--");
+//        SDLog.create().i("app","MainActivity","--intentCommon--");
 //        Uri uri= Uri.parse("common://common.com/commonactivity");
 //        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 //        startActivity(intent);
 
-        SDCardLogHelper.getInstance().writeMessage("app","MainActivity","--intentCommon--");
+        SDLog.create().i("app","MainActivity","--intentCommon--");
         Uri uri= Uri.parse("floating://window.com/floatingwindowactivity");
         Intent intent=new Intent(Intent.ACTION_VIEW,uri);
         startActivity(intent);
