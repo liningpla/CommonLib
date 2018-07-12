@@ -2,6 +2,7 @@ package com.floatingwindow.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -19,6 +20,15 @@ public class AssistantService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         assistentHelper.showWindow();
         return START_STICKY;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        boolean isPortrait = (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)?true:false;
+        if(assistentHelper != null){
+            assistentHelper.onConfigurationChanged(isPortrait);
+        }
     }
 
     @Nullable

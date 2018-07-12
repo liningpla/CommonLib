@@ -2,6 +2,7 @@ package com.floatingwindow.viewhelpers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
@@ -31,6 +32,9 @@ public class AssistentHelper {
     private float lastY = 0f;//上次Y位置
     private float touchX = 0f;//点击X位置
     private float touchY = 0f;//点击Y位置
+    private int limitMaxX = 0;//X最大限制位置
+    private int limitMaxY = 0;//Y最大限制位置
+    private boolean isPortrait;//是否是竖屏。
 
     private static final int LOCATION_RIGHT = 1;//位置在
     private static final int LOCATION_RIGHT_TOP = 2;
@@ -98,16 +102,15 @@ public class AssistentHelper {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        isPortrait = (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)?true:false;
+                        initLimit();
                         touchX = event.getX();
                         touchY = event.getY();
-                        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", "ACTION_DOWN getX:" + event.getX() + "getY:" + event.getY() + "v.X:" + v.getX() + "v.Y:" + v.getY());
                         break;
                     case MotionEvent.ACTION_MOVE:
                         updateLoaction();
-                        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", "ACTION_MOVE getX:" + event.getX() + "getY:" + event.getY() + "v.X:" + v.getX() + "v.Y:" + v.getY());
                         break;
                     case MotionEvent.ACTION_UP:
-                        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", "ACTION_UP getX:" + event.getX() + "getY:" + event.getY() + "v.X:" + v.getX() + "v.Y:" + v.getY());
                         break;
                 }
                 lastX = event.getRawX();
@@ -143,6 +146,23 @@ public class AssistentHelper {
         }
     }
 
+
+    /**横竖屏变化监听*/
+    public void onConfigurationChanged(boolean isPortrait){
+        this.isPortrait = isPortrait;
+        initLimit();
+    }
+
+    /**初始化移动限制位置*/
+    private void initLimit(){
+        if(isPortrait){
+            SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", " 竖屏 ");
+        }else{
+            SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", " 横屏 ");
+        }
+        limitMaxX = isPortrait?ScreenUtil.getScreenWidth(context) - mParams.width:ScreenUtil.getScreenHeight(context) - mParams.height;
+        limitMaxY = !isPortrait?ScreenUtil.getScreenWidth(context) - mParams.width:ScreenUtil.getScreenHeight(context) - mParams.height;
+    }
     /**
      * 关闭
      */
@@ -174,6 +194,20 @@ public class AssistentHelper {
         if (wManager != null && mParams != null && myView != null) {
             mParams.x = (int) (lastX - touchX);
             mParams.y = (int) (lastY - touchY);
+            SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", " mParams.x:" +  mParams.x+" mParams.y:"+ mParams.y);
+            SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", " mParams.width:" +  mParams.width+" mParams.height:"+ mParams.height);
+            if(mParams.x < 0){
+                mParams.x = 0;
+            }
+            if(mParams.x > limitMaxX){
+                mParams.x = limitMaxX;
+            }
+            if(mParams.y < 0){
+                mParams.y = 0;
+            }
+            if(mParams.y > limitMaxY){
+                mParams.y = limitMaxY;
+            }
             wManager.updateViewLayout(myView, mParams);
         }
 
