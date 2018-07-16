@@ -122,8 +122,11 @@ public class AssistentModule {
      * @param sapceR 主距离子的半径距离
      * */
     private void countPortraitApoints(int location, int mainW, int mainX, int mainY, int childW, int sapceR){
-        int Cx = mainW/2 + mainX - childW/2;//原始圆点X
-        int Cy = mainY - mainW/2 - childW/2;//原始圆点Y
+//        int Cx = mainW/2 + mainX - childW/2;//原始圆点X
+//        int Cy = mainY + mainW/2 - childW/2;//原始圆点Y
+        int Cx = mainX;//原始圆点X
+        int Cy = mainY;//原始圆点Y
+        int sinR = (int) ((int) (Math.sin(40.00)*(double) sapceR) * 0.95);
         APoint aPoint1 = new APoint();
         aPoint1.setResPoint(0, R.drawable.ic_launcher, "录屏");
         APoint aPoint2 = new APoint();
@@ -143,9 +146,9 @@ public class AssistentModule {
         switch (location){
             case LOCATION_RIGHT://位置右 - 左状态顺时针旋转180度
                 aPoint1.setAPoint(Cx, Cy - sapceR);
-                aPoint2.setAPoint(Cx - sapceR/2, Cy - sapceR/2);
+                aPoint2.setAPoint(Cx - sinR, Cy - sinR);
                 aPoint3.setAPoint(Cx - sapceR, Cy);
-                aPoint4.setAPoint(Cx - sapceR/2, Cy + sapceR/2);
+                aPoint4.setAPoint(Cx - sinR, Cy + sinR);
                 aPoint5.setAPoint(Cx, Cy + sapceR);
                 break;
             case LOCATION_RIGHT_TOP://位置右上方
@@ -153,10 +156,11 @@ public class AssistentModule {
             case LOCATION_RIGHT_BOTTOM://位置右下方
                 break;
             case LOCATION_LEFT://位置左
+                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "Cx :"+Cx+" Cy:"+Cy+" sinR:"+sinR+" sapceR:"+sapceR);
                 aPoint1.setAPoint(Cx, Cy - sapceR);
-                aPoint2.setAPoint(Cx + sapceR/2, Cy - sapceR/2);
+                aPoint2.setAPoint(Cx + sinR, Cy - sinR);
                 aPoint3.setAPoint(Cx + sapceR, Cy);
-                aPoint4.setAPoint(Cx + sapceR/2, Cy + sapceR/2);
+                aPoint4.setAPoint(Cx + sinR, Cy + sinR);
                 aPoint5.setAPoint(Cx, Cy + sapceR);
                 break;
             case LOCATION_LEFT_TOP://位置左上
@@ -165,16 +169,16 @@ public class AssistentModule {
                 break;
             case LOCATION_TOP://位置上方
                 aPoint1.setAPoint(Cx + sapceR, Cy);
-                aPoint2.setAPoint(Cx + sapceR/2, Cy + sapceR/2);
+                aPoint2.setAPoint(Cx + sinR, Cy + sinR);
                 aPoint3.setAPoint(Cx, Cy + sapceR);
-                aPoint4.setAPoint(Cx - sapceR/2, Cy + sapceR/2);
+                aPoint4.setAPoint(Cx - sinR, Cy + sinR);
                 aPoint5.setAPoint(Cx - sapceR, Cy);
                 break;
             case LOCATION_BOTTOM://位置下方
                 aPoint1.setAPoint(Cx - sapceR, Cy);
-                aPoint2.setAPoint(Cx - sapceR/2, Cy - sapceR/2);
+                aPoint2.setAPoint(Cx - sinR, Cy - sinR);
                 aPoint3.setAPoint(Cx, Cy - sapceR);
-                aPoint4.setAPoint(Cx + sapceR/2, Cy - sapceR/2);
+                aPoint4.setAPoint(Cx + sinR, Cy - sinR);
                 aPoint5.setAPoint(Cx + sapceR, Cy);
                 break;
         }
