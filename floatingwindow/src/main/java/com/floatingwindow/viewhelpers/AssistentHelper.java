@@ -93,7 +93,7 @@ public class AssistentHelper {
         if (wManager != null && mParams != null && myView != null) {//异常判断
             AssistentModule assistentModule = new AssistentModule();
             AssistentModule.APoint aPoint = assistentModule.initPoints(context, isPortrait, mParams.width,
-                    mParams.x, mParams.y, ScreenUtil.dip2px(context, 45), ScreenUtil.dip2px(context, 90));
+                    mParams.x, mParams.y, ScreenUtil.dip2px(context, 45), ScreenUtil.dip2px(context, 81));
             mParams.x = aPoint.pointX;
             mParams.y = aPoint.pointY;
             wManager.updateViewLayout(myView, mParams);

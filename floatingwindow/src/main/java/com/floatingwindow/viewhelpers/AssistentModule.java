@@ -122,11 +122,9 @@ public class AssistentModule {
      * @param sapceR 主距离子的半径距离
      * */
     private void countPortraitApoints(int location, int mainW, int mainX, int mainY, int childW, int sapceR){
-//        int Cx = mainW/2 + mainX - childW/2;//原始圆点X
-//        int Cy = mainY + mainW/2 - childW/2;//原始圆点Y
-        int Cx = mainX;//原始圆点X
-        int Cy = mainY;//原始圆点Y
-        int sinR = (int) ((int) (Math.sin(40.00)*(double) sapceR) * 0.95);
+        int Cx = mainW/2 + mainX - childW/2;//原始圆点X
+        int Cy = mainY + mainW/2 - childW/2;//原始圆点Y
+        int sinR = (int) ((Math.sin(40.00)*(double) sapceR) * 0.93);
         APoint aPoint1 = new APoint();
         aPoint1.setResPoint(0, R.drawable.ic_launcher, "录屏");
         APoint aPoint2 = new APoint();
