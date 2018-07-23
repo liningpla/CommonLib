@@ -141,6 +141,7 @@ public class AssistentHelper {
     public void onConfigurationChanged(boolean isPortrait){
         this.isPortrait = isPortrait;
         initLimit();
+//        addChildView();
     }
 
     /**初始化移动限制位置*/

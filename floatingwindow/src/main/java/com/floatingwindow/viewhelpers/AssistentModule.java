@@ -39,26 +39,27 @@ public class AssistentModule {
     public List<APoint> currChilds = new ArrayList<>();//当前子View点位
 
     public APoint initPoints(Context context, boolean isPortrait, int mainW, int mainX, int mainY, int childW, int sapceR){
-
-        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule"," isPortrait:" + isPortrait+" mainW:"+ mainW+"mainX:"+mainX+"mainY:"+mainY+"childW:"+childW+"sapceR:"+sapceR);
+        int barHight = isPortrait?ScreenUtil.getStatusBarHeight(context):0;
+        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule"," isPortrait:" + isPortrait+" mainW:"+ mainW+" mainX:"+mainX+" mainY:"+mainY+" childW:"+childW+" sapceR:"+sapceR);
         APoint aPoint = new APoint();
         aPoint.startX = mainX;
         aPoint.startY = mainY;
-        int Sx = isPortrait?ScreenUtil.getScreenWidth(context)/2:ScreenUtil.getScreenHeight(context)/2;//屏幕圆心x
+        int Sx = (isPortrait?ScreenUtil.getScreenWidth(context)/2:ScreenUtil.getScreenHeight(context)/2) - childW/2;//屏幕圆心x
         int Sy = isPortrait?ScreenUtil.getScreenHeight(context)/2:ScreenUtil.getScreenWidth(context)/2;//屏幕圆心y
         int location = LOCATION_LEFT;//默认位置左边
+        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule"," getStatusBarHeight:"+ScreenUtil.getStatusBarHeight(context)+" Sx:"+Sx+"  Sy:"+Sy);
         if(mainX < Sx && mainY < Sy){//左上区域
             int leftSpace = mainX;//左边距
             int topSpace = mainY;// 上边距
             if(leftSpace < topSpace){//左边
                 location = LOCATION_LEFT;
                 aPoint.pointX = mainX;
-                aPoint.pointY = (mainY < sapceR)?sapceR:mainY;
+                aPoint.pointY = (mainY < (sapceR+barHight))?(sapceR+barHight):mainY;
                 SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "左上区域--左边");
             }else{//上边
                 location = LOCATION_TOP;
                 aPoint.pointX = (mainX < sapceR)?sapceR:mainX;
-                aPoint.pointY = mainY;
+                aPoint.pointY = mainY + barHight;
                 SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "左上区域--上边");
             }
         }
@@ -83,12 +84,12 @@ public class AssistentModule {
             if(topSpace > rightSpace){//右边
                 location = LOCATION_RIGHT;
                 aPoint.pointX = mainX;
-                aPoint.pointY = (mainY < sapceR)?sapceR:mainY;
+                aPoint.pointY = (mainY < (sapceR+childW/2))?(sapceR+childW/2):mainY;
                 SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "右上区域--右边");
             }else{//上边
                 location = LOCATION_TOP;
                 aPoint.pointX = (mainX > (2*Sx - sapceR))?(2*Sx - sapceR):mainX;
-                aPoint.pointY = mainY;
+                aPoint.pointY = mainY + barHight;
                 SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "右上区域--上边");
             }
         }
