@@ -10,4 +10,14 @@
         <item name="android:windowContentOverlay">@android:color/transparent</item>
     </style>
 
+    <style name="com_lenovo_lsf_theme_dialog" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFrame">@null</item> <!-- Dialog的windowFrame框为无 -->
+        <item name="android:windowIsFloating">true</item> <!-- 是否漂现在activity上 -->
+        <item name="android:windowIsTranslucent">true</item> <!-- 是否半透明 -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item> <!-- 除去背景色 -->
+
+    </style>
+
 </resources>

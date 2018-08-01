@@ -117,10 +117,12 @@ public class MainActivity extends BaseAcivity {
 //        startActivity(intent);
 
         SDLog.create().i("app","MainActivity","--intentCommon--");
-        Uri uri= Uri.parse("floating://window.com/floatingwindowactivity");
-        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-        startActivity(intent);
-        finish();
+//        Uri uri= Uri.parse("floating://window.com/floatingwindowactivity");
+//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+//        startActivity(intent);
+//        finish();
+
+        startActivity(new Intent(this, SetInfoActivity.class));
 
     }
 

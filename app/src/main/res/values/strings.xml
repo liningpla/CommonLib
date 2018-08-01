@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">NotificationTest</string>
+
+    <string name="cta_dialog_title">网络加速需要以下权限</string>
+    <string name="cta_dialog_message_net_title">访问移动网络</string>
+    <string name="cta_dialog_message_net_content">网络加速时效检查时，需要联网获取相关信息</string>
+    <string name="cta_dialog_message_vpn_title">获取设备信息</string>
+    <string name="cta_dialog_message_vpn_content">加速服务需要对设备进行网络加速，需要设备信息</string>
+    <string name="cta_dialog_message_games_title">读取应用列表</string>
+    <string name="cta_dialog_message_games_content">加速服务检查已安装游戏是否支持网络加速服务，需要读取应用列表</string>
+    <string name="dilaog_sure">确定</string>
+    <string name="dilaog_not_present">不再提示</string>
+
+
 </resources>
