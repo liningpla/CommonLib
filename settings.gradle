@@ -1,2 +1,2 @@
-include ':app', ':common', ':floatingwindow'
+include ':app', ':common', ':floatingwindow', ':httplibrary'
 
