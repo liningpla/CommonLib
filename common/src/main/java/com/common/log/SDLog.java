@@ -75,11 +75,12 @@ public class SDLog {
         }
     }
 
-    /**@param tag 日志范围
+    /**@param object 类名
      * @param keyword 日志类型
      * @param message 日志类型
      * */
-    public void i(String tag, String keyword, String message) {
+    public void i(Object object, String keyword, String message) {
+        String tag = object.getClass().getSimpleName();
         if(SDCARD_LOG){
             Log.i(tag, keyword + "::" + message);
         }

@@ -7,7 +7,7 @@ import com.captureinfo.R;
 import com.common.log.SDLog;
 
 public class CommonActivity extends AppCompatActivity {
-
+    public static final String URI = "floating://window.com/floatingwindowactivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

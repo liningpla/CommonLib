@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -16,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.common.BaseAcivity;
+import com.common.CommonActivity;
 import com.common.log.SDLog;
+import com.example.notificationtest.manager.ContextManager;
 
 
 public class MainActivity extends BaseAcivity {
@@ -116,13 +119,11 @@ public class MainActivity extends BaseAcivity {
 //        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 //        startActivity(intent);
 
-        SDLog.create().i("app","MainActivity","--intentCommon--");
-//        Uri uri= Uri.parse("floating://window.com/floatingwindowactivity");
-//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-//        startActivity(intent);
-//        finish();
+        SDLog.create().i(this,"intentCommon","--intentCommon--");
+        ContextManager.intentUri(this, CommonActivity.URI);
+        finish();
 
-        startActivity(new Intent(this, SetInfoActivity.class));
+//        startActivity(new Intent(this, SetInfoActivity.class));
 
     }
 
