@@ -1,2 +1,2 @@
-include ':app', ':common', ':floatingwindow', ':httplibrary'
+include ':app', ':common', ':floatingwindow', ':httplibrary', ':kotlin'
 
