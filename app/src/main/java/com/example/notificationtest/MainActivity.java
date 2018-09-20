@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
 import com.example.notificationtest.manager.ContextManager;
-import com.floatingwindow.FloatingWindowActivity;
 import com.kotlin.KotlinActivity;
 
 
@@ -125,6 +124,7 @@ public class MainActivity extends BaseAcivity {
 
         ContextManager.intentUri(this, KotlinActivity.Companion.getURI());
 //        startActivity(new Intent(this, SetInfoActivity.class));
+        finish();
 
     }
 

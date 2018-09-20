@@ -2,20 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kotlin">
 
-    <application>
+    <application android:allowBackup="true">
         <activity android:name=".KotlinActivity">
-            <intent-filter android:order="1">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:host="com.kotlin"
-                    android:pathPattern="KotlinActivity"
-                    android:scheme="https" />
-            </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <data android:host="com.kotlin" android:scheme="kotlin" android:pathPrefix="/KotlinActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
     </application>

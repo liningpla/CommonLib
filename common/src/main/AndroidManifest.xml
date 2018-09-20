@@ -4,9 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <application
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+    <application android:allowBackup="true">
         <activity android:name="com.common.CommonActivity">
             <intent-filter>
                 <data android:host="common.com" android:scheme="common" android:pathPrefix="/commonactivity"/>
