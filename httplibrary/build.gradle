@@ -34,5 +34,4 @@ dependencies {
     application project(':app')
     api 'com.lzy.net:okgo:+'
     api 'com.alibaba:fastjson:+'
-    feature project(":kotlin")
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NotificationTest</string>
+    <string name="app_name">Notification</string>
 
     <string name="cta_dialog_title">网络加速需要以下权限</string>
     <string name="cta_dialog_message_net_title">访问移动网络</string>
