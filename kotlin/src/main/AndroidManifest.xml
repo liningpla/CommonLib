@@ -3,9 +3,9 @@
     package="com.kotlin">
 
     <application android:allowBackup="true">
-        <activity android:name=".KotlinActivity">
+        <activity android:name=".KTActivity">
             <intent-filter>
-                <data android:host="com.kotlin" android:scheme="kotlin" android:pathPrefix="/KotlinActivity"/>
+                <data android:host="com.kotlin" android:scheme="kotlin" android:pathPrefix="/KTActivity"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
