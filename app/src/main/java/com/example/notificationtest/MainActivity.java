@@ -122,7 +122,7 @@ public class MainActivity extends BaseAcivity {
 //        finish();
 
 
-        ContextManager.intentUri(this, KTActivity.URI);
+        ContextManager.intentUri(this, KTActivity.Companion.getURI());
 //        startActivity(new Intent(this, SetInfoActivity.class));
         finish();
 
