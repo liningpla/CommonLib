@@ -79,6 +79,40 @@ public class SDLog {
      * @param keyword 日志类型
      * @param message 日志类型
      * */
+    public void e(Object object, String keyword, String message) {
+        String tag = object.getClass().getSimpleName();
+        if(SDCARD_LOG){
+            Log.e(tag, keyword + "::" + message);
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("[" + fmt.format(System.currentTimeMillis()) + "]:");
+        sb.append(tag);
+        sb.append("::");
+        sb.append(keyword);
+        sb.append("::");
+        sb.append(message);
+        try {
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                File dir = new File(PATH);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                FileOutputStream fos = new FileOutputStream(PATH + fileName, true);
+                OutputStreamWriter sw = new OutputStreamWriter(fos);
+                sw.append("\n");
+                sw.append(sb.toString());
+                sw.flush();
+                fos.close();
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    /**@param object 类名
+     * @param keyword 日志类型
+     * @param message 日志类型
+     * */
     public void i(Object object, String keyword, String message) {
         String tag = object.getClass().getSimpleName();
         if(SDCARD_LOG){

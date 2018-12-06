@@ -16,8 +16,7 @@ import android.widget.Toast;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
-import com.example.notificationtest.manager.ContextManager;
-import com.kotlin.KTActivity;
+import com.example.notificationtest.ui.PullRefreshActivity;
 
 
 public class MainActivity extends BaseAcivity {
@@ -99,7 +98,7 @@ public class MainActivity extends BaseAcivity {
 
     public void sendSubscribeMsg(View view) {
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notification = new NotificationCompat.Builder(this, "subscribe")
+        Notification notification = new NotificationCompat.Builder(MainActivity.this, "subscribe")
                 .setContentTitle("收到一条订阅消息")
                 .setContentText("地铁沿线30万商铺抢购中！")
                 .setWhen(System.currentTimeMillis())
@@ -122,8 +121,11 @@ public class MainActivity extends BaseAcivity {
 //        finish();
 
 
-        ContextManager.intentUri(this, KTActivity.Companion.getURI());
+//        ContextManager.intentUri(this, KTActivity.Companion.getURI());
 //        startActivity(new Intent(this, SetInfoActivity.class));
+
+        startActivity(new Intent(this, PullRefreshActivity.class));
+
 
     }
 
