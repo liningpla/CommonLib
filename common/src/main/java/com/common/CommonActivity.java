@@ -11,6 +11,6 @@ public class CommonActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_common_main);
-        SDLog.create().i("common","CommonActivity","--onCreate--");
+        SDLog.i("CommonActivity","--onCreate--");
     }
 }

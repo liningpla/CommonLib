@@ -85,7 +85,7 @@ public class PullRefreshLayout extends ViewGroup {
         }
 
         mRefreshView = new ImageView(context);
-        SDLog.create().e(this, "lining", "  type = "+type);
+        SDLog.e("lining", "  type = "+type);
         setRefreshStyle(type);
         mRefreshView.setVisibility(View.GONE);
         addView(mRefreshView, 0);

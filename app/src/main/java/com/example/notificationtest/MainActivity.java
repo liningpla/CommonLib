@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
+import com.example.notificationtest.biz.RxjavaBiz;
 import com.example.notificationtest.ui.PullRefreshActivity;
 
 
@@ -40,7 +41,7 @@ public class MainActivity extends BaseAcivity {
 
         tv_countdown = findViewById(R.id.tv_countdown);
 
-        SDLog.create().i("lining","test","启动MainActivity 线程ID："+Thread.currentThread().getId());
+        SDLog.i("lining","启动MainActivity 线程ID："+Thread.currentThread().getId());
 //        PauseAbleCountDownTimer countDownTimer = new PauseAbleCountDownTimer(1000*1000, 10*1000, true) {
 //            @Override
 //            public void onTick(final long millisUntilFinished) {
@@ -124,8 +125,9 @@ public class MainActivity extends BaseAcivity {
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
 //        startActivity(new Intent(this, SetInfoActivity.class));
 
-        startActivity(new Intent(this, PullRefreshActivity.class));
+//        startActivity(new Intent(this, PullRefreshActivity.class));
 
+        RxjavaBiz.INSTANCE.testRxjava();
 
     }
 

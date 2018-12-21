@@ -147,9 +147,9 @@ public class AssistentHelper {
     /**初始化移动限制位置*/
     private void initLimit(){
         if(isPortrait){
-            SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", " 竖屏 ");
+            SDLog.i(AssistentHelper.UU_TAG," 竖屏 ");
         }else{
-            SDLog.create().i(AssistentHelper.UU_TAG, "AssistentHelper", " 横屏 ");
+            SDLog.i(AssistentHelper.UU_TAG,  " 横屏 ");
         }
         limitMaxX = isPortrait?ScreenUtil.getScreenWidth(context) - mParams.width:ScreenUtil.getScreenHeight(context) - mParams.height;
         limitMaxY = !isPortrait?ScreenUtil.getScreenWidth(context) - mParams.width:ScreenUtil.getScreenHeight(context) - mParams.height;

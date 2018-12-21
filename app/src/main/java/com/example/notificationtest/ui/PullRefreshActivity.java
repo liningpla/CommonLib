@@ -29,10 +29,10 @@ public class PullRefreshActivity extends BaseAcivity {
             @Override
             public void onRefresh() {
                 if(!isCharge){
-                    SDLog.create().i(PullRefreshActivity.this, "lining", "  loadUrl  = "+"https://www.qq.com/");
+                    SDLog.i( "  loadUrl  = "+"https://www.qq.com/");
                     webview_test.loadUrl("https://www.qq.com/");
                 }else{
-                    SDLog.create().i(PullRefreshActivity.this, "lining", "  loadUrl  = "+"http://www.baidu.com");
+                    SDLog.i("lining", "  loadUrl  = "+"http://www.baidu.com");
                     webview_test.loadUrl("http://www.baidu.com");
                 }
                 isCharge = !isCharge;

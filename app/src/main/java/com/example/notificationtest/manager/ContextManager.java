@@ -15,7 +15,7 @@ public class ContextManager {
             Intent intent=new Intent(Intent.ACTION_VIEW,uri);
             context.startActivity(intent);
         }catch (Exception e){
-            SDLog.create().i(context, "intentUri", e.getMessage());
+            SDLog.i("intentUri", e.getMessage());
         }
     }
 }

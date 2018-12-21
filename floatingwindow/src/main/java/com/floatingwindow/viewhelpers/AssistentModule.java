@@ -40,14 +40,14 @@ public class AssistentModule {
 
     public APoint initPoints(Context context, boolean isPortrait, int mainW, int mainX, int mainY, int childW, int sapceR){
         int barHight = isPortrait?ScreenUtil.getStatusBarHeight(context):0;
-        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule"," isPortrait:" + isPortrait+" mainW:"+ mainW+" mainX:"+mainX+" mainY:"+mainY+" childW:"+childW+" sapceR:"+sapceR);
+        SDLog.i(AssistentHelper.UU_TAG," isPortrait:" + isPortrait+" mainW:"+ mainW+" mainX:"+mainX+" mainY:"+mainY+" childW:"+childW+" sapceR:"+sapceR);
         APoint aPoint = new APoint();
         aPoint.startX = mainX;
         aPoint.startY = mainY;
         int Sx = (isPortrait?ScreenUtil.getScreenWidth(context)/2:ScreenUtil.getScreenHeight(context)/2) - childW/2;//屏幕圆心x
         int Sy = isPortrait?ScreenUtil.getScreenHeight(context)/2:ScreenUtil.getScreenWidth(context)/2;//屏幕圆心y
         int location = LOCATION_LEFT;//默认位置左边
-        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule"," getStatusBarHeight:"+ScreenUtil.getStatusBarHeight(context)+" Sx:"+Sx+"  Sy:"+Sy);
+        SDLog.i(AssistentHelper.UU_TAG," getStatusBarHeight:"+ScreenUtil.getStatusBarHeight(context)+" Sx:"+Sx+"  Sy:"+Sy);
         if(mainX < Sx && mainY < Sy){//左上区域
             int leftSpace = mainX;//左边距
             int topSpace = mainY;// 上边距
@@ -55,12 +55,12 @@ public class AssistentModule {
                 location = LOCATION_LEFT;
                 aPoint.pointX = mainX;
                 aPoint.pointY = (mainY < (sapceR+barHight))?(sapceR+barHight):mainY;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "左上区域--左边");
+                SDLog.i(AssistentHelper.UU_TAG,  "左上区域--左边");
             }else{//上边
                 location = LOCATION_TOP;
                 aPoint.pointX = (mainX < sapceR)?sapceR:mainX;
                 aPoint.pointY = mainY + barHight;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "左上区域--上边");
+                SDLog.i(AssistentHelper.UU_TAG,  "左上区域--上边");
             }
         }
         if(mainX < Sx && mainY > Sy){//左下区域
@@ -70,12 +70,12 @@ public class AssistentModule {
                 location = LOCATION_LEFT;
                 aPoint.pointX = mainX;
                 aPoint.pointY = (mainY > (2*Sy - sapceR))?(2*Sy - sapceR):mainY;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "左下区域--左边");
+                SDLog.i(AssistentHelper.UU_TAG, "左下区域--左边");
             }else{//下边
                 location = LOCATION_BOTTOM;
                 aPoint.pointX = (mainX < sapceR)?sapceR:mainX;
                 aPoint.pointY = mainY;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "左下区域--下边");
+                SDLog.i(AssistentHelper.UU_TAG, "左下区域--下边");
             }
         }
         if(mainX > Sx && mainY < Sy){//右上区域
@@ -85,12 +85,12 @@ public class AssistentModule {
                 location = LOCATION_RIGHT;
                 aPoint.pointX = mainX;
                 aPoint.pointY = (mainY < (sapceR+childW/2))?(sapceR+childW/2):mainY;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "右上区域--右边");
+                SDLog.i(AssistentHelper.UU_TAG, "右上区域--右边");
             }else{//上边
                 location = LOCATION_TOP;
                 aPoint.pointX = (mainX > (2*Sx - sapceR))?(2*Sx - sapceR):mainX;
                 aPoint.pointY = mainY + barHight;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "右上区域--上边");
+                SDLog.i(AssistentHelper.UU_TAG, "右上区域--上边");
             }
         }
         if(mainX > Sx && mainY > Sy){//右下区域
@@ -100,17 +100,17 @@ public class AssistentModule {
                 location = LOCATION_RIGHT;
                 aPoint.pointX = mainX;
                 aPoint.pointY = (mainY > (2*Sy - sapceR))?(2*Sy - sapceR):mainY;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "右下区域--右边");
+                SDLog.i(AssistentHelper.UU_TAG, "右下区域--右边");
             }else{//下边
                 location = LOCATION_BOTTOM;
                 aPoint.pointX = (mainX > (2*Sx - sapceR))?(2*Sx - sapceR):mainX;
                 aPoint.pointY = mainY;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "右下区域--下边");
+                SDLog.i(AssistentHelper.UU_TAG,  "右下区域--下边");
             }
         }
         aPoint.location = location;
         countPortraitApoints(location, mainW, aPoint.pointX, aPoint.pointY, childW, sapceR);
-        SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "currChilds.size():"+currChilds.size()+" aPoint.pointX = "+aPoint.pointX+" aPoint.pointY = "+aPoint.pointY);
+        SDLog.i(AssistentHelper.UU_TAG, "currChilds.size():"+currChilds.size()+" aPoint.pointX = "+aPoint.pointX+" aPoint.pointY = "+aPoint.pointY);
         return aPoint;
     }
 
@@ -155,7 +155,7 @@ public class AssistentModule {
             case LOCATION_RIGHT_BOTTOM://位置右下方
                 break;
             case LOCATION_LEFT://位置左
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentModule", "Cx :"+Cx+" Cy:"+Cy+" sinR:"+sinR+" sapceR:"+sapceR);
+                SDLog.i(AssistentHelper.UU_TAG, "Cx :"+Cx+" Cy:"+Cy+" sinR:"+sinR+" sapceR:"+sapceR);
                 aPoint1.setAPoint(Cx, Cy - sapceR);
                 aPoint2.setAPoint(Cx + sinR, Cy - sinR);
                 aPoint3.setAPoint(Cx + sapceR, Cy);

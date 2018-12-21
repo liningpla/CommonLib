@@ -96,7 +96,7 @@ public class AssistentView {
             try {
                 mParams.x = aPoint.pointX;//窗口位置的偏移量
                 mParams.y = aPoint.pointY;
-                SDLog.create().i(AssistentHelper.UU_TAG, "AssistentView", "position:"+position+"  mParams.x:"+mParams.x+"  mParams.y:"+mParams.y);
+                SDLog.i(AssistentHelper.UU_TAG, "position:"+position+"  mParams.x:"+mParams.x+"  mParams.y:"+mParams.y);
                 wManager.addView(myView, mParams);//添加窗口
             } catch (Exception e) {
                 e.printStackTrace();

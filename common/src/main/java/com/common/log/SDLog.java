@@ -9,46 +9,19 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class SDLog {
 
     public static final boolean SDCARD_LOG = true;//true;
     private static final String PATH = "/sdcard/capture/logs/";
     private static final int MAX_FILE_COUNT = 10;
-    private ExecutorService threadPool;
 
-    private static SDLog instance;
+    static SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
+    static SimpleDateFormat fmt1 = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+    static String fileName = fmt1.format(System.currentTimeMillis());
+    static String TAG = "SDLog";
 
-    public void init() {
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                clearLog();
-            }
-        });
-
-    }
-
-    public static SDLog create() {
-        if (instance == null) {
-            instance = new SDLog();
-        }
-
-        return instance;
-    }
-
-    SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
-    SimpleDateFormat fmt1 = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
-    String fileName;
-
-    private SDLog() {
-        threadPool = Executors.newSingleThreadExecutor();
-        fileName = fmt1.format(System.currentTimeMillis());
-    }
-
-    private void clearLog() {
+    public static void clearLog() {
         File dir = new File(PATH);
         String[] files = dir.list();
         if (files == null) {
@@ -75,22 +48,124 @@ public class SDLog {
         }
     }
 
-    /**@param object 类名
-     * @param keyword 日志类型
+    /**
+     * @param tag 日志类型
      * @param message 日志类型
      * */
-    public void e(Object object, String keyword, String message) {
-        String tag = object.getClass().getSimpleName();
+    public static void e(String tag, String message) {
         if(SDCARD_LOG){
-            Log.e(tag, keyword + "::" + message);
+            message = getMessage(tag, message);
+            Log.e(tag, message);
+            writeToFile(message);
         }
+
+    }
+
+    /**@param tag 日志tag
+     * @param message 日志类型
+     * */
+    public static void i(String tag, String message) {
+        if(SDCARD_LOG){
+            message = getMessage(tag, message);
+            Log.i(tag, message);
+            writeToFile(message);
+        }
+    }
+
+    /**@param tag 日志tag
+     * @param message 日志类型
+     * */
+    public static void d(String tag, String message) {
+        if(SDCARD_LOG){
+            message = getMessage(tag, message);
+            Log.d(tag, message);
+            writeToFile(message);
+        }
+    }
+
+
+    /**
+     * @param message 日志类型
+     * */
+    public static void e(String message) {
+        if(SDCARD_LOG){
+            message = getMessage(TAG, message);
+            Log.e(TAG, message);
+            writeToFile(message);
+        }
+
+    }
+
+    /**
+     * @param message 日志类型
+     * */
+    public static void i(String message) {
+        if(SDCARD_LOG){
+            message = getMessage(TAG, message);
+            Log.i(TAG, message);
+            writeToFile(message);
+        }
+    }
+
+    /**
+     * @param message 日志类型
+     * */
+    public static void d(String message) {
+        if(SDCARD_LOG){
+            message = getMessage(TAG, message);
+            Log.d(TAG, message);
+            writeToFile(message);
+        }
+    }
+
+    /**
+     * */
+    public static void e() {
+        if(SDCARD_LOG){
+            String message = getMessage(TAG, "");
+            Log.e(TAG, message);
+            writeToFile(message);
+        }
+
+    }
+
+    /**
+     * */
+    public static void i() {
+        if(SDCARD_LOG){
+            String message = getMessage(TAG, "");
+            writeToFile(message);
+        }
+    }
+
+    /**
+     * */
+    public static void d() {
+        if(SDCARD_LOG){
+            String message = getMessage(TAG, "");
+            Log.d(TAG, message);
+            writeToFile(message);
+        }
+    }
+
+    private static String getMessage(String tag, String message){
+        StackTraceElement se = new Throwable().getStackTrace()[0];
         StringBuilder sb = new StringBuilder();
         sb.append("[" + fmt.format(System.currentTimeMillis()) + "]:");
+        sb.append(se.getClassName());
+        sb.append(".");
+        sb.append(se.getMethodName());
+        sb.append("(");
+        sb.append(se.getLineNumber());
+        sb.append(")");
+        sb.append("::");
         sb.append(tag);
         sb.append("::");
-        sb.append(keyword);
-        sb.append("::");
         sb.append(message);
+        return sb.toString();
+    }
+
+    private static void writeToFile(String message){
         try {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 File dir = new File(PATH);
@@ -100,7 +175,7 @@ public class SDLog {
                 FileOutputStream fos = new FileOutputStream(PATH + fileName, true);
                 OutputStreamWriter sw = new OutputStreamWriter(fos);
                 sw.append("\n");
-                sw.append(sb.toString());
+                sw.append(message);
                 sw.flush();
                 fos.close();
             }
@@ -109,37 +184,4 @@ public class SDLog {
         }
     }
 
-    /**@param object 类名
-     * @param keyword 日志类型
-     * @param message 日志类型
-     * */
-    public void i(Object object, String keyword, String message) {
-        String tag = object.getClass().getSimpleName();
-        if(SDCARD_LOG){
-            Log.i(tag, keyword + "::" + message);
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("[" + fmt.format(System.currentTimeMillis()) + "]:");
-        sb.append(tag);
-        sb.append("::");
-        sb.append(keyword);
-        sb.append("::");
-        sb.append(message);
-        try {
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                File dir = new File(PATH);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-                FileOutputStream fos = new FileOutputStream(PATH + fileName, true);
-                OutputStreamWriter sw = new OutputStreamWriter(fos);
-                sw.append("\n");
-                sw.append(sb.toString());
-                sw.flush();
-                fos.close();
-            }
-        } catch (Exception e) {
-
-        }
-    }
 }
