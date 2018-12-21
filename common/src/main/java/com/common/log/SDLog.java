@@ -159,7 +159,6 @@ public class SDLog {
         for (int i = 0 ;i < element.length; i++){
             if(element[i].getClassName().startsWith(PACKAGE)){
                  se = element[i];
-                System.out.println("lining -------"+element[i]);
                  break;
             }
         }
