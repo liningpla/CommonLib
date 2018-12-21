@@ -15,11 +15,16 @@ public class SDLog {
     public static final boolean SDCARD_LOG = true;//true;
     private static final String PATH = "/sdcard/capture/logs/";
     private static final int MAX_FILE_COUNT = 10;
+    private static String PACKAGE = "com.example.notificationtest";
 
     static SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
     static SimpleDateFormat fmt1 = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
     static String fileName = fmt1.format(System.currentTimeMillis());
     static String TAG = "SDLog";
+
+    public static void initLog(String packageName){
+        PACKAGE = packageName;
+    }
 
     public static void clearLog() {
         File dir = new File(PATH);
@@ -149,17 +154,21 @@ public class SDLog {
     }
 
     private static String getMessage(String tag, String message){
-        StackTraceElement se = new Throwable().getStackTrace()[0];
+        StackTraceElement se = new Throwable().getStackTrace()[1];
+        StackTraceElement[] element = Thread.currentThread().getStackTrace();
+        for (int i = 0 ;i < element.length; i++){
+            if(element[i].getClassName().startsWith(PACKAGE)){
+                 se = element[i];
+                System.out.println("lining -------"+element[i]);
+                 break;
+            }
+        }
         StringBuilder sb = new StringBuilder();
-        sb.append("[" + fmt.format(System.currentTimeMillis()) + "]:");
         sb.append(se.getClassName());
         sb.append(".");
         sb.append(se.getMethodName());
-        sb.append("(");
+        sb.append(":");
         sb.append(se.getLineNumber());
-        sb.append(")");
-        sb.append("::");
-        sb.append(tag);
         sb.append("::");
         sb.append(message);
         return sb.toString();
@@ -167,6 +176,7 @@ public class SDLog {
 
     private static void writeToFile(String message){
         try {
+            message = ("[" + fmt.format(System.currentTimeMillis()) + "]:")+message;
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 File dir = new File(PATH);
                 if (!dir.exists()) {

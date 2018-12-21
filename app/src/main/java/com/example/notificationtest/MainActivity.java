@@ -128,7 +128,7 @@ public class MainActivity extends BaseAcivity {
 //        startActivity(new Intent(this, PullRefreshActivity.class));
 
         RxjavaBiz.INSTANCE.testRxjava();
-
+        SDLog.i("Observable emit 1");
     }
 
 }
