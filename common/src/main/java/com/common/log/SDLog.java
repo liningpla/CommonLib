@@ -139,6 +139,7 @@ public class SDLog {
     public static void i() {
         if(SDCARD_LOG){
             String message = getMessage(TAG, "");
+            Log.i(TAG, message);
             writeToFile(message);
         }
     }
@@ -163,6 +164,8 @@ public class SDLog {
             }
         }
         StringBuilder sb = new StringBuilder();
+        sb.append(tag);
+        sb.append(":");
         sb.append(se.getClassName());
         sb.append(".");
         sb.append(se.getMethodName());

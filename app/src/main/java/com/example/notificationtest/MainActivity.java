@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
-import com.example.notificationtest.biz.RxjavaBiz;
-import com.example.notificationtest.ui.PullRefreshActivity;
+import com.example.notificationtest.manager.ContextManager;
+import com.floatingwindow.FloatingWindowActivity;
 
 
 public class MainActivity extends BaseAcivity {
@@ -117,9 +117,9 @@ public class MainActivity extends BaseAcivity {
 //        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 //        startActivity(intent);
 
-//        SDLog.create().i(this,"intentCommon","--intentCommon--");
-//        ContextManager.intentUri(this, FloatingWindowActivity.URI);
-//        finish();
+        SDLog.i("--intentCommo ---  FloatingWindowActivityn--");
+        ContextManager.intentUri(this, FloatingWindowActivity.URI);
+        finish();
 
 
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
@@ -127,8 +127,8 @@ public class MainActivity extends BaseAcivity {
 
 //        startActivity(new Intent(this, PullRefreshActivity.class));
 
-        RxjavaBiz.INSTANCE.testRxjava();
-        SDLog.i("Observable emit 1");
+//        RxjavaBiz.INSTANCE.testRxjava();
+//        RxjavaBiz.INSTANCE.doRxJava();
     }
 
 }

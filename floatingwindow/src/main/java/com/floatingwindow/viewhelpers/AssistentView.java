@@ -1,9 +1,7 @@
 package com.floatingwindow.viewhelpers;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.view.Gravity;
@@ -52,6 +50,12 @@ public class AssistentView {
         mParams.height = ScreenUtil.dip2px(context, 45);
         mParams.width = ScreenUtil.dip2px(context, 45);
         showWindow();
+
+//        if (Build.VERSION.SDK_INT >= 23) {
+//            if (!Settings.canDrawOverlays(context)) {
+//                SDLog.i("----没有允许最上层权限----");
+//            }
+//        }
     }
 
     /**
@@ -59,23 +63,31 @@ public class AssistentView {
      */
     private void pession() {
         //权限判断
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (!Settings.canDrawOverlays(context)) {
-                //启动Activity让用户授权
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
-                context.startActivity(intent);
-                return;
-            } else {
-                //执行6.0以上绘制代码
-                if (Build.VERSION.SDK_INT >= 26) {//8.0新特性
-                    mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-                } else {
-                    mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-                }
-            }
+//        if (Build.VERSION.SDK_INT >= 23) {
+//            if (!Settings.canDrawOverlays(context)) {
+//                //启动Activity让用户授权
+//                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
+//                context.startActivity(intent);
+//                return;
+//            } else {
+//                //执行6.0以上绘制代码
+//                if (Build.VERSION.SDK_INT >= 26) {//8.0新特性
+//                    mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+//                } else {
+//                    mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+//                }
+//            }
+//        } else {
+//            //执行6.0以下绘制代码、
+//            mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+//        }
+        //执行6.0以上绘制代码
+        if (Build.VERSION.SDK_INT >= 26) {//8.0新特性
+            mParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+            SDLog.i("----TYPE_PHONE----");
         } else {
-            //执行6.0以下绘制代码、
-            mParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+            mParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+            SDLog.i("----TYPE_TOAST----");
         }
     }
     /**
