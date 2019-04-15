@@ -166,7 +166,7 @@ public class SDLog {
         StringBuilder sb = new StringBuilder();
         sb.append(tag);
         sb.append(":");
-        sb.append(se.getClassName());
+        sb.append(se.getClassName().substring(se.getClassName().lastIndexOf(".") + 1, se.getClassName().length()));
         sb.append(".");
         sb.append(se.getMethodName());
         sb.append(":");

@@ -4,20 +4,22 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
-import com.example.notificationtest.manager.ContextManager;
-import com.floatingwindow.FloatingWindowActivity;
 
 
 public class MainActivity extends BaseAcivity {
@@ -117,9 +119,9 @@ public class MainActivity extends BaseAcivity {
 //        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 //        startActivity(intent);
 
-        SDLog.i("--intentCommo ---  FloatingWindowActivityn--");
-        ContextManager.intentUri(this, FloatingWindowActivity.URI);
-        finish();
+//        SDLog.i("--intentCommo ---  FloatingWindowActivityn--");
+//        ContextManager.intentUri(this, FloatingWindowActivity.URI);
+//        finish();
 
 
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
@@ -129,6 +131,21 @@ public class MainActivity extends BaseAcivity {
 
 //        RxjavaBiz.INSTANCE.testRxjava();
 //        RxjavaBiz.INSTANCE.doRxJava();
+
+//        JobManager.INSTANCE.initJobService(this);
+
+//        JobManager.INSTANCE.testScreen(this, view);
+        final Context mContext = this.getApplicationContext();
+        new Handler(mContext.getMainLooper()).post(new Runnable() {
+            public void run() {
+                if (android.os.Build.VERSION.SDK_INT >= 26) {
+                    Toast.makeText(mContext, "请在设置中允许显示在其他应用上层", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(mContext, "请在设置中允许悬浮窗权限", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
 
 }
