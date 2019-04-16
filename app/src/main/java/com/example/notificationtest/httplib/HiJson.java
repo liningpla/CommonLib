@@ -4,6 +4,7 @@ package com.example.notificationtest.httplib;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -162,10 +163,11 @@ public class HiJson {
             for (Field field : fields) {
                 // 设置属性可操作
                 field.setAccessible(true);
+                Object fieldObj = field.get(obj);
                 // 获取字段类型
                 Class<?> typeClazz = field.getType();
                 String fieldName = field.getName();
-                if (fieldName.endsWith("$change") || fieldName.endsWith("serialVersionUID")) {
+                if (fieldName.endsWith("$change") || fieldName.endsWith("serialVersionUID") || fieldObj == null) {
                     continue;
                 }
                 SerializedName column = field.getAnnotation(SerializedName.class); //获取指定类型注解
@@ -174,11 +176,11 @@ public class HiJson {
                 }
                 if (typeClazz.isPrimitive()) {
                     // 基础变量
-                    jsonObject.put(fieldName, field.get(obj));
+                    jsonObject.put(fieldName, fieldObj);
                 } else if (typeClazz == List.class) {
                     JSONArray childArray = new JSONArray();
                     // 得到List的JSONArray数组
-                    List list = (List) field.get(obj);
+                    List list = (List) fieldObj;
                     for (int i = 0; i < list.size(); i++) {
                         JSONObject arrayChild = new JSONObject();
                         objectJson(arrayChild, list.get(i));
@@ -187,10 +189,10 @@ public class HiJson {
                     jsonObject.put(fieldName, childArray);
                 } else if (typeClazz == String.class) {
                     //为String
-                    jsonObject.put(fieldName, field.get(obj));
+                    jsonObject.put(fieldName, fieldObj);
                 } else {// 是否为其它对象
                     JSONObject childObject = new JSONObject();
-                    objectJson(childObject, field.get(obj));
+                    objectJson(childObject, fieldObj);
                     jsonObject.put(fieldName, childObject);
                 }
 
