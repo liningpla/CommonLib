@@ -14,9 +14,9 @@ import java.util.Locale;
 public class HiLog {
 
     public static final boolean SDCARD_LOG = true;//true;
-    private static String PATH = "/sdcard/Hilog/logs/";
+    private static final String PATH = "/sdcard/capture/logs/";
     private static final int MAX_FILE_COUNT = 10;
-    private static String PACKAGE = "";
+    private static String PACKAGE = "com.example.notificationtest";
 
     static SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US);
     static SimpleDateFormat fmt1 = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
@@ -26,7 +26,6 @@ public class HiLog {
     public static void initLog(Application application){
         if(application != null){
             PACKAGE = application.getPackageName();
-            PATH = "/sdcard/"+PACKAGE+"/logs/";
         }
     }
 
@@ -157,15 +156,31 @@ public class HiLog {
             writeToFile(message);
         }
     }
-
-    private static String getMessage(String tag, String message){
-        StackTraceElement se = new Throwable().getStackTrace()[1];
-        StackTraceElement[] element = Thread.currentThread().getStackTrace();
-        for (int i = 0 ;i < element.length; i++){
-            if(element[i].getClassName().startsWith(PACKAGE)){
-                 se = element[i];
-                 break;
+    private static int getStackOffset(StackTraceElement[] trace) {
+        for (int i = 2; i < trace.length; i++) {
+            StackTraceElement e = trace[i];
+            String name = e.getClassName();
+            if (!name.equals(HiLog.class.getName())) {
+                return --i;
             }
+        }
+        return -1;
+    }
+    private static String getMessage(String tag, String message){
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+
+        int methodCount = 1;
+        int stackOffset = getStackOffset(trace);
+        if (methodCount + stackOffset > trace.length) {
+            methodCount = trace.length - stackOffset - 1;
+        }
+        StackTraceElement se = null;
+        for (int i = methodCount; i > 0; i--) {
+            int stackIndex = i + stackOffset;
+            if (stackIndex >= trace.length) {
+                continue;
+            }
+            se = trace[stackIndex];
         }
         StringBuilder sb = new StringBuilder();
         sb.append(tag);
@@ -199,5 +214,6 @@ public class HiLog {
 
         }
     }
+
 
 }

@@ -153,15 +153,31 @@ public class SDLog {
             writeToFile(message);
         }
     }
-
-    private static String getMessage(String tag, String message){
-        StackTraceElement se = new Throwable().getStackTrace()[1];
-        StackTraceElement[] element = Thread.currentThread().getStackTrace();
-        for (int i = 0 ;i < element.length; i++){
-            if(element[i].getClassName().startsWith(PACKAGE)){
-                 se = element[i];
-                 break;
+    private static int getStackOffset(StackTraceElement[] trace) {
+        for (int i = 2; i < trace.length; i++) {
+            StackTraceElement e = trace[i];
+            String name = e.getClassName();
+            if (!name.equals(SDLog.class.getName())) {
+                return --i;
             }
+        }
+        return -1;
+    }
+    private static String getMessage(String tag, String message){
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+
+        int methodCount = 1;
+        int stackOffset = getStackOffset(trace);
+        if (methodCount + stackOffset > trace.length) {
+            methodCount = trace.length - stackOffset - 1;
+        }
+        StackTraceElement se = null;
+        for (int i = methodCount; i > 0; i--) {
+            int stackIndex = i + stackOffset;
+            if (stackIndex >= trace.length) {
+                continue;
+            }
+            se = trace[stackIndex];
         }
         StringBuilder sb = new StringBuilder();
         sb.append(tag);
