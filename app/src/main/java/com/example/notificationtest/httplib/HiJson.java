@@ -1,11 +1,9 @@
 package com.example.notificationtest.httplib;
 
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,7 +29,7 @@ public class HiJson {
         try {
             jsonObject = new JSONObject(json);
         } catch (JSONException e) {
-            Log.d(TAG, "method jsonObject" + e.getMessage());
+            HiLog.d(TAG, "method jsonObject" + e.getMessage());
             return null;
         }
         return parseJson2Object(clazz, jsonObject);
@@ -136,11 +134,11 @@ public class HiJson {
         } catch (NoSuchMethodException e) {
             setPropertyPublic(obj, field, valueObj);
         } catch (IllegalArgumentException e) {
-            Log.d(TAG, "method [" + setMethodName + "] illegal argument:" + valueObj + "," + e.getMessage());
+            HiLog.d(TAG, "method [" + setMethodName + "] illegal argument:" + valueObj + "," + e.getMessage());
         } catch (IllegalAccessException e) {
-            Log.d(TAG, "method [" + setMethodName + "] illegal access:" + valueObj + "," + e.getMessage());
+            HiLog.d(TAG, "method [" + setMethodName + "] illegal access:" + valueObj + "," + e.getMessage());
         } catch (InvocationTargetException e) {
-            Log.d(TAG, "method [" + setMethodName + "] invocation target:" + valueObj + "," + e.getMessage());
+            HiLog.d(TAG, "method [" + setMethodName + "] invocation target:" + valueObj + "," + e.getMessage());
         }
     }
 
@@ -198,7 +196,7 @@ public class HiJson {
 
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            HiLog.e(TAG, e.getMessage());
         }
         return jsonObject.toString();
     }

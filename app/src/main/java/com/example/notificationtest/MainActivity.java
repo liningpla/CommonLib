@@ -4,22 +4,19 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
+import com.example.notificationtest.httplib.HiHttp;
 import com.example.notificationtest.httplib.TestManager;
 
 
@@ -54,7 +51,7 @@ public class MainActivity extends BaseAcivity {
 //                        tv_countdown.setText("倒计时剩余时间："+millisUntilFinished);
 //                    }
 //                });
-//                SDLog.create().i("lining","test","启动MainActivity" +millisUntilFinished+" 当前线程ID："+Thread.currentThread().getId());
+//                HiLog.create().i("lining","test","启动MainActivity" +millisUntilFinished+" 当前线程ID："+Thread.currentThread().getId());
 //            }
 //
 //            @Override
@@ -115,12 +112,12 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-//        SDLog.create().i("app","MainActivity","--intentCommon--");
+//        HiLog.create().i("app","MainActivity","--intentCommon--");
 //        Uri uri= Uri.parse("common://common.com/commonactivity");
 //        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 //        startActivity(intent);
 
-//        SDLog.i("--intentCommo ---  FloatingWindowActivityn--");
+//        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);
 //        finish();
 
@@ -137,6 +134,7 @@ public class MainActivity extends BaseAcivity {
 
 //        JobManager.INSTANCE.testScreen(this, view);
 
+        HiHttp.init(getApplication());
         TestManager.instance.testPostHttp();
 
     }

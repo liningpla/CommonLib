@@ -8,17 +8,18 @@ public enum HiHttp {
     instance;
     public static final String TAG = "HiHttp";
     private CacheMode cacheMode;
-    private Application application;
+    private static Application mApplication;
     private HttpParams mCommonParams;
     private HttpHeaders mCommonHeaders;
     private int mRetryCount;                //全局超时重试次数
     private int connectTimeout;
     private int readTimeout;
-    private Handler mDelivery;              //用于在主线程执行的调度器
-    public HiHttp init(Application application){
-        this.application = application;
+    private static Handler mDelivery;              //用于在主线程执行的调度器
+    public static HiHttp init(Application application){
+        mApplication = application;
+        HiLog.initLog(application);
         mDelivery = new Handler(Looper.getMainLooper());
-        return this;
+        return instance;
     }
 
     /**

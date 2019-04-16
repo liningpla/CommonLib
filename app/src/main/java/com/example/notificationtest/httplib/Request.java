@@ -3,7 +3,6 @@ package com.example.notificationtest.httplib;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -166,7 +165,7 @@ public class Request<T> implements Serializable {
             httpConn.setReadTimeout(readTimeout);
             bulidHead();
         } catch (Exception e) {
-            Log.e(HiHttp.TAG, "Request.bulidHttp:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, "Request.bulidHttp:"+e.getMessage());
         }
         return httpConn;
     }
@@ -252,9 +251,9 @@ public class Request<T> implements Serializable {
                 }
             }
         } catch (Exception e) {
-            Log.e(HiHttp.TAG, "Request.bulidParams:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, "Request.bulidParams:"+e.getMessage());
         }
-        Log.i(HiHttp.TAG, strParams);
+        HiLog.i(HiHttp.TAG, strParams);
         return strParams;
     }
 
@@ -265,14 +264,14 @@ public class Request<T> implements Serializable {
             httpConn = bulidHttp();
             httpConn.connect();
         } catch (ConnectException e) {//连接失败，那可以允许用户再次提交
-            Log.e(HiHttp.TAG, "Request.bulidHttpConntect ConnectException:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, "Request.bulidHttpConntect ConnectException:"+e.getMessage());
             retryConnect(e);
         } catch (SocketTimeoutException e) {
             mResponse.setThrowable(e);
-            Log.e(HiHttp.TAG, "Request.bulidHttpConntect SocketTimeoutException:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, "Request.bulidHttpConntect SocketTimeoutException:"+e.getMessage());
         } catch (IOException e) {
             retryConnect(e);
-            Log.e(HiHttp.TAG, "Request.bulidHttpConntect IOException:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, "Request.bulidHttpConntect IOException:"+e.getMessage());
         }finally {
             backErrorToUI();
         }
@@ -280,7 +279,7 @@ public class Request<T> implements Serializable {
 
     private void retryConnect(Exception e){
         if (defaultRetryCount > 0) {
-            Log.e(HiHttp.TAG," Connect error, Retry connect :"+defaultRetryCount);
+            HiLog.e(HiHttp.TAG," Connect error, Retry connect :"+defaultRetryCount);
             bulidHttpConntect();
             try {
                 Thread.sleep(1000);
@@ -319,7 +318,7 @@ public class Request<T> implements Serializable {
             result = bos.toString("utf-8");
         } catch (Exception e) {
             mResponse.setThrowable(e);
-            Log.e(HiHttp.TAG, "Request.connectStreamResult:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, "Request.connectStreamResult:"+e.getMessage());
         }finally {
             backErrorToUI();
         }
@@ -332,6 +331,7 @@ public class Request<T> implements Serializable {
             public void run() {
                 if(mResponse.getThrowable() != null){
                     mCallBack.onError(mResponse);
+                    mCallBack.onFinish();
                 }
             }
         });
@@ -341,6 +341,7 @@ public class Request<T> implements Serializable {
         mHandler.post(new Runnable() {
             public void run() {
                 mCallBack.onSuccess(mResponse);
+                mCallBack.onFinish();
             }
         });
     }
