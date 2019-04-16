@@ -144,12 +144,16 @@ public class HiJson {
         }
     }
 
+    /**
+     * 对象转json字符
+     */
     public static String objectJson(Object obj) {
         JSONObject jsonObject = new JSONObject();
         return objectJson(jsonObject, obj);
     }
 
     /**
+     * 递归调用
      * 对象转json字符
      */
     public static String objectJson(JSONObject jsonObject, Object obj) {
