@@ -21,7 +21,7 @@ public class HiJson {
     /**
      * 解析JSON字符串到具体类
      *
-     * @param clazz 和JSON对象对应的类的Class，必须拥有setXxx()函数，其中xxx为属性
+     * @param clazz 和JSON对象对应的类的Class，拥有setXxx()函数，xxx为属性
      * @param json  被解析的JSON字符串
      * @return 返回传入的Object对象实例
      */
@@ -39,7 +39,7 @@ public class HiJson {
     /**
      * 解析JSONObject对象到具体类，递归算法
      *
-     * @param clazz      和JSON对象对应的类的Class，必须拥有setXxx()函数，其中xxx为属性
+     * @param clazz      和JSON对象对应的类的Class，拥有setXxx()函数，xxx为属性
      * @param jsonObject 被解析的JSON对象
      * @return 返回传入的Object对象实例
      */
