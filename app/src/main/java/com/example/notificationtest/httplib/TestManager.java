@@ -1,7 +1,5 @@
 package com.example.notificationtest.httplib;
 
-import android.util.Log;
-
 public enum TestManager {
     instance;
 
@@ -18,10 +16,10 @@ public enum TestManager {
             @Override
             void onSuccess(Response response) {
                 super.onSuccess(response);
-                Log.i(HiHttp.TAG, (String) response.body());
+                HiLog.i(HiHttp.TAG, (String) response.body());
                 UserInfo userInfo = HiJson.jsonObject(UserInfo.class, (String) response.body());
-                Log.i(HiHttp.TAG, userInfo.body.channelList.get(0).getChannelName());
-                Log.i(HiHttp.TAG, HiJson.objectJson(userInfo));
+                HiLog.i(HiHttp.TAG, userInfo.body.channelList.get(0).getChannelName());
+                HiLog.i(HiHttp.TAG, HiJson.objectJson(userInfo));
             }
 
             @Override
