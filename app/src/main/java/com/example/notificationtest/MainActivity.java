@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
+import com.example.notificationtest.httplib.TestManager;
 
 
 public class MainActivity extends BaseAcivity {
@@ -135,16 +136,8 @@ public class MainActivity extends BaseAcivity {
 //        JobManager.INSTANCE.initJobService(this);
 
 //        JobManager.INSTANCE.testScreen(this, view);
-        final Context mContext = this.getApplicationContext();
-        new Handler(mContext.getMainLooper()).post(new Runnable() {
-            public void run() {
-                if (android.os.Build.VERSION.SDK_INT >= 26) {
-                    Toast.makeText(mContext, "请在设置中允许显示在其他应用上层", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(mContext, "请在设置中允许悬浮窗权限", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+
+        TestManager.instance.testPostHttp();
 
     }
 
