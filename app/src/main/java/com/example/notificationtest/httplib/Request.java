@@ -62,6 +62,9 @@ public class Request<T> implements Serializable {
         if (HiHttp.instance.getReadTimeout() > 0) {
             readTimeout = HiHttp.instance.getReadTimeout();
         }
+        if(!TextUtils.isEmpty(HiHttp.instance.getContentType())){
+            contentType = HiHttp.instance.getContentType();
+        }
         if (requestHttpHeaders == null) {
             requestHttpHeaders = new HttpHeaders();
         }
@@ -165,7 +168,7 @@ public class Request<T> implements Serializable {
             httpConn.setReadTimeout(readTimeout);
             bulidHead();
         } catch (Exception e) {
-            HiLog.e(HiHttp.TAG, "Request.bulidHttp:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, e.getMessage());
         }
         return httpConn;
     }
@@ -202,6 +205,59 @@ public class Request<T> implements Serializable {
                 requestHttpParams.put(HiHttp.instance.getCommonParams());
             }
             if(httpMethod == HttpMethod.GET){
+                bulidGetParams();
+            }else{
+                //如果传入的参数是json字符
+                if (!TextUtils.isEmpty(paramsJson)) {
+                    strParams = bulidParamsJson();
+                } else {
+                    //如果传入的参数是键值对
+                    strParams = bulidKeyValue();
+                }
+            }
+        } catch (Exception e) {
+            HiLog.e(HiHttp.TAG, e.getMessage());
+        }
+        HiLog.i(HiHttp.TAG, strParams);
+        return strParams;
+    }
+
+    private void bulidGetParams(){
+        try {
+            String strParams = "";
+            //封装键值对参数
+            Set<Map.Entry<String, String>> entrySet = requestHttpParams.httpParams.entrySet();
+            Iterator<Map.Entry<String, String>> iter = entrySet.iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, String> entry = iter.next();
+                strParams = strParams + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8") + "&";
+            }
+            url = url + "?"+strParams;
+        }catch (Exception e){
+            HiLog.e(HiHttp.TAG, e.getMessage());
+        }
+    }
+
+    private String bulidKeyValue (){
+        String strParams = "";
+        try {
+            if(isToJson){
+                //键值对转化为Json
+                JSONObject jsonParent = new JSONObject();
+                JSONObject jsonObject = new JSONObject();
+                Set<Map.Entry<String, String>> entrySet = requestHttpParams.httpParams.entrySet();
+                Iterator<Map.Entry<String, String>> iter = entrySet.iterator();
+                while (iter.hasNext()) {
+                    Map.Entry<String, String> entry = iter.next();
+                    jsonObject.put(entry.getKey(), entry.getValue());
+                }
+                if(!TextUtils.isEmpty(mParent)){
+                    jsonParent.put(mParent,jsonObject);
+                    strParams = jsonParent.toString();
+                }else{
+                    strParams = jsonObject.toString();
+                }
+            }else{
                 //封装键值对参数
                 Set<Map.Entry<String, String>> entrySet = requestHttpParams.httpParams.entrySet();
                 Iterator<Map.Entry<String, String>> iter = entrySet.iterator();
@@ -209,51 +265,27 @@ public class Request<T> implements Serializable {
                     Map.Entry<String, String> entry = iter.next();
                     strParams = strParams + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8") + "&";
                 }
-                url = url + "?"+strParams;
-            }else{
-                //如果传入的参数是json字符
-                if (!TextUtils.isEmpty(paramsJson)) {
-                    JSONObject jsonObject = new JSONObject(paramsJson);
-                    Set<Map.Entry<String, String>> entrySet = requestHttpParams.httpParams.entrySet();
-                    Iterator<Map.Entry<String, String>> iter = entrySet.iterator();
-                    while (iter.hasNext()) {
-                        Map.Entry<String, String> entry = iter.next();
-                        jsonObject.put(entry.getKey(), entry.getValue());
-                    }
-                    strParams = jsonObject.toString();
-                } else {
-                    //如果传入的参数是键值对
-                    if(isToJson){
-                        //键值对转化为Json
-                        JSONObject jsonParent = new JSONObject();
-                        JSONObject jsonObject = new JSONObject();
-                        Set<Map.Entry<String, String>> entrySet = requestHttpParams.httpParams.entrySet();
-                        Iterator<Map.Entry<String, String>> iter = entrySet.iterator();
-                        while (iter.hasNext()) {
-                            Map.Entry<String, String> entry = iter.next();
-                            jsonObject.put(entry.getKey(), entry.getValue());
-                        }
-                        if(!TextUtils.isEmpty(mParent)){
-                            jsonParent.put(mParent,jsonObject);
-                            strParams = jsonParent.toString();
-                        }else{
-                            strParams = jsonObject.toString();
-                        }
-                    }else{
-                        //封装键值对参数
-                        Set<Map.Entry<String, String>> entrySet = requestHttpParams.httpParams.entrySet();
-                        Iterator<Map.Entry<String, String>> iter = entrySet.iterator();
-                        while (iter.hasNext()) {
-                            Map.Entry<String, String> entry = iter.next();
-                            strParams = strParams + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8") + "&";
-                        }
-                    }
-                }
             }
-        } catch (Exception e) {
-            HiLog.e(HiHttp.TAG, "Request.bulidParams:"+e.getMessage());
+        }catch (Exception e){
+            HiLog.e(HiHttp.TAG, e.getMessage());
         }
-        HiLog.i(HiHttp.TAG, strParams);
+        return strParams;
+    }
+
+    private String bulidParamsJson(){
+        String strParams = "";
+        try {
+            JSONObject jsonObject = new JSONObject(paramsJson);
+            Set<Map.Entry<String, String>> entrySet = requestHttpParams.httpParams.entrySet();
+            Iterator<Map.Entry<String, String>> iter = entrySet.iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, String> entry = iter.next();
+                jsonObject.put(entry.getKey(), entry.getValue());
+            }
+            strParams = jsonObject.toString();
+        }catch (Exception e){
+            HiLog.e(HiHttp.TAG, e.getMessage());
+        }
         return strParams;
     }
 
@@ -264,14 +296,14 @@ public class Request<T> implements Serializable {
             httpConn = bulidHttp();
             httpConn.connect();
         } catch (ConnectException e) {//连接失败，那可以允许用户再次提交
-            HiLog.e(HiHttp.TAG, "Request.bulidHttpConntect ConnectException:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, e.getMessage());
             retryConnect(e);
         } catch (SocketTimeoutException e) {
             mResponse.setThrowable(e);
-            HiLog.e(HiHttp.TAG, "Request.bulidHttpConntect SocketTimeoutException:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, e.getMessage());
         } catch (IOException e) {
             retryConnect(e);
-            HiLog.e(HiHttp.TAG, "Request.bulidHttpConntect IOException:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, e.getMessage());
         }finally {
             backErrorToUI();
         }
@@ -318,7 +350,7 @@ public class Request<T> implements Serializable {
             result = bos.toString("utf-8");
         } catch (Exception e) {
             mResponse.setThrowable(e);
-            HiLog.e(HiHttp.TAG, "Request.connectStreamResult:"+e.getMessage());
+            HiLog.e(HiHttp.TAG, e.getMessage());
         }finally {
             backErrorToUI();
         }

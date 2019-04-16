@@ -14,6 +14,7 @@ public enum HiHttp {
     private int mRetryCount;                //全局超时重试次数
     private int connectTimeout;
     private int readTimeout;
+    private String mContentType;            //全局Content-Type
     private static Handler mDelivery;              //用于在主线程执行的调度器
     public static HiHttp init(Application application){
         mApplication = application;
@@ -101,4 +102,12 @@ public enum HiHttp {
         return this;
     }
 
+    public HiHttp setContentType(String contentType){
+        mContentType = contentType;
+        return this;
+    }
+
+    public String getContentType() {
+        return mContentType;
+    }
 }
