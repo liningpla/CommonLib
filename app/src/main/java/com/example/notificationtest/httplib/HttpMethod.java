@@ -13,19 +13,7 @@ package com.example.notificationtest.httplib;
 public enum HttpMethod {
     GET("GET"),
 
-    POST("POST"),
-
-    PUT("PUT"),
-
-    DELETE("DELETE"),
-
-    HEAD("HEAD"),
-
-    PATCH("PATCH"),
-
-    OPTIONS("OPTIONS"),
-
-    TRACE("TRACE");
+    POST("POST");
 
     private final String value;
 
@@ -41,10 +29,6 @@ public enum HttpMethod {
     public boolean hasBody() {
         switch (this) {
             case POST:
-            case PUT:
-            case PATCH:
-            case DELETE:
-            case OPTIONS:
                 return true;
             default:
                 return false;

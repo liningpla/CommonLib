@@ -50,12 +50,12 @@ public abstract class HiCallBack<T> implements Converter<T> {
     /**
      * 上传过程中的进度回调，get请求不回调，UI线程
      */
-    void uploadProgress(int progress) {
+    void uploadProgress(long progress, long totalLength) {
     }
 
     /**
      * 下载过程中的进度回调，UI线程
      */
-    void downloadProgress(int progress) {
+    void downloadProgress(long progress) {
     }
 }

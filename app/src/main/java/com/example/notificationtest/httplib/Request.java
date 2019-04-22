@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +43,7 @@ public class Request<T> implements Serializable {
     private Response<T> mResponse;
     private Handler mHandler;
     private String mParent;//json参数转化的父类结点名称
+    private LinkedHashMap<String, File> fileParams;
 
     public String getUrl() {
         return url;
@@ -148,6 +151,17 @@ public class Request<T> implements Serializable {
     public Request toJson(String parent) {
         isToJson = true;
         mParent = parent;
+        return this;
+    }
+
+    /**上传表单文件
+     * @param parameterName 文件的上传字段名
+     * * */
+    public Request multipart(String parameterName, File file){
+        if(fileParams == null){
+            fileParams = new LinkedHashMap<>();
+        }
+        fileParams.put(parameterName, file);
         return this;
     }
 
@@ -387,7 +401,12 @@ public class Request<T> implements Serializable {
             public void run() {
                 String params = bulidParams();//构建参数
                 bulidHttpConntect();//构建Http请求并连接
-                String result = connectStreamResult(params);//输出参数读取返回
+                String result = "";
+                if(fileParams != null){//上传表单文件参数
+                    result = new Multipart(httpConn, fileParams, params, mCallBack).multipart();
+                }else{
+                    result = connectStreamResult(params);//普通文本参数
+                }
                 if(!TextUtils.isEmpty(result)){
                     mResponse.setBody((T) result);
                     mCallBack.convertResponse(mResponse);
