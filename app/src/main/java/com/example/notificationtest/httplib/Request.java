@@ -401,7 +401,7 @@ public class Request<T> implements Serializable {
             public void run() {
                 String params = bulidParams();//构建参数
                 bulidHttpConntect();//构建Http请求并连接
-                String result = "";
+                String result;
                 if(fileParams != null){//上传表单文件参数
                     result = new Multipart(httpConn, fileParams, params, mCallBack).multipart();
                 }else{

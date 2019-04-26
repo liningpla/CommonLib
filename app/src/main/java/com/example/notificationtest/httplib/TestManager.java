@@ -29,6 +29,27 @@ public enum TestManager {
             }
         });
 
+/*
+        //表单上传
+        HiHttp.<String>post("").params("","").multipart("",new File("")).execute(
+                new HiCallBack<String>(String.class) {
+            @Override
+            void onSuccess(Response response) {
+                super.onSuccess(response);
+            }
+
+            @Override
+            void onError(Response response) {
+                super.onError(response);
+            }
+
+            @Override
+            void uploadProgress(long progress, long totalLength) {
+                super.uploadProgress(progress, totalLength);
+            }
+        });
+*/
+
     }
 
 }
