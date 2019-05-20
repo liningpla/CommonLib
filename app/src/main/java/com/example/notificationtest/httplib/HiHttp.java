@@ -7,7 +7,6 @@ import android.os.Looper;
 public enum HiHttp {
     instance;
     public static final String TAG = "HiHttp";
-    private CacheMode cacheMode;
     private static Application mApplication;
     private HttpParams mCommonParams;
     private HttpHeaders mCommonHeaders;

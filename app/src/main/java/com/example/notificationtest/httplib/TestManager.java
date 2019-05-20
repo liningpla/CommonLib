@@ -5,9 +5,20 @@ public enum TestManager {
 
     String url = "http://vb.lenovo.com/mobile_cache.xhtml";
 
-    public void testPostHttp() {
+    public String testPostHttp() {
 
-        HiHttp.<String>post(url).params("appID", "1410232134070.app.ln")
+        try{
+
+            return "1";
+        }catch (Exception e){
+
+        }finally {
+            return "2";
+        }
+
+
+
+/*        HiHttp.<String>post(url).params("appID", "1410232134070.app.ln")
                 .params("authName", "ZAgAAAAAAAGE9MTAxMDQ4MDY2NDkmYj0yJmM9NCZkPTEyMjAzJmU9OTAzODBBMzM3NkM0QjJFMzVDRUY2NUM4MzAxMzdCOUQxJmg9MTU1NTMwMDg0ODY4NyZpPTQzMjAwJmo9MCZvPTg2OTk5NDAzMDAxOTQzJnA9aW1laSZxPTAmdXNlcm5hbWU9MTgyMTAyNzUzNTYmaWw9Y26ZaxpXUlY8yRj4oH6iDDBf")
                 .params("configVer", "36")
                 .params("appConfigVer", "1")
@@ -27,7 +38,7 @@ public enum TestManager {
             void onError(Response response) {
                 super.onError(response);
             }
-        });
+        });*/
 
 /*
         //表单上传
