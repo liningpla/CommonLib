@@ -1,7 +1,8 @@
 package com.common;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.captureinfo.R;
 import com.common.log.SDLog;

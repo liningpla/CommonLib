@@ -1,18 +1,16 @@
 package com.example.notificationtest.manager;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Rect;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.view.DisplayCutout;
 import android.view.View;
 import android.view.WindowInsets;
+
+import androidx.annotation.RequiresApi;
 
 import com.common.log.SDLog;
 import com.example.notificationtest.services.MyJobService;

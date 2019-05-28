@@ -1,6 +1,7 @@
 package com.example.notificationtest.biz;
 
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.common.log.SDLog;
 

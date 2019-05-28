@@ -1,12 +1,13 @@
 package com.kotlin;
 
 import android.app.Application;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
 import android.util.Log;
+
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 public class MyViewModel extends ViewModel {
 
@@ -28,7 +29,7 @@ public class MyViewModel extends ViewModel {
     }
 
     /**接收信息*/
-    public void observe( LifecycleOwner owner, Observer observer){
+    public void observe(LifecycleOwner owner, Observer observer){
         mModel.mAccount.observe(owner, observer);
     }
 

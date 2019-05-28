@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import com.floatingwindow.viewhelpers.AssistentHelper;
 
@@ -31,7 +30,6 @@ public class AssistantService extends Service {
         }
     }
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;

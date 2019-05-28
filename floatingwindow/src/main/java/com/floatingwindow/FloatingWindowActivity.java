@@ -2,8 +2,9 @@ package com.floatingwindow;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class FloatingWindowActivity extends AppCompatActivity {
     public static final String URI = "floating://window.com/floatingwindowactivity";
