@@ -31,7 +31,7 @@
                 >
         </service>
 
-
+        <meta-data android:value="test_channel" android:name="ID_CHANNEL"></meta-data>
     </application>
 
 </manifest>

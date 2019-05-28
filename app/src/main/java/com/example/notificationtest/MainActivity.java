@@ -5,6 +5,9 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,7 +43,12 @@ public class MainActivity extends BaseAcivity {
         }
 
         tv_countdown = findViewById(R.id.tv_countdown);
-
+        try {
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+            String msg = ai.metaData.getString("ID_CHANNEL");
+            tv_countdown.setText(msg);
+        } catch (PackageManager.NameNotFoundException e) {
+        }
         SDLog.i("lining","启动MainActivity 线程ID："+Thread.currentThread().getId());
 //        PauseAbleCountDownTimer countDownTimer = new PauseAbleCountDownTimer(1000*1000, 10*1000, true) {
 //            @Override
