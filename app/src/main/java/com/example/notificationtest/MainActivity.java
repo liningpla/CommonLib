@@ -16,11 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.Observer;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
 import com.example.notificationtest.httplib.HiHttp;
+import com.example.notificationtest.httplib.HiLog;
+import com.example.notificationtest.httplib.HiViewModel;
 import com.example.notificationtest.httplib.TestManager;
+import com.example.notificationtest.httplib.UserInfo;
+import com.example.notificationtest.manager.StudyLifecycle;
 
 
 public class MainActivity extends BaseAcivity {
@@ -30,6 +35,7 @@ public class MainActivity extends BaseAcivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getLifecycle().addObserver(new StudyLifecycle());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "chat";
             String channelName = "聊天消息";
@@ -143,8 +149,14 @@ public class MainActivity extends BaseAcivity {
 //        JobManager.INSTANCE.testScreen(this, view);
 
         HiHttp.init(getApplication());
-        TestManager.instance.testPostHttp();
-
+        HiLog.i(" test : "+TestManager.instance.testPostHttp());
+        HiViewModel.init(getApplication()).observe(this, new Observer() {
+            @Override
+            public void onChanged(Object o) {
+                UserInfo userInfo = (UserInfo) o;
+                HiLog.i(" observe : "+userInfo.body.appName);
+            }
+        });
     }
 
 }

@@ -7,7 +7,7 @@ import android.os.Looper;
 public enum HiHttp {
     instance;
     public static final String TAG = "HiHttp";
-    private static Application mApplication;
+    public static Application mApplication;
     private HttpParams mCommonParams;
     private HttpHeaders mCommonHeaders;
     private int mRetryCount;                //全局超时重试次数
