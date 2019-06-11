@@ -21,7 +21,7 @@ public class UserInfo {
          * userInfo : {"balance":47,"cashBalance":1182,"isActive":1,"userID":"18210275356","userType":0}
          */
         public ActivityInfoBean activityInfo;
-        @SerializedName(name = "appConfigVer")
+        @SerializedName("appConfigVer")
         public String appConfigVera;
 
         public String appName;
@@ -63,7 +63,7 @@ public class UserInfo {
             public String enName;
             public int feeRate;
             public int minFee;
-            @SerializedName(name = "name")
+            @SerializedName("name")
             private String channelName;
 
             public String getChannelName() {

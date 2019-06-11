@@ -60,7 +60,7 @@ public class HiJson {
                 String fieldName = field.getName();
                 SerializedName column = field.getAnnotation(SerializedName.class); //获取指定类型注解
                 if (column != null) {
-                    fieldName = column.name();
+                    fieldName = column.value();
                 }
                 if (typeClazz.isPrimitive()) {
                     // 是否基础变量
@@ -172,7 +172,7 @@ public class HiJson {
                 }
                 SerializedName column = field.getAnnotation(SerializedName.class); //获取指定类型注解
                 if (column != null) {
-                    fieldName = column.name();
+                    fieldName = column.value();
                 }
                 if (typeClazz.isPrimitive()) {
                     // 基础变量

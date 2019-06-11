@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -11,7 +12,9 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,9 @@ import com.example.notificationtest.httplib.HiViewModel;
 import com.example.notificationtest.httplib.TestManager;
 import com.example.notificationtest.httplib.UserInfo;
 import com.example.notificationtest.manager.StudyLifecycle;
+import com.example.notificationtest.utils.InflaterUtil;
+
+import java.util.zip.Inflater;
 
 
 public class MainActivity extends BaseAcivity {
@@ -47,6 +53,7 @@ public class MainActivity extends BaseAcivity {
             importance = NotificationManager.IMPORTANCE_DEFAULT;
             createNotificationChannel(channelId, channelName, importance);
         }
+        LayoutInflater.from(this).inflate(R.layout.activity_main, null, false);
 
         tv_countdown = findViewById(R.id.tv_countdown);
         try {
@@ -148,15 +155,27 @@ public class MainActivity extends BaseAcivity {
 
 //        JobManager.INSTANCE.testScreen(this, view);
 
-        HiHttp.init(getApplication());
-        HiLog.i(" test : "+TestManager.instance.testPostHttp());
-        HiViewModel.init(getApplication()).observe(this, new Observer() {
-            @Override
-            public void onChanged(Object o) {
-                UserInfo userInfo = (UserInfo) o;
-                HiLog.i(" observe : "+userInfo.body.appName);
-            }
-        });
+//        HiHttp.init(getApplication());
+//        HiLog.i(" test : "+TestManager.instance.testPostHttp());
+//        HiViewModel.init(getApplication()).observe(this, new Observer() {
+//            @Override
+//            public void onChanged(Object o) {
+//                UserInfo userInfo = (UserInfo) o;
+//                HiLog.i(" observe : "+userInfo.body.appName);
+//            }
+//        });
+
+//        Intent intent = new Intent(Intent.ACTION_MAIN);
+//        ComponentName componentName = new ComponentName("com.lenovo.blockchain", "com.lenovo.blockchain.ui.splash.SplashActivity");
+//        intent.setComponent(componentName);
+//        startActivity(intent);
+
+
+        Toast.makeText(this, "dddddqq", Toast.LENGTH_LONG).show();
+
+        FrameLayout frameLayout = this.findViewById(R.id.fl_parent);
+        InflaterUtil.buildXml(this, frameLayout);
+//        InflaterUtil.buildXml();
     }
 
 }
