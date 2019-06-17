@@ -4,38 +4,27 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.Observer;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
-import com.example.notificationtest.httplib.HiHttp;
-import com.example.notificationtest.httplib.HiLog;
-import com.example.notificationtest.httplib.HiViewModel;
-import com.example.notificationtest.httplib.TestManager;
-import com.example.notificationtest.httplib.UserInfo;
 import com.example.notificationtest.manager.StudyLifecycle;
-import com.example.notificationtest.utils.InflaterUtil;
-
-import java.util.zip.Inflater;
 
 
 public class MainActivity extends BaseAcivity {
-
     private TextView tv_countdown;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,10 +122,9 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-//        HiLog.create().i("app","MainActivity","--intentCommon--");
-//        Uri uri= Uri.parse("common://common.com/commonactivity");
-//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-//        startActivity(intent);
+        Uri uri= Uri.parse("common://common.com/commonactivity");
+        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);
@@ -169,13 +157,6 @@ public class MainActivity extends BaseAcivity {
 //        ComponentName componentName = new ComponentName("com.lenovo.blockchain", "com.lenovo.blockchain.ui.splash.SplashActivity");
 //        intent.setComponent(componentName);
 //        startActivity(intent);
-
-
-        Toast.makeText(this, "dddddqq", Toast.LENGTH_LONG).show();
-
-        FrameLayout frameLayout = this.findViewById(R.id.fl_parent);
-        InflaterUtil.buildXml(this, frameLayout);
-//        InflaterUtil.buildXml();
     }
 
 }
