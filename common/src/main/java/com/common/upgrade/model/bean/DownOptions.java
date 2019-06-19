@@ -7,23 +7,19 @@ import android.os.Parcelable;
 import java.io.File;
 
 /**
- * Author: itsnows
- * E-mail: xue.com.fei@outlook.com
- * CreatedTime: 2018/2/10 18:13
- * <p>
- * 升级选项
+ * 下载选项
  */
 
-public final class UpgradeOptions implements Parcelable {
-    public static final Creator<UpgradeOptions> CREATOR = new Creator<UpgradeOptions>() {
+public final class DownOptions implements Parcelable {
+    public static final Creator<DownOptions> CREATOR = new Creator<DownOptions>() {
         @Override
-        public UpgradeOptions createFromParcel(Parcel in) {
-            return new UpgradeOptions(in);
+        public DownOptions createFromParcel(Parcel in) {
+            return new DownOptions(in);
         }
 
         @Override
-        public UpgradeOptions[] newArray(int size) {
-            return new UpgradeOptions[size];
+        public DownOptions[] newArray(int size) {
+            return new DownOptions[size];
         }
     };
     /**
@@ -67,7 +63,7 @@ public final class UpgradeOptions implements Parcelable {
      */
     private final boolean autocleanEnabled;
 
-    private UpgradeOptions(Params params) {
+    private DownOptions(Params params) {
         icon = params.icon;
         title = params.title;
         description = params.description;
@@ -80,7 +76,7 @@ public final class UpgradeOptions implements Parcelable {
         autocleanEnabled = params.autocleanEnabled;
     }
 
-    protected UpgradeOptions(Parcel in) {
+    protected DownOptions(Parcel in) {
         icon = in.readParcelable(Bitmap.class.getClassLoader());
         title = (CharSequence) in.readValue(CharSequence.class.getClassLoader());
         description = (CharSequence) in.readValue(CharSequence.class.getClassLoader());
@@ -209,8 +205,8 @@ public final class UpgradeOptions implements Parcelable {
             return this;
         }
 
-        public UpgradeOptions build() {
-            return new UpgradeOptions(params);
+        public DownOptions build() {
+            return new DownOptions(params);
         }
     }
 

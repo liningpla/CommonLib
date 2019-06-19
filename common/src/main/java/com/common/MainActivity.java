@@ -11,21 +11,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.captureinfo.R;
+import com.common.upgrade.DownLoadClient;
+import com.common.upgrade.DownManager;
 import com.common.upgrade.OnDownloadListener;
-import com.common.upgrade.OnUpgradeListener;
-import com.common.upgrade.UpgradeClient;
 import com.common.upgrade.UpgradeException;
-import com.common.upgrade.UpgradeManager;
 import com.common.upgrade.UpgradeUtil;
+import com.common.upgrade.model.bean.DownOptions;
 import com.common.upgrade.model.bean.Upgrade;
-import com.common.upgrade.model.bean.UpgradeOptions;
 
 import java.io.File;
 
@@ -40,13 +38,13 @@ import java.io.File;
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private UpgradeManager manager;
+    private DownManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_down_main);
-        manager = new UpgradeManager(this);
+        manager = new DownManager(this);
         initView();
     }
 
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.button_check_updates_custom).setOnClickListener(this);
         findViewById(R.id.button_check_updates_custom_download).setOnClickListener(this);
         findViewById(R.id.button_cancle).setOnClickListener(this);
-        autoCheckUpdates();
     }
 
     @Override
@@ -66,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkUpdates() {
-        manager.checkForUpdates(new UpgradeOptions.Builder()
+        manager.doDownLoad(new DownOptions.Builder()
                 .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
@@ -84,33 +81,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMd5(null)
                 // 是否自动删除安装包（可选）
                 .setAutocleanEnabled(true)
-                .build(), false);
-    }
-
-    private void autoCheckUpdates() {
-        manager.checkForUpdates(new UpgradeOptions.Builder()
-                .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
-                // 通知栏标题（可选）
-                .setTitle("腾讯QQ")
-                // 通知栏描述（可选）
-                .setDescription("更新通知栏")
-                // 下载链接或更新文档链接
-                .setUrl("http://www.rainen.cn/test/app-update-common.xml")
-                // 下载文件存储路径（可选）
-                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.upgrade.apk"))
-                // 是否支持多线性下载（可选）
-                .setMultithreadEnabled(true)
-                // 线程池大小（可选）
-                .setMultithreadPools(1)
-                // 文件MD5（可选）
-                .setMd5(null)
-                // 是否自动删除安装包（可选）
-                .setAutocleanEnabled(true)
-                .build(), true);
+                .build(), null);
     }
 
     private void forceCheckUpdates() {
-        manager.checkForUpdates(new UpgradeOptions.Builder()
+        manager.doDownLoad(new DownOptions.Builder()
                 .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
@@ -128,11 +103,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMd5(null)
                 // 是否自动删除安装包（可选）
                 .setAutocleanEnabled(true)
-                .build(), false);
+                .build(), null);
     }
 
     private void customerCheckUpdates() {
-        manager.checkForUpdates(new UpgradeOptions.Builder()
+        manager.doDownLoad(new DownOptions.Builder()
                 .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 .setTitle("腾讯QQ")
                 .setDescription("更新通知栏")
@@ -142,31 +117,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMultithreadPools(1)
                 .setMd5(null)
                 .setAutocleanEnabled(true)
-                .build(), new OnUpgradeListener() {
-
-            @Override
-            public void onUpdateAvailable(UpgradeClient client) {
-
-            }
-
-            @Override
-            public void onUpdateAvailable(Upgrade.Stable stable, UpgradeClient client) {
-                showUpgradeDialog(stable, client);
-            }
-
-            @Override
-            public void onUpdateAvailable(Upgrade.Beta beta, UpgradeClient client) {
-            }
-
-            @Override
-            public void onNoUpdateAvailable(String message) {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
+                .build(), null);
     }
 
     private void customerDownloadUpdates() {
-        manager.checkForUpdates(new UpgradeOptions.Builder()
+        manager.doDownLoad(new DownOptions.Builder()
                 .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
@@ -184,16 +139,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMd5(null)
                 // 是否自动删除安装包（可选）
                 .setAutocleanEnabled(true)
-                .build(), false);
+                .build(), null);
     }
 
     /**
      * 显示更新提示（自定义提示）
      *
      * @param stable Upgrade.Stable
-     * @param client UpgradeClient
+     * @param client DownLoadClient
      */
-    private void showUpgradeDialog(Upgrade.Stable stable, final UpgradeClient client) {
+    private void showUpgradeDialog(Upgrade.Stable stable, final DownLoadClient client) {
         StringBuffer logs = new StringBuffer();
         for (int i = 0; i < stable.getLogs().size(); i++) {
             logs.append(stable.getLogs().get(i));

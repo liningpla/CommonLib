@@ -13,28 +13,22 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.common.upgrade.model.bean.UpgradeOptions;
-import com.common.upgrade.service.UpgradeService;
+import com.common.upgrade.model.bean.DownOptions;
+import com.common.upgrade.service.DownLoadService;
 
 import java.lang.ref.WeakReference;
 
 /**
- * Author: itsnows
- * E-mail: xue.com.fei@outlook.com
- * CreatedTime: 2018/3/19 11:09
- * <p>
- * UpgradeClient
+ *
  */
-public class UpgradeClient {
-    private static final String TAG = UpgradeClient.class.getSimpleName();
+public class DownLoadClient {
+    private static final String TAG = DownManager.TAG;
     private Context context;
-    private UpgradeOptions options;
+    private DownOptions options;
     private Messenger client;
     private Messenger server;
     private ServiceConnection connection;
-    private onConnectLisenter onConnectLisenter;
     private OnDownloadListener onDownloadListener;
-    private OnInstallListener onInstallListener;
     private boolean isConnected;
 
     /**
@@ -44,14 +38,14 @@ public class UpgradeClient {
      * @param options
      * @return
      */
-    public static UpgradeClient add(Context context, UpgradeOptions options) {
+    public static DownLoadClient add(Context context, DownOptions options) {
         if (context == null) {
             throw new IllegalArgumentException("Context can not be null");
         }
-        return new UpgradeClient(context, options);
+        return new DownLoadClient(context, options);
     }
 
-    private UpgradeClient(Context context, UpgradeOptions options) {
+    private DownLoadClient(Context context, DownOptions options) {
         this.context = context;
         this.options = options;
         this.client = new Messenger(new ClientHandler(this));
@@ -59,30 +53,13 @@ public class UpgradeClient {
     }
 
     /**
-     * 注入连接监听回调接口
-     *
-     * @param onConnectLisenter
-     */
-    public void setOnConnectLisenter(onConnectLisenter onConnectLisenter) {
-        this.onConnectLisenter = onConnectLisenter;
-    }
-
-    /**
      * 注入下载监听回调接口
      *
      * @param onDownloadListener
      */
-    public void setOnDownloadListener(OnDownloadListener onDownloadListener) {
+    public DownLoadClient setOnDownloadListener(OnDownloadListener onDownloadListener) {
         this.onDownloadListener = onDownloadListener;
-    }
-
-    /**
-     * 注入安装监听回调接口
-     *
-     * @param onInstallListener
-     */
-    public void setOnInstallListener(OnInstallListener onInstallListener) {
-        this.onInstallListener = onInstallListener;
+        return this;
     }
 
     /**
@@ -96,6 +73,7 @@ public class UpgradeClient {
      * 开始
      */
     public void start() {
+        Log.d(TAG, "DownLoadClient:start:  -- start  isConnected:" + isConnected);
         if (!isConnected) {
             bind();
         }
@@ -142,10 +120,10 @@ public class UpgradeClient {
      */
     private void bind() {
         if (context instanceof Activity || context instanceof Service) {
-            UpgradeService.start(context, options, connection);
+            DownLoadService.start(context, options, connection);
             return;
         }
-        UpgradeService.start(context, options);
+        DownLoadService.start(context, options);
     }
 
     /**
@@ -203,15 +181,15 @@ public class UpgradeClient {
     }
 
     private static class ClientHandler extends Handler {
-        private WeakReference<UpgradeClient> reference;
+        private WeakReference<DownLoadClient> reference;
 
-        private ClientHandler(UpgradeClient client) {
+        private ClientHandler(DownLoadClient client) {
             this.reference = new WeakReference<>(client);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            UpgradeClient client = reference.get();
+            DownLoadClient client = reference.get();
             if (client == null) {
                 return;
             }
@@ -222,30 +200,30 @@ public class UpgradeClient {
                 case UpgradeConstant.MSG_KEY_CONNECT_RESP:
                     if (code == 0) {
                         client.isConnected = true;
-                        if (client.onConnectLisenter != null) {
-                            client.onConnectLisenter.onConnected();
+                        if (client.onDownloadListener != null) {
+                            client.onDownloadListener.onConnected();
                         }
                     }
-                    Log.d(TAG, message);
+                    Log.d(TAG, "DownLoadClient:ClientHandler:handleMessage:MSG_KEY_CONNECT_RESP:" + message);
                     break;
                 case UpgradeConstant.MSG_KEY_DISCONNECT_RESP:
                     if (code == 0) {
-                        if (client.onConnectLisenter != null) {
-                            client.onConnectLisenter.onDisconnected();
+                        if (client.onDownloadListener != null) {
+                            client.onDownloadListener.onDisconnected();
                             client.isConnected = false;
                         }
                     }
-                    Log.d(TAG, message);
+                    Log.d(TAG, "DownLoadClient:ClientHandler:handleMessage:MSG_KEY_DISCONNECT_RESP:" + message);
                     client.unbind();
                     break;
                 case UpgradeConstant.MSG_KEY_DOWNLOAD_START_RESP:
-                    Log.d(TAG, "Download：onStart");
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--onStart");
                     if (client.onDownloadListener != null) {
                         client.onDownloadListener.onStart();
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_DOWNLOAD_PROGRESS_RESP:
-                    Log.d(TAG, "Download：onProgress：");
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--onProgress");
                     long max = data.getLong("max");
                     long progress = data.getLong("progress");
                     if (client.onDownloadListener != null) {
@@ -253,57 +231,57 @@ public class UpgradeClient {
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_DOWNLOAD_PAUSE_RESP:
-                    Log.d(TAG, "Download：onPause");
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--onPause");
                     if (client.onDownloadListener != null) {
                         client.onDownloadListener.onPause();
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_DOWNLOAD_CANCEL_RESP:
-                    Log.d(TAG, "Download：onCancel");
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--onCancel");
                     if (client.onDownloadListener != null) {
                         client.onDownloadListener.onCancel();
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_DOWNLOAD_ERROR_RESP:
-                    Log.d(TAG, "Download：onError");
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--onError");
                     if (client.onDownloadListener != null) {
                         client.onDownloadListener.onError(new UpgradeException());
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_DOWNLOAD_COMPLETE_RESP:
-                    Log.d(TAG, "Download：onComplete");
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--onComplete");
                     if (client.onDownloadListener != null) {
                         client.onDownloadListener.onComplete();
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_INSTALL_CHECK_RESP:
-                    Log.d(TAG, "Install：onCheck");
-                    if (client.onInstallListener != null) {
-                        client.onInstallListener.onCheck();
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--Install：onCheck");
+                    if (client.onDownloadListener != null) {
+                        client.onDownloadListener.onCheckInstall();
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_INSTALL_START_RESP:
-                    Log.d(TAG, "Install：onStart");
-                    if (client.onInstallListener != null) {
-                        client.onInstallListener.onStart();
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--Install：onStart");
+                    if (client.onDownloadListener != null) {
+                        client.onDownloadListener.onStartInstall();
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_INSTALL_CANCEL_RESP:
-                    Log.d(TAG, "Install：onCancel");
-                    if (client.onInstallListener != null) {
-                        client.onInstallListener.onCancel();
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--Install：onCancel");
+                    if (client.onDownloadListener != null) {
+                        client.onDownloadListener.onCancelInstall();
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_INSTALL_ERROR_RESP:
-                    Log.d(TAG, "Install：onError");
-                    if (client.onInstallListener != null) {
-                        client.onInstallListener.onError(new UpgradeException(code));
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--Install：onError");
+                    if (client.onDownloadListener != null) {
+                        client.onDownloadListener.onErrorInstall(new UpgradeException(code));
                     }
                     break;
                 case UpgradeConstant.MSG_KEY_INSTALL_COMPLETE_RESP:
-                    Log.d(TAG, "Install：onComplete");
-                    if (client.onInstallListener != null) {
-                        client.onInstallListener.onComplete();
+                    Log.d(TAG, "DownLoadClient:ClientHandler:--Install：onComplete");
+                    if (client.onDownloadListener != null) {
+                        client.onDownloadListener.onCompleteInstall();
                     }
                     break;
                 default:

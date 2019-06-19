@@ -32,10 +32,10 @@ import androidx.core.util.Preconditions;
 
 import com.captureinfo.R;
 import com.common.upgrade.model.UpgradeRepository;
+import com.common.upgrade.model.bean.DownOptions;
 import com.common.upgrade.model.bean.Upgrade;
-import com.common.upgrade.model.bean.UpgradeOptions;
 import com.common.upgrade.model.bean.UpgradeVersion;
-import com.common.upgrade.service.UpgradeService;
+import com.common.upgrade.service.DownLoadService;
 
 /**
  * Author: itsnows
@@ -66,7 +66,7 @@ public class UpgradeDialog extends AlertDialog implements View.OnClickListener {
     private Activity activity;
     @NonNull
     private Upgrade upgrade;
-    private UpgradeClient upgradeClient;
+    private DownLoadClient downLoadClient;
     private boolean isRequestPermission;
 
     private UpgradeDialog(@NonNull Context context) {
@@ -92,11 +92,11 @@ public class UpgradeDialog extends AlertDialog implements View.OnClickListener {
      */
     @SuppressLint("RestrictedApi")
     public static UpgradeDialog newInstance(@NonNull Activity activity, @NonNull Upgrade upgrade,
-                                            @NonNull UpgradeOptions upgradeOptions) {
+                                            @NonNull DownOptions downOptions) {
         Preconditions.checkNotNull(upgrade);
-        Preconditions.checkNotNull(upgradeOptions);
+        Preconditions.checkNotNull(downOptions);
         UpgradeDialog upgradeDialog = new UpgradeDialog(activity);
-        upgradeDialog.initArgs(upgrade, upgradeOptions);
+        upgradeDialog.initArgs(upgrade, downOptions);
         return upgradeDialog;
     }
 
@@ -127,21 +127,21 @@ public class UpgradeDialog extends AlertDialog implements View.OnClickListener {
         initView();
     }
 
-    private void initArgs(Upgrade upgrade, UpgradeOptions upgradeOptions) {
+    private void initArgs(Upgrade upgrade, DownOptions downOptions) {
         this.upgrade = upgrade;
-        upgradeClient = UpgradeClient.add(activity, upgradeOptions);
-        upgradeClient.setOnConnectLisenter(new onConnectLisenter() {
-            @Override
-            public void onConnected() {
-                showProgress();
-            }
-
-            @Override
-            public void onDisconnected() {
-
-            }
-        });
-        upgradeClient.setOnDownloadListener(new OnDownloadListener() {
+        downLoadClient = DownLoadClient.add(activity, downOptions);
+//        downLoadClient.setOnConnectLisenter(new onConnectLisenter() {
+//            @Override
+//            public void onConnected() {
+//                showProgress();
+//            }
+//
+//            @Override
+//            public void onDisconnected() {
+//
+//            }
+//        });
+        downLoadClient.setOnDownloadListener(new OnDownloadListener() {
             @Override
             public void onStart() {
                 super.onStart();
@@ -194,46 +194,46 @@ public class UpgradeDialog extends AlertDialog implements View.OnClickListener {
                 btnProgress.setTag("download_complete");
             }
         });
-        upgradeClient.setOnInstallListener(new OnInstallListener() {
-
-            @Override
-            public void onCheck() {
-                btnProgress.setEnabled(false);
-                btnProgress.setText(getString(R.string.dialog_upgrade_btn_check));
-                btnProgress.setTag("install_check");
-            }
-
-            @Override
-            public void onStart() {
-                btnProgress.setEnabled(false);
-                btnProgress.setText(getString(R.string.dialog_upgrade_btn_install));
-                btnProgress.setTag("install_start");
-            }
-
-            @Override
-            public void onCancel() {
-                btnProgress.setEnabled(true);
-                btnProgress.setText(getString(R.string.dialog_upgrade_btn_reset));
-                btnProgress.setTag("install_cancel");
-            }
-
-            @Override
-            public void onError(UpgradeException e) {
-                btnProgress.setEnabled(true);
-                if (e.getCode() == UpgradeException.ERROR_CODE_PACKAGE_INVALID) {
-                    btnProgress.setText(getString(R.string.dialog_upgrade_btn_reset));
-                }
-                btnProgress.setTag("install_error");
-            }
-
-            @Override
-            public void onComplete() {
-                btnProgress.setEnabled(true);
-                btnProgress.setText(getString(R.string.dialog_upgrade_btn_launch));
-                btnProgress.setTag("install_complete");
-                dismiss();
-            }
-        });
+//        downLoadClient.setOnInstallListener(new OnInstallListener() {
+//
+//            @Override
+//            public void onCheck() {
+//                btnProgress.setEnabled(false);
+//                btnProgress.setText(getString(R.string.dialog_upgrade_btn_check));
+//                btnProgress.setTag("install_check");
+//            }
+//
+//            @Override
+//            public void onStart() {
+//                btnProgress.setEnabled(false);
+//                btnProgress.setText(getString(R.string.dialog_upgrade_btn_install));
+//                btnProgress.setTag("install_start");
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//                btnProgress.setEnabled(true);
+//                btnProgress.setText(getString(R.string.dialog_upgrade_btn_reset));
+//                btnProgress.setTag("install_cancel");
+//            }
+//
+//            @Override
+//            public void onError(UpgradeException e) {
+//                btnProgress.setEnabled(true);
+//                if (e.getCode() == UpgradeException.ERROR_CODE_PACKAGE_INVALID) {
+//                    btnProgress.setText(getString(R.string.dialog_upgrade_btn_reset));
+//                }
+//                btnProgress.setTag("install_error");
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//                btnProgress.setEnabled(true);
+//                btnProgress.setText(getString(R.string.dialog_upgrade_btn_launch));
+//                btnProgress.setTag("install_complete");
+//                dismiss();
+//            }
+//        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -276,7 +276,7 @@ public class UpgradeDialog extends AlertDialog implements View.OnClickListener {
 
         showDoneButton();
 
-        if (UpgradeUtil.isServiceRunning(getContext(), UpgradeService.class.getName())) {
+        if (UpgradeUtil.isServiceRunning(getContext(), DownLoadService.class.getName())) {
             executeUpgrade();
         }
     }
@@ -474,7 +474,7 @@ public class UpgradeDialog extends AlertDialog implements View.OnClickListener {
      * 执行升级
      */
     private void executeUpgrade() {
-        upgradeClient.start();
+        downLoadClient.start();
     }
 
     @Override
@@ -485,7 +485,7 @@ public class UpgradeDialog extends AlertDialog implements View.OnClickListener {
     @Override
     public void dismiss() {
         super.dismiss();
-        upgradeClient.remove();
+        downLoadClient.remove();
     }
 
     @Override
@@ -503,21 +503,21 @@ public class UpgradeDialog extends AlertDialog implements View.OnClickListener {
             }
             executeUpgrade();
         } else if (id == R.id.btn_dialog_upgrade_progress) {
-            if (upgradeClient == null) {
+            if (downLoadClient == null) {
                 return;
             }
             String tag = (String) v.getTag();
             if ("download_start".equals(tag) || "download_progress".equals(tag)) {
-                upgradeClient.pause();
+                downLoadClient.pause();
             } else if ("download_pause".equals(tag) || "download_error".equals(tag)) {
-                upgradeClient.resume();
+                downLoadClient.resume();
             } else if ("download_complete".equals(tag)) {
-                upgradeClient.install();
+                downLoadClient.install();
                 if (getMode() != Upgrade.UPGRADE_MODE_FORCED) {
                     dismiss();
                 }
             } else if ("install_error".equals(tag)) {
-                upgradeClient.resume();
+                downLoadClient.resume();
             }
         }
     }

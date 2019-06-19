@@ -2,8 +2,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.captureinfo">
 
+    <!--允许程序打开网络套接字-->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--允许程序改变网络连接状态-->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+
+    <!--允许程序访问有关GSM网络信息-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!--允许程序改变Wi-Fi连接状态-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+    <!--允许程序访问Wi-Fi网络状态信息-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!--允许程序写入外部存储-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!--允许程序访问安装未知来源应用-->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
 
     <application android:allowBackup="true">
         <activity android:name="com.common.CommonActivity">
@@ -17,6 +36,28 @@
 
         <activity android:name="com.common.MainActivity">
         </activity>
+
+        <!-- UpgradeService -->
+        <service
+            android:name="com.common.upgrade.service.DownLoadService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":upgrade">
+            <intent-filter>
+                <action android:name="com.common.upgrade.service.DownLoadService" />
+            </intent-filter>
+        </service>
+
+        <!-- UpgradeFileProvider -->
+        <provider
+            android:name="com.common.upgrade.provider.UpgradeFileProvider"
+            android:authorities="${applicationId}.UpgradeFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

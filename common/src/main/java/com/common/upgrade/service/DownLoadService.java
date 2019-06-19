@@ -27,14 +27,18 @@ import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
 import androidx.annotation.RequiresApi;
+
 import com.captureinfo.R;
+import com.common.upgrade.DownManager;
 import com.common.upgrade.UpgradeConstant;
 import com.common.upgrade.UpgradeException;
 import com.common.upgrade.UpgradeUtil;
 import com.common.upgrade.model.UpgradeRepository;
+import com.common.upgrade.model.bean.DownOptions;
 import com.common.upgrade.model.bean.UpgradeBuffer;
-import com.common.upgrade.model.bean.UpgradeOptions;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -62,8 +66,8 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 
 @SuppressWarnings("deprecation")
-public class UpgradeService extends Service {
-    private static final String TAG = UpgradeService.class.getSimpleName();
+public class DownLoadService extends Service {
+    private static final String TAG = DownManager.TAG;
 
     /**
      * 连接超时时长
@@ -153,7 +157,7 @@ public class UpgradeService extends Service {
     /**
      * 升级选项
      */
-    private UpgradeOptions upgradeOption;
+    private DownOptions upgradeOption;
 
     /**
      * 升级缓存
@@ -226,7 +230,7 @@ public class UpgradeService extends Service {
      * @param context
      * @param options 升级选项
      */
-    public static void start(Context context, UpgradeOptions options) {
+    public static void start(Context context, DownOptions options) {
         start(context, options, null);
     }
 
@@ -237,7 +241,7 @@ public class UpgradeService extends Service {
      * @param options    升级选项
      * @param connection 升级服务连接
      */
-    public static void start(Context context, UpgradeOptions options, ServiceConnection connection) {
+    public static void start(Context context, DownOptions options, ServiceConnection connection) {
         if (context == null) {
             throw new IllegalArgumentException("Context can not be null");
         }
@@ -245,10 +249,10 @@ public class UpgradeService extends Service {
         if (options == null) {
             throw new IllegalArgumentException("UpgradeOption can not be null");
         }
-
-        Intent intent = new Intent(context, UpgradeService.class);
+        Log.d(TAG, "DownLoadService:start:  --" );
+        Intent intent = new Intent(context, DownLoadService.class);
         intent.putExtra("upgrade_option", options);
-        if (!UpgradeUtil.isServiceRunning(context, UpgradeService.class.getName())) {
+        if (!UpgradeUtil.isServiceRunning(context, DownLoadService.class.getName())) {
             context.startService(intent);
         }
         if (connection != null) {
@@ -259,8 +263,8 @@ public class UpgradeService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d(TAG, "DownLoadService:onCreate:  --" );
         init();
-        Log.d(TAG, "onCreate");
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -299,24 +303,24 @@ public class UpgradeService extends Service {
             return command;
         }
 
-        UpgradeOptions upgradeOptions = intent.getParcelableExtra("upgrade_option");
-        if (upgradeOptions != null) {
-            this.upgradeOption = new UpgradeOptions.Builder()
-                    .setIcon(upgradeOptions.getIcon() == null ?
-                            UpgradeUtil.getAppIcon(this) : upgradeOptions.getIcon())
-                    .setTitle(upgradeOptions.getTitle() == null ?
-                            UpgradeUtil.getAppName(this) : upgradeOptions.getTitle())
-                    .setDescription(upgradeOptions.getDescription())
-                    .setStorage(upgradeOptions.getStorage() == null ?
+        DownOptions downOptions = intent.getParcelableExtra("upgrade_option");
+        if (downOptions != null) {
+            this.upgradeOption = new DownOptions.Builder()
+                    .setIcon(downOptions.getIcon() == null ?
+                            UpgradeUtil.getAppIcon(this) : downOptions.getIcon())
+                    .setTitle(downOptions.getTitle() == null ?
+                            UpgradeUtil.getAppName(this) : downOptions.getTitle())
+                    .setDescription(downOptions.getDescription())
+                    .setStorage(downOptions.getStorage() == null ?
                             new File(Environment.getExternalStorageDirectory(),
-                                    getPackageName() + ".apk") : upgradeOptions.getStorage())
-                    .setUrl(upgradeOptions.getUrl())
-                    .setMd5(upgradeOptions.getMd5())
-                    .setMultithreadEnabled(upgradeOptions.isMultithreadEnabled())
-                    .setMultithreadPools(upgradeOptions.isMultithreadEnabled() ?
-                            upgradeOptions.getMultithreadPools() == 0 ? 100 :
-                                    upgradeOptions.getMultithreadPools() : 0)
-                    .setAutocleanEnabled(upgradeOptions.isAutocleanEnabled())
+                                    getPackageName() + ".apk") : downOptions.getStorage())
+                    .setUrl(downOptions.getUrl())
+                    .setMd5(downOptions.getMd5())
+                    .setMultithreadEnabled(downOptions.isMultithreadEnabled())
+                    .setMultithreadPools(downOptions.isMultithreadEnabled() ?
+                            downOptions.getMultithreadPools() == 0 ? 100 :
+                                    downOptions.getMultithreadPools() : 0)
+                    .setAutocleanEnabled(downOptions.isAutocleanEnabled())
                     .build();
             initNotify();
             start();
@@ -351,7 +355,7 @@ public class UpgradeService extends Service {
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-        Log.d(TAG, "onRebind");
+        Log.d(TAG, "DownLoadService:onRebind:  --" );
         messageHandler.sendEmptyMessageDelayed(STATUS_DOWNLOAD_PROGRESS, DELAY);
         Message msg = Message.obtain();
         msg.what = status;
@@ -466,7 +470,7 @@ public class UpgradeService extends Service {
      * @return
      */
     private PendingIntent getDefalutIntent(int flags) {
-        Intent intent = new Intent(this, UpgradeService.class);
+        Intent intent = new Intent(this, DownLoadService.class);
         return PendingIntent.getService(this, 0, intent, flags);
     }
 
@@ -579,22 +583,22 @@ public class UpgradeService extends Service {
      * 服务端消息
      */
     private static class ServeHanlder extends Handler {
-        private SoftReference<UpgradeService> reference;
+        private SoftReference<DownLoadService> reference;
 
-        private static Handler create(UpgradeService service) {
+        private static Handler create(DownLoadService service) {
             HandlerThread thread = new HandlerThread("Messenger");
             thread.start();
             return new ServeHanlder(thread.getLooper(), service);
         }
 
-        private ServeHanlder(Looper looper, UpgradeService service) {
+        private ServeHanlder(Looper looper, DownLoadService service) {
             super(looper);
             this.reference = new SoftReference<>(service);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            UpgradeService service = reference.get();
+            DownLoadService service = reference.get();
             if (service == null) {
                 return;
             }
@@ -648,15 +652,15 @@ public class UpgradeService extends Service {
      * 消息处理
      */
     private static class MessageHandler extends Handler {
-        private WeakReference<UpgradeService> reference;
+        private WeakReference<DownLoadService> reference;
 
-        private MessageHandler(UpgradeService service) {
+        private MessageHandler(DownLoadService service) {
             reference = new WeakReference<>(service);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            UpgradeService service = reference.get();
+            DownLoadService service = reference.get();
             if (service == null) {
                 return;
             }
@@ -897,7 +901,7 @@ public class UpgradeService extends Service {
             setName("DownloadThread-" + id);
             setPriority(Thread.NORM_PRIORITY);
             setDaemon(false);
-            Log.d(TAG, "DownloadThread initialized");
+            Log.d(TAG, "DownLoadService:DownloadThread:initialized:  --" );
         }
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -970,9 +974,9 @@ public class UpgradeService extends Service {
                         offset = tempOffset;
                         messageHandler.sendEmptyMessage(STATUS_DOWNLOAD_PROGRESS);
                         mark();
-                        Log.d(TAG, "Thread：" + getName()
+                        Log.d(TAG, "DownLoadService:DownloadThread:run:"+"Thread：" + getName()
                                 + " Position：" + startLength + "-" + endLength
-                                + " Download：" + offset + "% " + progress + "Byte/" + maxProgress + "Byte");
+                                + " Download：" + offset + "% " + progress + "Byte/" + maxProgress + "Byte" );
                     }
                 } while (true);
             } catch (Exception e) {
@@ -1075,8 +1079,7 @@ public class UpgradeService extends Service {
                     messageHandler.sendMessage(message);
                     return;
                 }
-                UpgradeUtil.installApk(UpgradeService.this, upgradeOption.getStorage().getPath());
-                // startTimer();
+                UpgradeUtil.installApk(DownLoadService.this, upgradeOption.getStorage().getPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1122,7 +1125,7 @@ public class UpgradeService extends Service {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (UpgradeUtil.isActivityTop(UpgradeService.this, getPackageName())) {
+                    if (UpgradeUtil.isActivityTop(DownLoadService.this, getPackageName())) {
                         status = STATUS_INSTALL_CANCEL;
                         messageHandler.sendEmptyMessage(STATUS_INSTALL_CANCEL);
                         stopTimer();
@@ -1207,10 +1210,9 @@ public class UpgradeService extends Service {
 
             String action = intent.getAction();
             if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-                Log.i(TAG, "onReceive：Added " + packageName);
+                Log.d(TAG, "DownLoadService:PackagesReceiver:onReceive:Added: "+packageName);
             } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {
-                Log.i(TAG, "onReceive：Replaced " + packageName);
-
+                Log.d(TAG, "DownLoadService:PackagesReceiver:Replaced: "+packageName);
                 status = STATUS_INSTALL_COMPLETE;
                 Message message = Message.obtain();
                 message.what = status;
@@ -1219,7 +1221,7 @@ public class UpgradeService extends Service {
                 }
                 messageHandler.sendMessage(message);
             } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-                Log.i(TAG, "onReceive：Removed " + packageName);
+                Log.d(TAG, "DownLoadService:PackagesReceiver:Removed: "+packageName);
             }
         }
 
