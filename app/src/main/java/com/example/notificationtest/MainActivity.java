@@ -42,7 +42,7 @@ public class MainActivity extends BaseAcivity {
             importance = NotificationManager.IMPORTANCE_DEFAULT;
             createNotificationChannel(channelId, channelName, importance);
         }
-        LayoutInflater.from(this).inflate(R.layout.activity_main, null, false);
+        LayoutInflater.from(this).inflate(R.layout.activity_down_main, null, false);
 
         tv_countdown = findViewById(R.id.tv_countdown);
         try {
