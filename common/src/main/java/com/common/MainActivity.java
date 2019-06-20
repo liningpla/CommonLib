@@ -11,19 +11,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.captureinfo.R;
-import com.common.upgrade.DownLoadClient;
-import com.common.upgrade.DownManager;
 import com.common.upgrade.OnDownloadListener;
+import com.common.upgrade.OnUpgradeListener;
+import com.common.upgrade.UpgradeClient;
 import com.common.upgrade.UpgradeException;
+import com.common.upgrade.UpgradeManager;
 import com.common.upgrade.UpgradeUtil;
-import com.common.upgrade.model.bean.DownOptions;
 import com.common.upgrade.model.bean.Upgrade;
+import com.common.upgrade.model.bean.UpgradeOptions;
 
 import java.io.File;
 
@@ -38,13 +40,13 @@ import java.io.File;
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private DownManager manager;
+    private UpgradeManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_down_main);
-        manager = new DownManager(this);
+        manager = new UpgradeManager(this);
         initView();
     }
 
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkUpdates() {
-        manager.doDownLoad(new DownOptions.Builder()
+        manager.checkForUpdates(new UpgradeOptions.Builder()
                 .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
@@ -81,11 +83,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMd5(null)
                 // 是否自动删除安装包（可选）
                 .setAutocleanEnabled(true)
-                .build(), null);
+                .build(), new OnUpgradeListener(){
+
+            @Override
+            public void onUpdateAvailable(UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onUpdateAvailable(Upgrade.Stable stable, UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onUpdateAvailable(Upgrade.Beta bate, UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onNoUpdateAvailable(String message) {
+
+            }
+        });
+    }
+
+    private void autoCheckUpdates() {
+        manager.checkForUpdates(new UpgradeOptions.Builder()
+                .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+                // 通知栏标题（可选）
+                .setTitle("腾讯QQ")
+                // 通知栏描述（可选）
+                .setDescription("更新通知栏")
+                // 下载链接或更新文档链接
+                .setUrl("http://www.rainen.cn/test/app-update-common.xml")
+                // 下载文件存储路径（可选）
+                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.upgrade.apk"))
+                // 是否支持多线性下载（可选）
+                .setMultithreadEnabled(true)
+                // 线程池大小（可选）
+                .setMultithreadPools(1)
+                // 文件MD5（可选）
+                .setMd5(null)
+                // 是否自动删除安装包（可选）
+                .setAutocleanEnabled(true)
+                .build(), true);
     }
 
     private void forceCheckUpdates() {
-        manager.doDownLoad(new DownOptions.Builder()
+        manager.checkForUpdates(new UpgradeOptions.Builder()
                 .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
@@ -103,11 +148,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMd5(null)
                 // 是否自动删除安装包（可选）
                 .setAutocleanEnabled(true)
-                .build(), null);
+                .build(), new OnUpgradeListener(){
+
+            @Override
+            public void onUpdateAvailable(UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onUpdateAvailable(Upgrade.Stable stable, UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onUpdateAvailable(Upgrade.Beta bate, UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onNoUpdateAvailable(String message) {
+
+            }
+        });
     }
 
     private void customerCheckUpdates() {
-        manager.doDownLoad(new DownOptions.Builder()
+        manager.checkForUpdates(new UpgradeOptions.Builder()
                 .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 .setTitle("腾讯QQ")
                 .setDescription("更新通知栏")
@@ -117,11 +183,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMultithreadPools(1)
                 .setMd5(null)
                 .setAutocleanEnabled(true)
-                .build(), null);
+                .build(), new OnUpgradeListener() {
+
+            @Override
+            public void onUpdateAvailable(UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onUpdateAvailable(Upgrade.Stable stable, UpgradeClient client) {
+                showUpgradeDialog(stable, client);
+            }
+
+            @Override
+            public void onUpdateAvailable(Upgrade.Beta beta, UpgradeClient client) {
+            }
+
+            @Override
+            public void onNoUpdateAvailable(String message) {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void customerDownloadUpdates() {
-        manager.doDownLoad(new DownOptions.Builder()
+        manager.checkForUpdates(new UpgradeOptions.Builder()
                 .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
@@ -139,16 +225,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMd5(null)
                 // 是否自动删除安装包（可选）
                 .setAutocleanEnabled(true)
-                .build(), null);
+                .build(), new OnUpgradeListener() {
+            @Override
+            public void onUpdateAvailable(UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onUpdateAvailable(Upgrade.Stable stable, UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onUpdateAvailable(Upgrade.Beta bate, UpgradeClient client) {
+
+            }
+
+            @Override
+            public void onNoUpdateAvailable(String message) {
+
+            }
+        });
     }
 
     /**
      * 显示更新提示（自定义提示）
      *
      * @param stable Upgrade.Stable
-     * @param client DownLoadClient
+     * @param client UpgradeClient
      */
-    private void showUpgradeDialog(Upgrade.Stable stable, final DownLoadClient client) {
+    private void showUpgradeDialog(Upgrade.Stable stable, final UpgradeClient client) {
         StringBuffer logs = new StringBuffer();
         for (int i = 0; i < stable.getLogs().size(); i++) {
             logs.append(stable.getLogs().get(i));
@@ -231,25 +337,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        int id = v.getId();
-        if(id == R.id.button_check_updates_default_common){
+        if(v.getId() == R.id.button_check_updates_default_common){
             checkUpdates();
         }
-        if(id == R.id.button_check_updates_default_forced){
+        if(v.getId() == R.id.button_check_updates_default_forced){
             forceCheckUpdates();
         }
-        if(id == R.id.button_check_updates_default_bate){
-
-        }
-        if(id == R.id.button_check_updates_custom){
+        if(v.getId() == R.id.button_check_updates_custom){
             customerCheckUpdates();
         }
-        if(id == R.id.button_check_updates_custom_download){
+        if(v.getId() == R.id.button_check_updates_custom_download){
             if (UpgradeUtil.mayRequestExternalStorage(this, true)) {
                 customerDownloadUpdates();
             }
         }
-        if(id == R.id.button_cancle){
+        if(v.getId() == R.id.button_cancle){
             manager.cancel();
         }
 

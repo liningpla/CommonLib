@@ -28,16 +28,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.Nullable;
 
 import com.captureinfo.R;
-import com.common.upgrade.DownManager;
 import com.common.upgrade.UpgradeConstant;
 import com.common.upgrade.UpgradeException;
 import com.common.upgrade.UpgradeUtil;
 import com.common.upgrade.model.UpgradeRepository;
-import com.common.upgrade.model.bean.DownOptions;
 import com.common.upgrade.model.bean.UpgradeBuffer;
+import com.common.upgrade.model.bean.UpgradeOptions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,8 +65,8 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 
 @SuppressWarnings("deprecation")
-public class DownLoadService extends Service {
-    private static final String TAG = DownManager.TAG;
+public class UpgradeService extends Service {
+    private static final String TAG = UpgradeService.class.getSimpleName();
 
     /**
      * 连接超时时长
@@ -157,7 +156,7 @@ public class DownLoadService extends Service {
     /**
      * 升级选项
      */
-    private DownOptions upgradeOption;
+    private UpgradeOptions upgradeOption;
 
     /**
      * 升级缓存
@@ -230,7 +229,7 @@ public class DownLoadService extends Service {
      * @param context
      * @param options 升级选项
      */
-    public static void start(Context context, DownOptions options) {
+    public static void start(Context context, UpgradeOptions options) {
         start(context, options, null);
     }
 
@@ -241,7 +240,7 @@ public class DownLoadService extends Service {
      * @param options    升级选项
      * @param connection 升级服务连接
      */
-    public static void start(Context context, DownOptions options, ServiceConnection connection) {
+    public static void start(Context context, UpgradeOptions options, ServiceConnection connection) {
         if (context == null) {
             throw new IllegalArgumentException("Context can not be null");
         }
@@ -249,10 +248,10 @@ public class DownLoadService extends Service {
         if (options == null) {
             throw new IllegalArgumentException("UpgradeOption can not be null");
         }
-        Log.d(TAG, "DownLoadService:start:  --" );
-        Intent intent = new Intent(context, DownLoadService.class);
+
+        Intent intent = new Intent(context, UpgradeService.class);
         intent.putExtra("upgrade_option", options);
-        if (!UpgradeUtil.isServiceRunning(context, DownLoadService.class.getName())) {
+        if (!UpgradeUtil.isServiceRunning(context, UpgradeService.class.getName())) {
             context.startService(intent);
         }
         if (connection != null) {
@@ -263,11 +262,10 @@ public class DownLoadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "DownLoadService:onCreate:  --" );
         init();
+        Log.d(TAG, "onCreate");
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int command = super.onStartCommand(intent, flags, startId);
@@ -303,24 +301,24 @@ public class DownLoadService extends Service {
             return command;
         }
 
-        DownOptions downOptions = intent.getParcelableExtra("upgrade_option");
-        if (downOptions != null) {
-            this.upgradeOption = new DownOptions.Builder()
-                    .setIcon(downOptions.getIcon() == null ?
-                            UpgradeUtil.getAppIcon(this) : downOptions.getIcon())
-                    .setTitle(downOptions.getTitle() == null ?
-                            UpgradeUtil.getAppName(this) : downOptions.getTitle())
-                    .setDescription(downOptions.getDescription())
-                    .setStorage(downOptions.getStorage() == null ?
+        UpgradeOptions upgradeOptions = intent.getParcelableExtra("upgrade_option");
+        if (upgradeOptions != null) {
+            this.upgradeOption = new UpgradeOptions.Builder()
+                    .setIcon(upgradeOptions.getIcon() == null ?
+                            UpgradeUtil.getAppIcon(this) : upgradeOptions.getIcon())
+                    .setTitle(upgradeOptions.getTitle() == null ?
+                            UpgradeUtil.getAppName(this) : upgradeOptions.getTitle())
+                    .setDescription(upgradeOptions.getDescription())
+                    .setStorage(upgradeOptions.getStorage() == null ?
                             new File(Environment.getExternalStorageDirectory(),
-                                    getPackageName() + ".apk") : downOptions.getStorage())
-                    .setUrl(downOptions.getUrl())
-                    .setMd5(downOptions.getMd5())
-                    .setMultithreadEnabled(downOptions.isMultithreadEnabled())
-                    .setMultithreadPools(downOptions.isMultithreadEnabled() ?
-                            downOptions.getMultithreadPools() == 0 ? 100 :
-                                    downOptions.getMultithreadPools() : 0)
-                    .setAutocleanEnabled(downOptions.isAutocleanEnabled())
+                                    getPackageName() + ".apk") : upgradeOptions.getStorage())
+                    .setUrl(upgradeOptions.getUrl())
+                    .setMd5(upgradeOptions.getMd5())
+                    .setMultithreadEnabled(upgradeOptions.isMultithreadEnabled())
+                    .setMultithreadPools(upgradeOptions.isMultithreadEnabled() ?
+                            upgradeOptions.getMultithreadPools() == 0 ? 100 :
+                                    upgradeOptions.getMultithreadPools() : 0)
+                    .setAutocleanEnabled(upgradeOptions.isAutocleanEnabled())
                     .build();
             initNotify();
             start();
@@ -347,6 +345,7 @@ public class DownLoadService extends Service {
         super.onLowMemory();
     }
 
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return server.getBinder();
@@ -355,7 +354,7 @@ public class DownLoadService extends Service {
     @Override
     public void onRebind(Intent intent) {
         super.onRebind(intent);
-        Log.d(TAG, "DownLoadService:onRebind:  --" );
+        Log.d(TAG, "onRebind");
         messageHandler.sendEmptyMessageDelayed(STATUS_DOWNLOAD_PROGRESS, DELAY);
         Message msg = Message.obtain();
         msg.what = status;
@@ -402,7 +401,7 @@ public class DownLoadService extends Service {
     /**
      * 初始化通知栏
      */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void initNotify() {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -470,7 +469,7 @@ public class DownLoadService extends Service {
      * @return
      */
     private PendingIntent getDefalutIntent(int flags) {
-        Intent intent = new Intent(this, DownLoadService.class);
+        Intent intent = new Intent(this, UpgradeService.class);
         return PendingIntent.getService(this, 0, intent, flags);
     }
 
@@ -583,22 +582,22 @@ public class DownLoadService extends Service {
      * 服务端消息
      */
     private static class ServeHanlder extends Handler {
-        private SoftReference<DownLoadService> reference;
+        private SoftReference<UpgradeService> reference;
 
-        private static Handler create(DownLoadService service) {
+        private static Handler create(UpgradeService service) {
             HandlerThread thread = new HandlerThread("Messenger");
             thread.start();
             return new ServeHanlder(thread.getLooper(), service);
         }
 
-        private ServeHanlder(Looper looper, DownLoadService service) {
+        private ServeHanlder(Looper looper, UpgradeService service) {
             super(looper);
             this.reference = new SoftReference<>(service);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            DownLoadService service = reference.get();
+            UpgradeService service = reference.get();
             if (service == null) {
                 return;
             }
@@ -652,15 +651,15 @@ public class DownLoadService extends Service {
      * 消息处理
      */
     private static class MessageHandler extends Handler {
-        private WeakReference<DownLoadService> reference;
+        private WeakReference<UpgradeService> reference;
 
-        private MessageHandler(DownLoadService service) {
+        private MessageHandler(UpgradeService service) {
             reference = new WeakReference<>(service);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            DownLoadService service = reference.get();
+            UpgradeService service = reference.get();
             if (service == null) {
                 return;
             }
@@ -901,7 +900,7 @@ public class DownLoadService extends Service {
             setName("DownloadThread-" + id);
             setPriority(Thread.NORM_PRIORITY);
             setDaemon(false);
-            Log.d(TAG, "DownLoadService:DownloadThread:initialized:  --" );
+            Log.d(TAG, "DownloadThread initialized");
         }
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -974,9 +973,9 @@ public class DownLoadService extends Service {
                         offset = tempOffset;
                         messageHandler.sendEmptyMessage(STATUS_DOWNLOAD_PROGRESS);
                         mark();
-                        Log.d(TAG, "DownLoadService:DownloadThread:run:"+"Thread：" + getName()
+                        Log.d(TAG, "Thread：" + getName()
                                 + " Position：" + startLength + "-" + endLength
-                                + " Download：" + offset + "% " + progress + "Byte/" + maxProgress + "Byte" );
+                                + " Download：" + offset + "% " + progress + "Byte/" + maxProgress + "Byte");
                     }
                 } while (true);
             } catch (Exception e) {
@@ -1079,7 +1078,8 @@ public class DownLoadService extends Service {
                     messageHandler.sendMessage(message);
                     return;
                 }
-                UpgradeUtil.installApk(DownLoadService.this, upgradeOption.getStorage().getPath());
+                UpgradeUtil.installApk(UpgradeService.this, upgradeOption.getStorage().getPath());
+                // startTimer();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1125,7 +1125,7 @@ public class DownLoadService extends Service {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (UpgradeUtil.isActivityTop(DownLoadService.this, getPackageName())) {
+                    if (UpgradeUtil.isActivityTop(UpgradeService.this, getPackageName())) {
                         status = STATUS_INSTALL_CANCEL;
                         messageHandler.sendEmptyMessage(STATUS_INSTALL_CANCEL);
                         stopTimer();
@@ -1210,9 +1210,10 @@ public class DownLoadService extends Service {
 
             String action = intent.getAction();
             if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-                Log.d(TAG, "DownLoadService:PackagesReceiver:onReceive:Added: "+packageName);
+                Log.i(TAG, "onReceive：Added " + packageName);
             } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {
-                Log.d(TAG, "DownLoadService:PackagesReceiver:Replaced: "+packageName);
+                Log.i(TAG, "onReceive：Replaced " + packageName);
+
                 status = STATUS_INSTALL_COMPLETE;
                 Message message = Message.obtain();
                 message.what = status;
@@ -1221,7 +1222,7 @@ public class DownLoadService extends Service {
                 }
                 messageHandler.sendMessage(message);
             } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-                Log.d(TAG, "DownLoadService:PackagesReceiver:Removed: "+packageName);
+                Log.i(TAG, "onReceive：Removed " + packageName);
             }
         }
 

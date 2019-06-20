@@ -7,19 +7,23 @@ import android.os.Parcelable;
 import java.io.File;
 
 /**
- * 下载选项
+ * Author: itsnows
+ * E-mail: xue.com.fei@outlook.com
+ * CreatedTime: 2018/2/10 18:13
+ * <p>
+ * 升级选项
  */
 
-public final class DownOptions implements Parcelable {
-    public static final Creator<DownOptions> CREATOR = new Creator<DownOptions>() {
+public final class UpgradeOptions implements Parcelable {
+    public static final Creator<UpgradeOptions> CREATOR = new Creator<UpgradeOptions>() {
         @Override
-        public DownOptions createFromParcel(Parcel in) {
-            return new DownOptions(in);
+        public UpgradeOptions createFromParcel(Parcel in) {
+            return new UpgradeOptions(in);
         }
 
         @Override
-        public DownOptions[] newArray(int size) {
-            return new DownOptions[size];
+        public UpgradeOptions[] newArray(int size) {
+            return new UpgradeOptions[size];
         }
     };
     /**
@@ -63,7 +67,7 @@ public final class DownOptions implements Parcelable {
      */
     private final boolean autocleanEnabled;
 
-    private DownOptions(Params params) {
+    private UpgradeOptions(Params params) {
         icon = params.icon;
         title = params.title;
         description = params.description;
@@ -76,7 +80,7 @@ public final class DownOptions implements Parcelable {
         autocleanEnabled = params.autocleanEnabled;
     }
 
-    protected DownOptions(Parcel in) {
+    protected UpgradeOptions(Parcel in) {
         icon = in.readParcelable(Bitmap.class.getClassLoader());
         title = (CharSequence) in.readValue(CharSequence.class.getClassLoader());
         description = (CharSequence) in.readValue(CharSequence.class.getClassLoader());
@@ -205,8 +209,8 @@ public final class DownOptions implements Parcelable {
             return this;
         }
 
-        public DownOptions build() {
-            return new DownOptions(params);
+        public UpgradeOptions build() {
+            return new UpgradeOptions(params);
         }
     }
 
