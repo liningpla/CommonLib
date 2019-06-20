@@ -31,27 +31,20 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.captureinfo.R;
-import com.common.upgrade.model.DownlaodRepository;
-import com.common.upgrade.model.DownlaodBuffer;
 import com.common.upgrade.model.DownlaodOptions;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.MessageDigest;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  */
@@ -63,71 +56,71 @@ public class DownlaodService extends Service {
     /**
      * 连接超时时长
      */
-    private static final int CONNECT_TIMEOUT = 60 * 1000;
+    public static final int CONNECT_TIMEOUT = 60 * 1000;
 
     /**
      * 读取超时时长
      */
-    private static final int READ_TIMEOUT = 60 * 1000;
+    public static final int READ_TIMEOUT = 60 * 1000;
 
     /**
      * 下载开始
      */
-    private static final int STATUS_DOWNLOAD_START = 0x1001;
+    public static final int STATUS_DOWNLOAD_START = 0x1001;
 
     /**
      * 下载进度
      */
-    private static final int STATUS_DOWNLOAD_PROGRESS = 0x1002;
+    public static final int STATUS_DOWNLOAD_PROGRESS = 0x1002;
 
     /**
      * 下载暂停
      */
-    private static final int STATUS_DOWNLOAD_PAUSE = 0x1003;
+    public static final int STATUS_DOWNLOAD_PAUSE = 0x1003;
 
     /**
      * 下载取消
      */
-    private static final int STATUS_DOWNLOAD_CANCEL = 0x1004;
+    public static final int STATUS_DOWNLOAD_CANCEL = 0x1004;
 
     /**
      * 下载错误
      */
-    private static final int STATUS_DOWNLOAD_ERROR = 0x1005;
+    public static final int STATUS_DOWNLOAD_ERROR = 0x1005;
 
     /**
      * 下载完成
      */
-    private static final int STATUS_DOWNLOAD_COMPLETE = 0x1006;
+    public static final int STATUS_DOWNLOAD_COMPLETE = 0x1006;
 
     /**
      * 安装效验
      */
-    private static final int STATUS_INSTALL_CHECK = 0x2001;
+    public static final int STATUS_INSTALL_CHECK = 0x2001;
 
     /**
      * 安装开始
      */
-    private static final int STATUS_INSTALL_START = 0x2002;
+    public static final int STATUS_INSTALL_START = 0x2002;
     /**
      * 安装错误
      */
-    private static final int STATUS_INSTALL_ERROR = 0x2004;
+    public static final int STATUS_INSTALL_ERROR = 0x2004;
 
     /**
      * 安装完成
      */
-    private static final int STATUS_INSTALL_COMPLETE = 0x2005;
+    public static final int STATUS_INSTALL_COMPLETE = 0x2005;
 
     /**
      * 通知栏ID
      */
-    private static final int NOTIFY_ID = 0x6710;
+    public static final int NOTIFY_ID = 0x6710;
 
     /**
      * 延时
      */
-    private static final int DELAY = 200;
+    public static final int DELAY = 200;
 
     /**
      * 升级进度通知栏
@@ -142,17 +135,8 @@ public class DownlaodService extends Service {
     /**
      * 升级选项
      */
-    private DownlaodOptions upgradeOption;
+    public DownlaodOptions downlaodOptions;
 
-    /**
-     * 升级缓存
-     */
-    private DownlaodBuffer upgradeBuffer;
-
-    /**
-     * 升级仓库
-     */
-    private DownlaodRepository repository;
 
     /**
      * 调度线程
@@ -162,7 +146,7 @@ public class DownlaodService extends Service {
     /**
      * 消息处理
      */
-    private MessageHandler messageHandler;
+    public MessageHandler messageHandler;
 
     /**
      * 网络状态变化广播
@@ -192,22 +176,7 @@ public class DownlaodService extends Service {
     /**
      * 状态
      */
-    private volatile int status;
-
-    /**
-     * 下载偏移量
-     */
-    private volatile int offset;
-
-    /**
-     * 下载最大进度
-     */
-    private volatile long maxProgress;
-
-    /**
-     * 下载进度
-     */
-    private volatile AtomicLong progress;
+    public static volatile int status;
     /**
      * 启动
      *
@@ -258,7 +227,6 @@ public class DownlaodService extends Service {
             pause();
             return command;
         }
-
         if (status == STATUS_DOWNLOAD_PAUSE) {
             if (!isCancel) {
                 isCancel = true;
@@ -275,20 +243,23 @@ public class DownlaodService extends Service {
             }
             return command;
         }
-
         if (status == STATUS_DOWNLOAD_ERROR) {
             resume();
             return command;
         }
-
         if (status == STATUS_DOWNLOAD_COMPLETE) {
             complete();
             return command;
         }
+        initDownlaod(intent);
+        return command;
+    }
 
+    /***初始化下载*/
+    private void initDownlaod(Intent intent){
         DownlaodOptions upgradeOptions = intent.getParcelableExtra("upgrade_option");
         if (upgradeOptions != null) {
-            this.upgradeOption = new DownlaodOptions.Builder()
+            this.downlaodOptions = new DownlaodOptions.Builder()
                     .setIcon(upgradeOptions.getIcon() == null ?
                             DownlaodUtil.getAppIcon(this) : upgradeOptions.getIcon())
                     .setTitle(upgradeOptions.getTitle() == null ?
@@ -308,7 +279,6 @@ public class DownlaodService extends Service {
             initNotify();
             start();
         }
-        return command;
     }
 
     @Override
@@ -377,10 +347,6 @@ public class DownlaodService extends Service {
             packagesReceiver = new PackagesReceiver();
             packagesReceiver.registerReceiver(this);
         }
-
-        if (repository == null) {
-            repository = DownlaodRepository.getInstance(this);
-        }
     }
 
     /**
@@ -391,7 +357,7 @@ public class DownlaodService extends Service {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(String.valueOf(NOTIFY_ID),
-                    upgradeOption.getTitle(), NotificationManager.IMPORTANCE_DEFAULT);
+                    downlaodOptions.getTitle(), NotificationManager.IMPORTANCE_DEFAULT);
             channel.enableLights(true);
             channel.setLightColor(Color.GREEN);
             channel.setShowBadge(false);
@@ -402,9 +368,9 @@ public class DownlaodService extends Service {
                     .setGroup(String.valueOf(NOTIFY_ID))
                     .setGroupSummary(false)
                     .setSmallIcon(android.R.drawable.stat_sys_download)
-                    .setLargeIcon(upgradeOption.getIcon())
+                    .setLargeIcon(downlaodOptions.getIcon())
                     .setContentIntent(getDefalutIntent(PendingIntent.FLAG_UPDATE_CURRENT))
-                    .setContentTitle(upgradeOption.getTitle())
+                    .setContentTitle(downlaodOptions.getTitle())
                     .setWhen(System.currentTimeMillis())
                     .setPriority(Notification.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
@@ -413,9 +379,9 @@ public class DownlaodService extends Service {
         } else {
             builder = new Notification.Builder(this)
                     .setSmallIcon(android.R.drawable.stat_sys_download)
-                    .setLargeIcon(upgradeOption.getIcon())
+                    .setLargeIcon(downlaodOptions.getIcon())
                     .setContentIntent(getDefalutIntent(PendingIntent.FLAG_UPDATE_CURRENT))
-                    .setContentTitle(upgradeOption.getTitle())
+                    .setContentTitle(downlaodOptions.getTitle())
                     .setWhen(System.currentTimeMillis())
                     .setPriority(Notification.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
@@ -432,6 +398,7 @@ public class DownlaodService extends Service {
         if (status == STATUS_DOWNLOAD_START) {
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else if (status == STATUS_DOWNLOAD_PROGRESS) {
+            int offset = (scheduleThread != null)?scheduleThread.offset:0;
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else {
@@ -465,7 +432,7 @@ public class DownlaodService extends Service {
      * @return
      */
     private boolean deletePackage() {
-        File packageFile = upgradeOption.getStorage();
+        File packageFile = downlaodOptions.getStorage();
         if (packageFile.exists()) {
             return packageFile.delete();
         }
@@ -490,8 +457,52 @@ public class DownlaodService extends Service {
             }
             scheduleThread = null;
         }
-        status = STATUS_DOWNLOAD_START;
-        scheduleThread = new ScheduleThread();
+        scheduleThread = new ScheduleThread(this, downlaodOptions, new ScheduleThread.ScheduleListener() {
+            @Override
+            public void downLoadStart() {
+                //下载开始，通知DownLoadService更新notify
+                status = STATUS_DOWNLOAD_START;
+                messageHandler.sendEmptyMessage(status);
+            }
+
+            @Override
+            public void downLoadProgress(long max, long progress) {
+                //下载中，通知DownLoadService更新notify
+                status = STATUS_DOWNLOAD_PROGRESS;
+                Bundle response = new Bundle();
+                response.putLong("max", max);
+                response.putLong("progress", progress);
+                Message message = Message.obtain();
+                message.what = status;
+                message.setData(response);
+                messageHandler.sendMessage(message);
+            }
+
+            @Override
+            public void downLoadError() {
+                //下载失败，通知DownLoadService更新notify
+                status = STATUS_DOWNLOAD_ERROR;
+                messageHandler.sendEmptyMessage(status);
+            }
+
+            @Override
+            public void downLoadComplete() {
+                //下载完成，通知DownLoadService更新notify
+                status = STATUS_DOWNLOAD_COMPLETE;
+                messageHandler.sendEmptyMessage(status);
+            }
+
+            @Override
+            public void downLoadCancel() {
+                //下载取消，通知DownLoadService更新notify
+                messageHandler.sendEmptyMessage(status);
+            }
+
+            @Override
+            public void downLoadPause() {
+                messageHandler.sendEmptyMessage(status);
+            }
+        });
         scheduleThread.start();
     }
 
@@ -589,7 +600,6 @@ public class DownlaodService extends Service {
             }
             Messenger clint = msg.replyTo;
             Bundle response = new Bundle();
-            Bundle request = msg.getData();
             switch (msg.what) {
                 case DownlaodConstant.MSG_KEY_CONNECT_REQ:
                     if (!service.clients.contains(clint)) {
@@ -634,7 +644,7 @@ public class DownlaodService extends Service {
     }
 
     /**
-     * 消息处理
+     * 下载消息处理
      */
     private static class MessageHandler extends Handler {
         private WeakReference<DownlaodService> reference;
@@ -656,10 +666,11 @@ public class DownlaodService extends Service {
                     service.sendMessageToClient(DownlaodConstant.MSG_KEY_DOWNLOAD_START_RESP, response);
                     break;
                 case STATUS_DOWNLOAD_PROGRESS:
-                    service.setNotify(DownlaodUtil.formatByte(service.progress.get()) + "/" +
-                            DownlaodUtil.formatByte(service.maxProgress));
-                    response.putLong("max", service.maxProgress);
-                    response.putLong("progress", service.progress.get());
+                    long max = msg.getData().getLong("max");
+                    long progress = msg.getData().getLong("progress");
+                    service.setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
+                    response.putLong("max", max);
+                    response.putLong("progress", progress);
                     service.sendMessageToClient(DownlaodConstant.MSG_KEY_DOWNLOAD_PROGRESS_RESP, response);
                     break;
                 case STATUS_DOWNLOAD_PAUSE:
@@ -710,314 +721,15 @@ public class DownlaodService extends Service {
     }
 
     /**
-     * 调度线程
-     */
-    private class ScheduleThread extends Thread {
-
-        @Override
-        public void run() {
-            super.run();
-            try {
-                Thread.sleep(DELAY);
-                messageHandler.sendEmptyMessage(STATUS_DOWNLOAD_START);
-                long startLength = 0;
-                long endLength = -1;
-                File targetFile = upgradeOption.getStorage();
-                if (targetFile.exists()) {
-                    DownlaodBuffer upgradeBuffer = repository.getUpgradeBuffer(upgradeOption.getUrl());
-                    if (upgradeBuffer != null) {
-                        if (upgradeBuffer.getBufferLength() <= targetFile.length()) {
-                            if ((endLength = length(upgradeOption.getUrl())) != -1 &&
-                                    endLength == upgradeBuffer.getFileLength()) {
-                                progress = new AtomicLong(upgradeBuffer.getBufferLength());
-                                maxProgress = upgradeBuffer.getFileLength();
-                                long expiryDate = Math.abs(System.currentTimeMillis() - upgradeBuffer.getLastModified());
-                                if (expiryDate <= DownlaodBuffer.EXPIRY_DATE) {
-                                    if (upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength()) {
-                                        status = STATUS_DOWNLOAD_PROGRESS;
-                                        messageHandler.sendEmptyMessage(status);
-
-                                        status = STATUS_DOWNLOAD_COMPLETE;
-                                        messageHandler.sendEmptyMessage(status);
-                                        return;
-                                    }
-                                    List<DownlaodBuffer.BufferPart> bufferParts = upgradeBuffer.getBufferParts();
-                                    for (int id = 0; id < bufferParts.size(); id++) {
-                                        startLength = bufferParts.get(id).getStartLength();
-                                        endLength = bufferParts.get(id).getEndLength();
-                                        submit(id, startLength, endLength);
-                                    }
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                    targetFile.delete();
-                }
-
-                boolean parentFileExists = true;
-                File parentFile = targetFile.getParentFile();
-                if (!parentFile.exists()) {
-                    parentFileExists = parentFile.mkdirs();
-                }
-
-                if (!parentFileExists) {
-                    status = STATUS_DOWNLOAD_ERROR;
-                    messageHandler.sendEmptyMessage(status);
-                    return;
-                }
-
-                if ((endLength = length(upgradeOption.getUrl())) == -1) {
-                    status = STATUS_DOWNLOAD_ERROR;
-                    messageHandler.sendEmptyMessage(status);
-                    return;
-                }
-                progress = new AtomicLong(startLength);
-                maxProgress = endLength;
-                if (!upgradeOption.isMultithreadEnabled()) {
-                    submit(0, startLength, endLength);
-                    return;
-                }
-                int part = 5 * 1024 * 1024;
-                int pools = 1;
-                if (endLength >= part) {
-                    pools = (int) (endLength / part);
-                }
-                if (pools > upgradeOption.getMultithreadPools()) {
-                    pools = upgradeOption.getMultithreadPools();
-                    part = (int) (endLength / pools);
-                }
-                long tempStartLength = 0;
-                long tempEndLength = 0;
-                for (int id = 1; id <= pools; id++) {
-                    tempStartLength = (id - 1) * part;
-                    tempEndLength = tempStartLength + part - 1;
-                    if (id == pools) {
-                        tempEndLength = endLength;
-                    }
-                    submit(id - 1, tempStartLength, tempEndLength);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                status = STATUS_DOWNLOAD_ERROR;
-                messageHandler.sendEmptyMessage(status);
-            }
-        }
-
-        /**
-         * 下载文件长度
-         *
-         * @param url 下载文件地址
-         * @return
-         */
-        private long length(String url) throws IOException {
-            HttpURLConnection readConnection = null;
-            try {
-                readConnection = (HttpURLConnection) new URL(url).openConnection();
-                readConnection.setRequestMethod("GET");
-                readConnection.setDoInput(true);
-                readConnection.setDoOutput(false);
-                readConnection.setConnectTimeout(CONNECT_TIMEOUT);
-                readConnection.setReadTimeout(READ_TIMEOUT);
-                readConnection.connect();
-                if (readConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    return readConnection.getContentLength();
-                }
-            } finally {
-                if (readConnection != null) {
-                    readConnection.disconnect();
-                }
-            }
-            return -1;
-        }
-
-        /**
-         * 提交下载任务
-         *
-         * @param id          线程ID
-         * @param startLength 开始下载位置
-         * @param entLength   结束下载位置
-         */
-        private void submit(int id, long startLength, long entLength) {
-            Thread thread = null;
-            if (!upgradeOption.isMultithreadEnabled()) {
-                thread = new DownloadThread(id);
-            } else {
-                thread = new DownloadThread(id, startLength, entLength);
-            }
-            thread.start();
-
-        }
-    }
-
-    /**
-     * 下载线程
-     */
-    private class DownloadThread extends Thread {
-        private int id;
-        private long startLength;
-        private long endLength;
-
-        public DownloadThread(int id) {
-            this(id, 0, 0);
-        }
-
-        private DownloadThread(int id, long startLength, long endLength) {
-            this.id = id;
-            this.startLength = startLength;
-            this.endLength = endLength;
-            setName("DownloadThread-" + id);
-            setPriority(Thread.NORM_PRIORITY);
-            setDaemon(false);
-            Log.d(TAG, "DownloadThread initialized");
-        }
-
-        @SuppressWarnings("ResultOfMethodCallIgnored")
-        @Override
-        public void run() {
-            super.run();
-            HttpURLConnection connection = null;
-            InputStream inputStream = null;
-            RandomAccessFile randomAccessFile = null;
-            try {
-                URL url = new URL(upgradeOption.getUrl());
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setDoInput(true);
-                connection.setDoOutput(false);
-                File file = upgradeOption.getStorage();
-
-                if (endLength == 0) {
-                    connection.connect();
-                } else {
-                    connection.setRequestProperty("Range", "bytes=" + startLength + "-" + endLength);
-                    connection.connect();
-                    if (connection.getResponseCode() != HttpURLConnection.HTTP_PARTIAL) {
-                        status = STATUS_DOWNLOAD_ERROR;
-                        messageHandler.sendEmptyMessage(status);
-                        return;
-                    }
-                }
-
-                inputStream = connection.getInputStream();
-                randomAccessFile = new RandomAccessFile(file, "rwd");
-                randomAccessFile.seek(startLength);
-                byte[] buffer = new byte[1024];
-                int len = -1;
-                int tempOffset = 0;
-                do {
-                    if (status == STATUS_DOWNLOAD_CANCEL) {
-                        messageHandler.sendEmptyMessage(status);
-                        break;
-                    }
-
-                    if (status == STATUS_DOWNLOAD_PAUSE) {
-                        messageHandler.sendEmptyMessage(status);
-                        break;
-                    }
-
-                    if ((len = inputStream.read(buffer)) == -1) {
-                        if (progress.get() < maxProgress) {
-                            break;
-                        }
-
-                        if (status == STATUS_DOWNLOAD_COMPLETE) {
-                            break;
-                        }
-
-                        status = STATUS_DOWNLOAD_COMPLETE;
-                        messageHandler.sendEmptyMessage(status);
-                        break;
-                    }
-
-                    if (status == STATUS_DOWNLOAD_START) {
-                        status = STATUS_DOWNLOAD_PROGRESS;
-                    }
-
-                    randomAccessFile.write(buffer, 0, len);
-                    startLength += len;
-                    progress.addAndGet(len);
-                    tempOffset = (int) (((float) progress.get() / maxProgress) * 100);
-                    if (tempOffset > offset) {
-                        offset = tempOffset;
-                        messageHandler.sendEmptyMessage(STATUS_DOWNLOAD_PROGRESS);
-                        mark();
-                        Log.d(TAG, "Thread：" + getName()
-                                + " Position：" + startLength + "-" + endLength
-                                + " Download：" + offset + "% " + progress + "Byte/" + maxProgress + "Byte");
-                    }
-                } while (true);
-            } catch (Exception e) {
-                e.printStackTrace();
-                status = STATUS_DOWNLOAD_ERROR;
-                messageHandler.sendEmptyMessage(status);
-            } finally {
-                if (randomAccessFile != null) {
-                    try {
-                        randomAccessFile.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                if (connection != null) {
-                    connection.disconnect();
-                }
-            }
-        }
-
-        /**
-         * 标记下载位置
-         */
-        private void mark() {
-            if (upgradeBuffer == null) {
-                upgradeBuffer = new DownlaodBuffer();
-                upgradeBuffer.setDownloadUrl(upgradeOption.getUrl());
-                upgradeBuffer.setFileMd5(upgradeOption.getMd5());
-                upgradeBuffer.setBufferLength(progress.get());
-                upgradeBuffer.setFileLength(maxProgress);
-                upgradeBuffer.setBufferParts(new CopyOnWriteArrayList<DownlaodBuffer.BufferPart>());
-                upgradeBuffer.setLastModified(System.currentTimeMillis());
-            }
-            upgradeBuffer.setBufferLength(progress.get());
-            upgradeBuffer.setLastModified(System.currentTimeMillis());
-            int index = -1;
-            for (int i = 0; i < upgradeBuffer.getBufferParts().size(); i++) {
-                if (upgradeBuffer.getBufferParts().get(i).getEndLength() == endLength) {
-                    index = i;
-                    break;
-                }
-            }
-            DownlaodBuffer.BufferPart bufferPart = new DownlaodBuffer.BufferPart(startLength, endLength);
-            if (index == -1) {
-                upgradeBuffer.getBufferParts().add(bufferPart);
-            } else {
-                upgradeBuffer.getBufferParts().set(index, bufferPart);
-            }
-            repository.setUpgradeBuffer(upgradeBuffer);
-        }
-    }
-
-    /**
      * 安装线程
      */
     private class InstallThread extends Thread {
-        private Timer timer;
-
         @Override
         public void run() {
             super.run();
 
             try {
-                if (upgradeOption.getMd5() != null) {
+                if (downlaodOptions.getMd5() != null) {
                     status = STATUS_INSTALL_CHECK;
                     messageHandler.sendEmptyMessage(STATUS_INSTALL_CHECK);
                     if (!check()) {
@@ -1029,7 +741,7 @@ public class DownlaodService extends Service {
                         return;
                     }
                 }
-                DownlaodUtil.installApk(DownlaodService.this, upgradeOption.getStorage().getPath());
+                DownlaodUtil.installApk(DownlaodService.this, downlaodOptions.getStorage().getPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1045,7 +757,7 @@ public class DownlaodService extends Service {
             MessageDigest messageDigest = null;
             FileInputStream fileInputStream = null;
             try {
-                fileInputStream = new FileInputStream(upgradeOption.getStorage());
+                fileInputStream = new FileInputStream(downlaodOptions.getStorage());
                 messageDigest = MessageDigest.getInstance("MD5");
                 byte[] buffer = new byte[1024];
                 int len = -1;
@@ -1053,7 +765,7 @@ public class DownlaodService extends Service {
                     messageDigest.update(buffer, 0, len);
                 }
                 BigInteger bigInteger = new BigInteger(1, messageDigest.digest());
-                return TextUtils.equals(bigInteger.toString(), upgradeOption.getMd5());
+                return TextUtils.equals(bigInteger.toString(), downlaodOptions.getMd5());
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -1137,7 +849,7 @@ public class DownlaodService extends Service {
                 status = STATUS_INSTALL_COMPLETE;
                 Message message = Message.obtain();
                 message.what = status;
-                if (upgradeOption.isAutocleanEnabled()) {
+                if (downlaodOptions.isAutocleanEnabled()) {
                     message.arg1 = -1;
                 }
                 messageHandler.sendMessage(message);
