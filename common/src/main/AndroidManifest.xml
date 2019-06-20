@@ -37,9 +37,9 @@
         <activity android:name="com.common.MainActivity">
         </activity>
 
-        <!-- UpgradeService -->
+        <!-- DownlaodService -->
         <service
-            android:name="com.common.upgrade.service.UpgradeService"
+            android:name="com.common.upgrade.service.DownlaodService"
             android:enabled="true"
             android:exported="true"
             android:process=":upgrade">
@@ -48,9 +48,9 @@
             </intent-filter>
         </service>
 
-        <!-- UpgradeFileProvider -->
+        <!-- DownlaodFileProvider -->
         <provider
-            android:name="com.common.upgrade.provider.UpgradeFileProvider"
+            android:name="com.common.upgrade.provider.DownlaodFileProvider"
             android:authorities="${applicationId}.UpgradeFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">

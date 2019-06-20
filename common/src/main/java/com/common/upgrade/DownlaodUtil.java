@@ -23,7 +23,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.common.upgrade.provider.UpgradeFileProvider;
+import com.common.upgrade.provider.DownlaodFileProvider;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -34,15 +34,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Author: itsnows
- * E-mail: xue.com.fei@outlook.com
- * CreatedTime: 2018/2/10 19:44
- * <p>
- * Util
  */
 
-public class UpgradeUtil {
-    private static final String TAG = UpgradeUtil.class.getSimpleName();
+public class DownlaodUtil {
+    private static final String TAG = DownlaodManager.TAG;
 
     /**
      * 外部存储卡权限
@@ -232,7 +227,7 @@ public class UpgradeUtil {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri uri = FileProvider.getUriForFile(context,
-                    String.format(UpgradeFileProvider.AUTHORITY, context.getPackageName()), file);
+                    String.format(DownlaodFileProvider.AUTHORITY, context.getPackageName()), file);
             intent.setDataAndType(uri, "application/vnd.android.package-archive");
             context.startActivity(intent);
             return;

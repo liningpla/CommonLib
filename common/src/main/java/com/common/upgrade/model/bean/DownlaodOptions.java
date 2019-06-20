@@ -7,23 +7,18 @@ import android.os.Parcelable;
 import java.io.File;
 
 /**
- * Author: itsnows
- * E-mail: xue.com.fei@outlook.com
- * CreatedTime: 2018/2/10 18:13
- * <p>
- * 升级选项
  */
 
-public final class UpgradeOptions implements Parcelable {
-    public static final Creator<UpgradeOptions> CREATOR = new Creator<UpgradeOptions>() {
+public final class DownlaodOptions implements Parcelable {
+    public static final Creator<DownlaodOptions> CREATOR = new Creator<DownlaodOptions>() {
         @Override
-        public UpgradeOptions createFromParcel(Parcel in) {
-            return new UpgradeOptions(in);
+        public DownlaodOptions createFromParcel(Parcel in) {
+            return new DownlaodOptions(in);
         }
 
         @Override
-        public UpgradeOptions[] newArray(int size) {
-            return new UpgradeOptions[size];
+        public DownlaodOptions[] newArray(int size) {
+            return new DownlaodOptions[size];
         }
     };
     /**
@@ -67,7 +62,7 @@ public final class UpgradeOptions implements Parcelable {
      */
     private final boolean autocleanEnabled;
 
-    private UpgradeOptions(Params params) {
+    private DownlaodOptions(Params params) {
         icon = params.icon;
         title = params.title;
         description = params.description;
@@ -80,7 +75,7 @@ public final class UpgradeOptions implements Parcelable {
         autocleanEnabled = params.autocleanEnabled;
     }
 
-    protected UpgradeOptions(Parcel in) {
+    protected DownlaodOptions(Parcel in) {
         icon = in.readParcelable(Bitmap.class.getClassLoader());
         title = (CharSequence) in.readValue(CharSequence.class.getClassLoader());
         description = (CharSequence) in.readValue(CharSequence.class.getClassLoader());
@@ -209,8 +204,8 @@ public final class UpgradeOptions implements Parcelable {
             return this;
         }
 
-        public UpgradeOptions build() {
-            return new UpgradeOptions(params);
+        public DownlaodOptions build() {
+            return new DownlaodOptions(params);
         }
     }
 

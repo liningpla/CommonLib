@@ -4,23 +4,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Author: itsnows
- * E-mail: xue.com.fei@outlook.com
- * CreatedTime: 2018/2/8 21:09
- * <p>
- * UpgradeIgnored
  */
-public class UpgradeVersion implements Parcelable {
+public class DownlaodVersion implements Parcelable {
 
-    public static final Creator<UpgradeVersion> CREATOR = new Creator<UpgradeVersion>() {
+    public static final Creator<DownlaodVersion> CREATOR = new Creator<DownlaodVersion>() {
         @Override
-        public UpgradeVersion createFromParcel(Parcel in) {
-            return new UpgradeVersion(in);
+        public DownlaodVersion createFromParcel(Parcel in) {
+            return new DownlaodVersion(in);
         }
 
         @Override
-        public UpgradeVersion[] newArray(int size) {
-            return new UpgradeVersion[size];
+        public DownlaodVersion[] newArray(int size) {
+            return new DownlaodVersion[size];
         }
     };
     /**
@@ -32,15 +27,15 @@ public class UpgradeVersion implements Parcelable {
      */
     private boolean isIgnored;
 
-    protected UpgradeVersion(Parcel in) {
+    protected DownlaodVersion(Parcel in) {
         version = in.readInt();
         isIgnored = in.readByte() != 0;
     }
 
-    public UpgradeVersion() {
+    public DownlaodVersion() {
     }
 
-    public UpgradeVersion(int version, boolean isIgnored) {
+    public DownlaodVersion(int version, boolean isIgnored) {
         this.version = version;
         this.isIgnored = isIgnored;
     }
@@ -74,7 +69,7 @@ public class UpgradeVersion implements Parcelable {
 
     @Override
     public String toString() {
-        return "UpgradeVersion{" +
+        return "DownlaodVersion{" +
                 "version=" + version +
                 ", isIgnored=" + isIgnored +
                 '}';

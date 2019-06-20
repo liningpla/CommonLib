@@ -6,27 +6,22 @@ import android.os.Parcelable;
 import java.util.List;
 
 /**
- * Author: itsnows
- * E-mail: xue.com.fei@outlook.com
- * CreatedTime: 2018/1/13 23:56
- * <p>
- * UpgradeBuffer
  */
 
-public class UpgradeBuffer implements Parcelable {
+public class DownlaodBuffer implements Parcelable {
     /**
      * 缓存有效期
      */
     public static final int EXPIRY_DATE = 7 * 24 * 60 * 60 * 1000;
-    public static final Creator<UpgradeBuffer> CREATOR = new Creator<UpgradeBuffer>() {
+    public static final Creator<DownlaodBuffer> CREATOR = new Creator<DownlaodBuffer>() {
         @Override
-        public UpgradeBuffer createFromParcel(Parcel in) {
-            return new UpgradeBuffer(in);
+        public DownlaodBuffer createFromParcel(Parcel in) {
+            return new DownlaodBuffer(in);
         }
 
         @Override
-        public UpgradeBuffer[] newArray(int size) {
-            return new UpgradeBuffer[size];
+        public DownlaodBuffer[] newArray(int size) {
+            return new DownlaodBuffer[size];
         }
     };
     /**
@@ -54,10 +49,10 @@ public class UpgradeBuffer implements Parcelable {
      */
     private long lastModified;
 
-    public UpgradeBuffer() {
+    public DownlaodBuffer() {
     }
 
-    public UpgradeBuffer(String downloadUrl, String fileMd5, long fileLength, long bufferLength, List<BufferPart> bufferParts, long lastModified) {
+    public DownlaodBuffer(String downloadUrl, String fileMd5, long fileLength, long bufferLength, List<BufferPart> bufferParts, long lastModified) {
         this.downloadUrl = downloadUrl;
         this.fileMd5 = fileMd5;
         this.fileLength = fileLength;
@@ -66,7 +61,7 @@ public class UpgradeBuffer implements Parcelable {
         this.lastModified = lastModified;
     }
 
-    protected UpgradeBuffer(Parcel in) {
+    protected DownlaodBuffer(Parcel in) {
         downloadUrl = in.readString();
         fileMd5 = in.readString();
         fileLength = in.readLong();
@@ -140,7 +135,7 @@ public class UpgradeBuffer implements Parcelable {
 
     @Override
     public String toString() {
-        return "UpgradeBuffer{" +
+        return "DownlaodBuffer{" +
                 "downloadUrl='" + downloadUrl + '\'' +
                 ", fileMd5='" + fileMd5 + '\'' +
                 ", fileLength=" + fileLength +

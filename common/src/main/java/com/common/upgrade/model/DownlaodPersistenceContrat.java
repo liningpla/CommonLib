@@ -1,13 +1,8 @@
 package com.common.upgrade.model;
 
 /**
- * Author: itsnows
- * E-mail: xue.com.fei@outlook.com
- * CreatedTime: 2018/2/6 22:26
- * <p>
- * UpgradePersistenceContrat
  */
-public class UpgradePersistenceContrat {
+public class DownlaodPersistenceContrat {
 
     public static abstract class UpgradeVersionEntry {
         public static final String TABLE_NAME = "upgrade_version";

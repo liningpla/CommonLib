@@ -5,9 +5,9 @@ package com.common.upgrade;
  * E-mail: xue.com.fei@outlook.com
  * CreatedTime: 19-5-16 下午11:09
  * <p>
- * UpgradeConstant
+ * DownlaodConstant
  */
-public class UpgradeConstant {
+public class DownlaodConstant {
 
     /**
      * 连接服务

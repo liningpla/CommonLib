@@ -31,12 +31,13 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.captureinfo.R;
-import com.common.upgrade.UpgradeConstant;
-import com.common.upgrade.UpgradeException;
-import com.common.upgrade.UpgradeUtil;
-import com.common.upgrade.model.UpgradeRepository;
-import com.common.upgrade.model.bean.UpgradeBuffer;
-import com.common.upgrade.model.bean.UpgradeOptions;
+import com.common.upgrade.DownlaodConstant;
+import com.common.upgrade.DownlaodException;
+import com.common.upgrade.DownlaodManager;
+import com.common.upgrade.DownlaodUtil;
+import com.common.upgrade.model.DownlaodRepository;
+import com.common.upgrade.model.bean.DownlaodBuffer;
+import com.common.upgrade.model.bean.DownlaodOptions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,16 +58,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Author: itsnows
- * E-mail: xue.com.fei@outlook.com
- * CreatedTime: 2018/1/12 9:33
- * <p>
- * 应用更新服务
  */
 
 @SuppressWarnings("deprecation")
-public class UpgradeService extends Service {
-    private static final String TAG = UpgradeService.class.getSimpleName();
+public class DownlaodService extends Service {
+    private static final String TAG = DownlaodManager.TAG;
 
     /**
      * 连接超时时长
@@ -117,12 +113,6 @@ public class UpgradeService extends Service {
      * 安装开始
      */
     private static final int STATUS_INSTALL_START = 0x2002;
-
-    /**
-     * 安装取消
-     */
-    private static final int STATUS_INSTALL_CANCEL = 0x2003;
-
     /**
      * 安装错误
      */
@@ -156,17 +146,17 @@ public class UpgradeService extends Service {
     /**
      * 升级选项
      */
-    private UpgradeOptions upgradeOption;
+    private DownlaodOptions upgradeOption;
 
     /**
      * 升级缓存
      */
-    private UpgradeBuffer upgradeBuffer;
+    private DownlaodBuffer upgradeBuffer;
 
     /**
      * 升级仓库
      */
-    private UpgradeRepository repository;
+    private DownlaodRepository repository;
 
     /**
      * 调度线程
@@ -222,14 +212,13 @@ public class UpgradeService extends Service {
      * 下载进度
      */
     private volatile AtomicLong progress;
-
     /**
      * 启动
      *
      * @param context
      * @param options 升级选项
      */
-    public static void start(Context context, UpgradeOptions options) {
+    public static void start(Context context, DownlaodOptions options) {
         start(context, options, null);
     }
 
@@ -240,7 +229,7 @@ public class UpgradeService extends Service {
      * @param options    升级选项
      * @param connection 升级服务连接
      */
-    public static void start(Context context, UpgradeOptions options, ServiceConnection connection) {
+    public static void start(Context context, DownlaodOptions options, ServiceConnection connection) {
         if (context == null) {
             throw new IllegalArgumentException("Context can not be null");
         }
@@ -249,9 +238,9 @@ public class UpgradeService extends Service {
             throw new IllegalArgumentException("UpgradeOption can not be null");
         }
 
-        Intent intent = new Intent(context, UpgradeService.class);
+        Intent intent = new Intent(context, DownlaodService.class);
         intent.putExtra("upgrade_option", options);
-        if (!UpgradeUtil.isServiceRunning(context, UpgradeService.class.getName())) {
+        if (!DownlaodUtil.isServiceRunning(context, DownlaodService.class.getName())) {
             context.startService(intent);
         }
         if (connection != null) {
@@ -301,13 +290,13 @@ public class UpgradeService extends Service {
             return command;
         }
 
-        UpgradeOptions upgradeOptions = intent.getParcelableExtra("upgrade_option");
+        DownlaodOptions upgradeOptions = intent.getParcelableExtra("upgrade_option");
         if (upgradeOptions != null) {
-            this.upgradeOption = new UpgradeOptions.Builder()
+            this.upgradeOption = new DownlaodOptions.Builder()
                     .setIcon(upgradeOptions.getIcon() == null ?
-                            UpgradeUtil.getAppIcon(this) : upgradeOptions.getIcon())
+                            DownlaodUtil.getAppIcon(this) : upgradeOptions.getIcon())
                     .setTitle(upgradeOptions.getTitle() == null ?
-                            UpgradeUtil.getAppName(this) : upgradeOptions.getTitle())
+                            DownlaodUtil.getAppName(this) : upgradeOptions.getTitle())
                     .setDescription(upgradeOptions.getDescription())
                     .setStorage(upgradeOptions.getStorage() == null ?
                             new File(Environment.getExternalStorageDirectory(),
@@ -394,7 +383,7 @@ public class UpgradeService extends Service {
         }
 
         if (repository == null) {
-            repository = UpgradeRepository.getInstance(this);
+            repository = DownlaodRepository.getInstance(this);
         }
     }
 
@@ -442,6 +431,7 @@ public class UpgradeService extends Service {
     /**
      * 设置通知栏
      */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setNotify(String description) {
         if (status == STATUS_DOWNLOAD_START) {
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
@@ -469,7 +459,7 @@ public class UpgradeService extends Service {
      * @return
      */
     private PendingIntent getDefalutIntent(int flags) {
-        Intent intent = new Intent(this, UpgradeService.class);
+        Intent intent = new Intent(this, DownlaodService.class);
         return PendingIntent.getService(this, 0, intent, flags);
     }
 
@@ -582,22 +572,22 @@ public class UpgradeService extends Service {
      * 服务端消息
      */
     private static class ServeHanlder extends Handler {
-        private SoftReference<UpgradeService> reference;
+        private SoftReference<DownlaodService> reference;
 
-        private static Handler create(UpgradeService service) {
+        private static Handler create(DownlaodService service) {
             HandlerThread thread = new HandlerThread("Messenger");
             thread.start();
             return new ServeHanlder(thread.getLooper(), service);
         }
 
-        private ServeHanlder(Looper looper, UpgradeService service) {
+        private ServeHanlder(Looper looper, DownlaodService service) {
             super(looper);
             this.reference = new SoftReference<>(service);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            UpgradeService service = reference.get();
+            DownlaodService service = reference.get();
             if (service == null) {
                 return;
             }
@@ -605,39 +595,39 @@ public class UpgradeService extends Service {
             Bundle response = new Bundle();
             Bundle request = msg.getData();
             switch (msg.what) {
-                case UpgradeConstant.MSG_KEY_CONNECT_REQ:
+                case DownlaodConstant.MSG_KEY_CONNECT_REQ:
                     if (!service.clients.contains(clint)) {
                         service.clients.add(clint);
                         response.putInt("code", 0);
                         response.putString("message",
                                 service.getString(R.string.message_connect_success));
                     } else {
-                        response.putInt("code", UpgradeException.ERROR_CODE_UNKNOWN);
+                        response.putInt("code", DownlaodException.ERROR_CODE_UNKNOWN);
                         response.putString("message",
                                 service.getString(R.string.message_connect_failure));
                     }
-                    service.sendMessageToClient(clint, UpgradeConstant.MSG_KEY_CONNECT_RESP, response);
+                    service.sendMessageToClient(clint, DownlaodConstant.MSG_KEY_CONNECT_RESP, response);
                     break;
-                case UpgradeConstant.MSG_KEY_DISCONNECT_REQ:
+                case DownlaodConstant.MSG_KEY_DISCONNECT_REQ:
                     boolean success = service.clients.remove(clint);
                     if (success) {
                         response.putInt("code", 0);
                         response.putString("message",
                                 service.getString(R.string.message_disconnect_success));
                     } else {
-                        response.putInt("key", UpgradeException.ERROR_CODE_UNKNOWN);
+                        response.putInt("key", DownlaodException.ERROR_CODE_UNKNOWN);
                         response.putString("message",
                                 service.getString(R.string.message_disconnect_failure));
                     }
-                    service.sendMessageToClient(clint, UpgradeConstant.MSG_KEY_DISCONNECT_RESP, response);
+                    service.sendMessageToClient(clint, DownlaodConstant.MSG_KEY_DISCONNECT_RESP, response);
                     break;
-                case UpgradeConstant.MSG_KEY_DOWNLOAD_PAUSE_REQ:
+                case DownlaodConstant.MSG_KEY_DOWNLOAD_PAUSE_REQ:
                     service.pause();
                     break;
-                case UpgradeConstant.MSG_KEY_DOWNLOAD_RESUME_REQ:
+                case DownlaodConstant.MSG_KEY_DOWNLOAD_RESUME_REQ:
                     service.resume();
                     break;
-                case UpgradeConstant.MSG_KEY_INSTALL_START_REQ:
+                case DownlaodConstant.MSG_KEY_INSTALL_START_REQ:
                     service.install();
                     break;
                 default:
@@ -651,15 +641,15 @@ public class UpgradeService extends Service {
      * 消息处理
      */
     private static class MessageHandler extends Handler {
-        private WeakReference<UpgradeService> reference;
+        private WeakReference<DownlaodService> reference;
 
-        private MessageHandler(UpgradeService service) {
+        private MessageHandler(DownlaodService service) {
             reference = new WeakReference<>(service);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            UpgradeService service = reference.get();
+            DownlaodService service = reference.get();
             if (service == null) {
                 return;
             }
@@ -667,67 +657,50 @@ public class UpgradeService extends Service {
             switch (msg.what) {
                 case STATUS_DOWNLOAD_START:
                     service.setNotify(service.getString(R.string.message_download_start));
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_DOWNLOAD_START_RESP, response);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_DOWNLOAD_START_RESP, response);
                     break;
                 case STATUS_DOWNLOAD_PROGRESS:
-                    service.setNotify(UpgradeUtil.formatByte(service.progress.get()) + "/" +
-                            UpgradeUtil.formatByte(service.maxProgress));
+                    service.setNotify(DownlaodUtil.formatByte(service.progress.get()) + "/" +
+                            DownlaodUtil.formatByte(service.maxProgress));
                     response.putLong("max", service.maxProgress);
                     response.putLong("progress", service.progress.get());
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_DOWNLOAD_PROGRESS_RESP, response);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_DOWNLOAD_PROGRESS_RESP, response);
                     break;
                 case STATUS_DOWNLOAD_PAUSE:
                     service.setNotify(service.getString(R.string.message_download_pause));
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_DOWNLOAD_PAUSE_RESP, response);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_DOWNLOAD_PAUSE_RESP, response);
                     break;
                 case STATUS_DOWNLOAD_CANCEL:
                     service.setNotify(service.getString(R.string.message_download_cancel));
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_DOWNLOAD_CANCEL_RESP, response);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_DOWNLOAD_CANCEL_RESP, response);
                     break;
                 case STATUS_DOWNLOAD_ERROR:
                     service.setNotify(service.getString(R.string.message_download_error));
-                    response.putInt("code", UpgradeException.ERROR_CODE_UNKNOWN);
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_DOWNLOAD_ERROR_RESP, response);
+                    response.putInt("code", DownlaodException.ERROR_CODE_UNKNOWN);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_DOWNLOAD_ERROR_RESP, response);
                     break;
                 case STATUS_DOWNLOAD_COMPLETE:
                     service.setNotify(service.getString(R.string.message_download_complete));
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_DOWNLOAD_COMPLETE_RESP, response);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_DOWNLOAD_COMPLETE_RESP, response);
                     if (msg.arg1 != -1) {
                         service.install();
                     }
                     break;
                 case STATUS_INSTALL_CHECK:
                     service.setNotify(service.getString(R.string.message_install_check));
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_INSTALL_CHECK_RESP, response);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_INSTALL_CHECK_RESP, response);
                     break;
                 case STATUS_INSTALL_START:
                     service.setNotify(service.getString(R.string.message_install_start));
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_INSTALL_START_RESP, response);
-                    break;
-                case STATUS_INSTALL_CANCEL:
-                    service.setNotify(service.getString(R.string.message_install_cancel));
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_INSTALL_CANCEL_RESP, response);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_INSTALL_START_RESP, response);
                     break;
                 case STATUS_INSTALL_ERROR:
-                    if (msg.arg1 == UpgradeException.ERROR_CODE_PACKAGE_INVALID) {
-                        service.setNotify(service.getString(R.string.message_install_package_invalid));
-                        response.putInt("code", UpgradeException.ERROR_CODE_PACKAGE_INVALID);
-                        service.sendMessageToClient(UpgradeConstant.MSG_KEY_INSTALL_ERROR_RESP, response);
-                        return;
-                    }
-                    if (msg.arg1 == UpgradeException.ERROR_CODE_PACKAGE_NO_ROOT) {
-                        service.setNotify(service.getString(R.string.message_install_not_root));
-                        response.putInt("code", UpgradeException.ERROR_CODE_PACKAGE_NO_ROOT);
-                        service.sendMessageToClient(UpgradeConstant.MSG_KEY_INSTALL_ERROR_RESP, response);
-                        return;
-                    }
                     service.setNotify(service.getString(R.string.message_install_error));
-                    response.putInt("code", UpgradeException.ERROR_CODE_UNKNOWN);
-                    service.sendMessageToClient(UpgradeConstant.MSG_KEY_INSTALL_ERROR_RESP, response);
+                    response.putInt("code", DownlaodException.ERROR_CODE_UNKNOWN);
+                    service.sendMessageToClient(DownlaodConstant.MSG_KEY_INSTALL_ERROR_RESP, response);
                     break;
                 case STATUS_INSTALL_COMPLETE:
                     service.setNotify(service.getString(R.string.message_install_complete));
-                    // upgradeService.sendMessageToClient(UpgradeConstant.MSG_KEY_INSTALL_COMPLETE_RESP, response);
                     if (msg.arg1 == -1 && service.deletePackage()) {
                         Toast.makeText(service, service.getString(
                                 R.string.message_install_package_delete), Toast.LENGTH_SHORT).show();
@@ -755,7 +728,7 @@ public class UpgradeService extends Service {
                 long endLength = -1;
                 File targetFile = upgradeOption.getStorage();
                 if (targetFile.exists()) {
-                    UpgradeBuffer upgradeBuffer = repository.getUpgradeBuffer(upgradeOption.getUrl());
+                    DownlaodBuffer upgradeBuffer = repository.getUpgradeBuffer(upgradeOption.getUrl());
                     if (upgradeBuffer != null) {
                         if (upgradeBuffer.getBufferLength() <= targetFile.length()) {
                             if ((endLength = length(upgradeOption.getUrl())) != -1 &&
@@ -763,7 +736,7 @@ public class UpgradeService extends Service {
                                 progress = new AtomicLong(upgradeBuffer.getBufferLength());
                                 maxProgress = upgradeBuffer.getFileLength();
                                 long expiryDate = Math.abs(System.currentTimeMillis() - upgradeBuffer.getLastModified());
-                                if (expiryDate <= UpgradeBuffer.EXPIRY_DATE) {
+                                if (expiryDate <= DownlaodBuffer.EXPIRY_DATE) {
                                     if (upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength()) {
                                         status = STATUS_DOWNLOAD_PROGRESS;
                                         messageHandler.sendEmptyMessage(status);
@@ -772,7 +745,7 @@ public class UpgradeService extends Service {
                                         messageHandler.sendEmptyMessage(status);
                                         return;
                                     }
-                                    List<UpgradeBuffer.BufferPart> bufferParts = upgradeBuffer.getBufferParts();
+                                    List<DownlaodBuffer.BufferPart> bufferParts = upgradeBuffer.getBufferParts();
                                     for (int id = 0; id < bufferParts.size(); id++) {
                                         startLength = bufferParts.get(id).getStartLength();
                                         endLength = bufferParts.get(id).getEndLength();
@@ -1010,12 +983,12 @@ public class UpgradeService extends Service {
          */
         private void mark() {
             if (upgradeBuffer == null) {
-                upgradeBuffer = new UpgradeBuffer();
+                upgradeBuffer = new DownlaodBuffer();
                 upgradeBuffer.setDownloadUrl(upgradeOption.getUrl());
                 upgradeBuffer.setFileMd5(upgradeOption.getMd5());
                 upgradeBuffer.setBufferLength(progress.get());
                 upgradeBuffer.setFileLength(maxProgress);
-                upgradeBuffer.setBufferParts(new CopyOnWriteArrayList<UpgradeBuffer.BufferPart>());
+                upgradeBuffer.setBufferParts(new CopyOnWriteArrayList<DownlaodBuffer.BufferPart>());
                 upgradeBuffer.setLastModified(System.currentTimeMillis());
             }
             upgradeBuffer.setBufferLength(progress.get());
@@ -1027,7 +1000,7 @@ public class UpgradeService extends Service {
                     break;
                 }
             }
-            UpgradeBuffer.BufferPart bufferPart = new UpgradeBuffer.BufferPart(startLength, endLength);
+            DownlaodBuffer.BufferPart bufferPart = new DownlaodBuffer.BufferPart(startLength, endLength);
             if (index == -1) {
                 upgradeBuffer.getBufferParts().add(bufferPart);
             } else {
@@ -1055,31 +1028,12 @@ public class UpgradeService extends Service {
                         status = STATUS_INSTALL_ERROR;
                         Message message = new Message();
                         message.what = status;
-                        message.arg1 = UpgradeException.ERROR_CODE_PACKAGE_INVALID;
+                        message.arg1 = DownlaodException.ERROR_CODE_PACKAGE_INVALID;
                         messageHandler.sendMessage(message);
                         return;
                     }
                 }
-
-                // status = STATUS_INSTALL_START;
-                // messageHandler.sendEmptyMessage(STATUS_INSTALL_START);
-                if (upgradeOption.isAutomountEnabled() && UpgradeUtil.isRooted()) {
-                    boolean success = UpgradeUtil.installApk(upgradeOption.getStorage().getPath());
-                    if (!success) {
-                        status = STATUS_INSTALL_ERROR;
-                        messageHandler.sendEmptyMessage(status);
-                        return;
-                    }
-
-                    status = STATUS_INSTALL_ERROR;
-                    Message message = Message.obtain();
-                    message.what = status;
-                    message.arg1 = UpgradeException.ERROR_CODE_PACKAGE_NO_ROOT;
-                    messageHandler.sendMessage(message);
-                    return;
-                }
-                UpgradeUtil.installApk(UpgradeService.this, upgradeOption.getStorage().getPath());
-                // startTimer();
+                DownlaodUtil.installApk(DownlaodService.this, upgradeOption.getStorage().getPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1112,36 +1066,6 @@ public class UpgradeService extends Service {
                 }
             }
             return false;
-        }
-
-        /**
-         * 开始检测安装计时器
-         */
-        private void startTimer() {
-            if (timer != null) {
-                timer = null;
-            }
-            timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if (UpgradeUtil.isActivityTop(UpgradeService.this, getPackageName())) {
-                        status = STATUS_INSTALL_CANCEL;
-                        messageHandler.sendEmptyMessage(STATUS_INSTALL_CANCEL);
-                        stopTimer();
-                    }
-                }
-            }, 3000, 1000);
-        }
-
-        /**
-         * 结束检测安装计时器
-         */
-        private void stopTimer() {
-            if (timer != null) {
-                timer.cancel();
-            }
-            timer = null;
         }
     }
 
