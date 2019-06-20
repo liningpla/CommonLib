@@ -5,9 +5,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.common.upgrade.model.bean.DownlaodBuffer;
-import com.common.upgrade.model.bean.DownlaodVersion;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,56 +31,6 @@ public class DownlaodRepository implements DownlaodDataSource {
 
     private DownlaodRepository(Context context) {
         helper = new DownlaodDBHelper(context);
-    }
-
-    @Override
-    public DownlaodVersion getUpgradeVersion(int versionCode) {
-        SQLiteDatabase db = helper.getReadableDatabase();
-        String sql = "SELECT * FROM " +
-                DownlaodPersistenceContrat.UpgradeVersionEntry.TABLE_NAME + " WHERE " +
-                DownlaodPersistenceContrat.UpgradeVersionEntry.COLUMN_NAME_VERSION + "=?";
-        String[] selectionArgs = new String[]{String.valueOf(versionCode)};
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery(sql, selectionArgs);
-            while (cursor.moveToNext()) {
-                DownlaodVersion upgradeVersion = new DownlaodVersion();
-                upgradeVersion.setVersion(cursor.getInt(cursor.getColumnIndex(DownlaodPersistenceContrat.UpgradeVersionEntry.COLUMN_NAME_VERSION)));
-                upgradeVersion.setIgnored(cursor.getInt(cursor.getColumnIndex(DownlaodPersistenceContrat.UpgradeVersionEntry.COLUMN_NAME_IS_IGNORED)) == 1);
-                return upgradeVersion;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (db != null) {
-                db.close();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void setUpgradeVersion(DownlaodVersion version) {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        String sql = "INSERT OR REPLACE INTO " +
-                DownlaodPersistenceContrat.UpgradeVersionEntry.TABLE_NAME + "(" +
-                DownlaodPersistenceContrat.UpgradeVersionEntry.COLUMN_NAME_VERSION + "," +
-                DownlaodPersistenceContrat.UpgradeVersionEntry.COLUMN_NAME_IS_IGNORED + ")VALUES(?,?)";
-        try {
-            Object[] bindArgs = new Object[]{
-                    version.getVersion(),
-                    version.isIgnored()};
-            db.execSQL(sql, bindArgs);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (db != null) {
-                db.close();
-            }
-        }
     }
 
     @Override

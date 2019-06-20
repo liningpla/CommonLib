@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Preconditions;
 
-import com.common.upgrade.model.bean.DownlaodOptions;
+import com.common.upgrade.model.DownlaodOptions;
 
 import java.lang.ref.WeakReference;
 

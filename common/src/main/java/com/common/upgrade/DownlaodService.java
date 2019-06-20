@@ -1,4 +1,4 @@
-package com.common.upgrade.service;
+package com.common.upgrade;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -31,13 +31,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.captureinfo.R;
-import com.common.upgrade.DownlaodConstant;
-import com.common.upgrade.DownlaodException;
-import com.common.upgrade.DownlaodManager;
-import com.common.upgrade.DownlaodUtil;
 import com.common.upgrade.model.DownlaodRepository;
-import com.common.upgrade.model.bean.DownlaodBuffer;
-import com.common.upgrade.model.bean.DownlaodOptions;
+import com.common.upgrade.model.DownlaodBuffer;
+import com.common.upgrade.model.DownlaodOptions;
 
 import java.io.File;
 import java.io.FileInputStream;

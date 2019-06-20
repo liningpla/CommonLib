@@ -13,8 +13,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.common.upgrade.model.bean.DownlaodOptions;
-import com.common.upgrade.service.DownlaodService;
+import com.common.upgrade.model.DownlaodOptions;
 
 import java.lang.ref.WeakReference;
 

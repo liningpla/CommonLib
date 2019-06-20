@@ -39,7 +39,7 @@
 
         <!-- DownlaodService -->
         <service
-            android:name="com.common.upgrade.service.DownlaodService"
+            android:name="com.common.upgrade.DownlaodService"
             android:enabled="true"
             android:exported="true"
             android:process=":upgrade">
@@ -50,7 +50,7 @@
 
         <!-- DownlaodFileProvider -->
         <provider
-            android:name="com.common.upgrade.provider.DownlaodFileProvider"
+            android:name="com.common.upgrade.DownlaodFileProvider"
             android:authorities="${applicationId}.UpgradeFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">

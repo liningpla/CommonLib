@@ -1,4 +1,4 @@
-package com.common.upgrade.model.bean;
+package com.common.upgrade.model;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;

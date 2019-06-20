@@ -1,19 +1,12 @@
 package com.common;
 
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.captureinfo.R;
@@ -22,7 +15,7 @@ import com.common.upgrade.OnDownloadListener;
 import com.common.upgrade.DownlaodException;
 import com.common.upgrade.DownlaodManager;
 import com.common.upgrade.DownlaodUtil;
-import com.common.upgrade.model.bean.DownlaodOptions;
+import com.common.upgrade.model.DownlaodOptions;
 
 import java.io.File;
 
