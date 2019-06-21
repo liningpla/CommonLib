@@ -21,7 +21,6 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -29,6 +28,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -332,4 +332,23 @@ public class DownlaodUtil {
         return -1;
     }
 
+    /**解析apk文件，获取相关信息*/
+    public static HashMap<String, Object> getApkInfo(Context context, String apkPath) {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+        if (info != null) {
+            ApplicationInfo appInfo = info.applicationInfo;
+            String packageName = appInfo.packageName;  //得到安装包名称
+            String version = info.versionName;//获取安装包的版本号
+            hashMap.put("packageName", packageName);
+            hashMap.put("version", version);
+            try {
+                hashMap.put("icon", appInfo.loadIcon(pm));
+            } catch (OutOfMemoryError e) {
+                Log.i(TAG, "GetApkInfo: " + e);
+            }
+        }
+        return hashMap;
+    }
 }

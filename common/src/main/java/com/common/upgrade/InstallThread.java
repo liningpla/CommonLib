@@ -29,6 +29,7 @@ public class InstallThread extends Thread {
     public void run() {
         super.run();
         try {
+            downerRequest.apkPageName = (String) DownlaodUtil.getApkInfo(mContext, downlaodOptions.getStorage().getPath()).get("packageName");
             if (downlaodOptions.getMd5() != null) {
                 downerRequest.status = Downer.STATUS_INSTALL_CHECK;
                 if(downerCallBack!=null){

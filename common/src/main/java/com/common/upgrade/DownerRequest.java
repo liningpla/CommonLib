@@ -24,6 +24,8 @@ public class DownerRequest implements Parcelable {
     public DownlaodOptions options;
     /**下载状态*/
     public volatile int status;
+    /**如果下载的是apk，记录apk包明*/
+    public String apkPageName;
 
     public DownerRequest() {
         optionsBulider = new DownlaodOptions.Builder();

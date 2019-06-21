@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.common.threadPool.Priority;
@@ -115,11 +116,14 @@ public class DownerService extends Service {
         if (packagesReceiver != null) {
             packagesReceiver.unregisterReceiver(this);
         }
-        iteratorSchedule(SCHEDULE_STATUS_DISCONNECTED);
+        iteratorSchedule(SCHEDULE_STATUS_DISCONNECTED, "");
     }
 
-    /**遍历下载调度任务*/
-    private void iteratorSchedule(int scheduleStatus){
+    /**遍历下载调度任务
+     * @param scheduleStatus 任务状态
+     * @param apkpagename 下载apk的包明
+     * */
+    private void iteratorSchedule(int scheduleStatus, String apkpagename){
         Iterator<Map.Entry<String, SoftReference<ScheduleRunable>>> entries = scheduleRunables.entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry<String, SoftReference<ScheduleRunable>> entry = entries.next();
@@ -143,17 +147,14 @@ public class DownerService extends Service {
                     }
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is pause");
                     break;
-                case Downer.STATUS_INSTALL_START:
-                    if(scheduleRunable.downerCallBack != null){
-                        scheduleRunable.downerCallBack.onStartInstall();
-                    }
-                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install start");
-                    break;
                 case Downer.STATUS_INSTALL_COMPLETE:
                     if(scheduleRunable.downerCallBack != null){
-                        scheduleRunable.downerCallBack.onCompleteInstall();
+                        String requesPageName = scheduleRunable.downerRequest.apkPageName;
+                        if(TextUtils.equals(requesPageName, apkpagename)){
+                            scheduleRunable.downerCallBack.onCompleteInstall();
+                            Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install completed");
+                        }
                     }
-                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install completed");
                     break;
             }
         }
@@ -172,23 +173,23 @@ public class DownerService extends Service {
             // WIFI已连接，移动数据已连接
             if (wifiNetworkInfo.isConnected() && mobileNetworkInfo.isConnected()) {
                 //如果时暂停状态，恢复网络重新下载
-                iteratorSchedule(SCHEDULE_STATUS_RESUME);
+                iteratorSchedule(SCHEDULE_STATUS_RESUME,"");
                 return;
             }
             // WIFI已连接，移动数据已断开
             if (wifiNetworkInfo.isConnected() && !mobileNetworkInfo.isConnected()) {
                 //如果时暂停状态，恢复网络重新下载
-                iteratorSchedule(SCHEDULE_STATUS_RESUME);
+                iteratorSchedule(SCHEDULE_STATUS_RESUME,"");
                 return;
             }
             // WIFI已断开，移动数据已连接
             if (!wifiNetworkInfo.isConnected() && mobileNetworkInfo.isConnected()) {
                 //如果时暂停状态，恢复网络重新下载
-                iteratorSchedule(SCHEDULE_STATUS_RESUME);
+                iteratorSchedule(SCHEDULE_STATUS_RESUME,"");
                 return;
             }
             // WIFI已断开，移动数据已断开，执行暂停操作
-            iteratorSchedule(SCHEDULE_STATUS_PAUSE);
+            iteratorSchedule(SCHEDULE_STATUS_PAUSE,"");
         }
 
         public void registerReceiver(Context context) {
@@ -214,11 +215,11 @@ public class DownerService extends Service {
             }
             String action = intent.getAction();
             if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {//安装完成
-                iteratorSchedule(Downer.STATUS_INSTALL_COMPLETE);
+                iteratorSchedule(Downer.STATUS_INSTALL_COMPLETE, packageName);
                 Log.i(Downer.TAG, "onReceive：Added " + packageName);
             } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {//更新版本完成
                 Log.i(Downer.TAG, "onReceive：Replaced " + packageName);
-                iteratorSchedule(Downer.STATUS_INSTALL_COMPLETE);
+                iteratorSchedule(Downer.STATUS_INSTALL_COMPLETE, packageName);
             } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {//卸载
                 Log.i(Downer.TAG, "onReceive：Removed " + packageName);
             }
