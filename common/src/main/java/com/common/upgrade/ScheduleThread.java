@@ -1,5 +1,7 @@
 package com.common.upgrade;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 
 import com.common.upgrade.model.DownlaodBuffer;
@@ -13,6 +15,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**调度线程类*/
 public class ScheduleThread extends Thread {
 
     public ScheduleListener listener;
@@ -33,9 +36,25 @@ public class ScheduleThread extends Thread {
      * 下载偏移量
      */
     public volatile int offset;
+    /**
+     * 状态
+     */
+    public static volatile int status;
+    /**
+     * 升级进度通知栏
+     */
+    private Notification.Builder builder;
+
+    /**
+     * 升级进度通知栏管理
+     */
+    private NotificationManager notificationManager;
+
+    private Context mContext;
 
     public DownlaodRepository repository;
     public ScheduleThread(Context context, DownlaodOptions downlaodOptions, ScheduleListener listener){
+        mContext = context;
         this.listener = listener;
         this.downlaodOptions = downlaodOptions;
         if (repository == null) {

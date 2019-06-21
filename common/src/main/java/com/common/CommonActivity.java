@@ -27,6 +27,7 @@ public class CommonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_common_main);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        initNofification();
         btn_sendTest = findViewById(R.id.btn_sendTest);
         btn_sendTest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +55,6 @@ public class CommonActivity extends AppCompatActivity {
     }
 
     private void sendMessage(){
-        initNofification();
         count ++;
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Notification notification = new NotificationCompat.Builder(CommonActivity.this, "subscribe")

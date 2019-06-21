@@ -14,33 +14,40 @@ import java.net.URL;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**分包线程类*/
-public class DownloadThread extends Thread {
+public class DownloadTask extends Thread {
+    /**分包任务id*/
     private int id;
+    /**分包任务开始下载长度位置*/
     private long startLength;
+    /**分包任务介绍下载长度位置*/
     private long endLength;
+    /**现在参数类*/
     private DownlaodOptions downlaodOptions;
-    ScheduleThread.ScheduleListener listener;
-    private ScheduleThread scheduleThread;
-    /**
-     * 升级缓存
-     */
+    /**外部监听类*/
+    ScheduleRunable.ScheduleListener listener;
+    /**此分包的调度类*/
+    private ScheduleRunable scheduleRunable;
+    /**该分包下载缓存*/
     private DownlaodBuffer downlaodBuffer;
+    /**下载请求信息类*/
+    public DownerRequest downerRequest;
 
-    public DownloadThread(ScheduleThread scheduleThread, int id) {
-        this(scheduleThread, id, 0, 0);
+    public DownloadTask(ScheduleRunable scheduleRunable, int id) {
+        this(scheduleRunable, id, 0, 0);
     }
 
-    public DownloadThread(ScheduleThread scheduleThread, int id, long startLength, long endLength) {
-        this.scheduleThread = scheduleThread;
+    public DownloadTask(ScheduleRunable scheduleRunable, int id, long startLength, long endLength) {
+        this.scheduleRunable = scheduleRunable;
         this.id = id;
         this.startLength = startLength;
         this.endLength = endLength;
-        this.downlaodOptions = scheduleThread.downlaodOptions;
-        this.listener = scheduleThread.listener;
-        setName("DownloadThread-" + id);
+        this.downlaodOptions = scheduleRunable.downlaodOptions;
+        this.listener = scheduleRunable.listener;
+        this.downerRequest = scheduleRunable.downerRequest;
+        setName("DownloadTask-" + id);
         setPriority(Thread.NORM_PRIORITY);
         setDaemon(false);
-        Log.d(DownlaodManager.TAG, "DownloadThread initialized");
+        Log.d(Downer.TAG, "DownloadTask initialized");
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -76,43 +83,43 @@ public class DownloadThread extends Thread {
             int len = -1;
             int tempOffset = 0;
             do {
-                if (DownlaodService.status == DownlaodService.STATUS_DOWNLOAD_CANCEL) {
+                /*收到取消通知，执行取消操作，通知调度器*/
+                if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
                     listener.downLoadCancel();
                     break;
                 }
-
-                if (DownlaodService.status == DownlaodService.STATUS_DOWNLOAD_PAUSE) {
+                /*收到暂停通知，执行暂停操作，通知调度器*/
+                if (downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE) {
                     listener.downLoadPause();
                     break;
                 }
 
                 if ((len = inputStream.read(buffer)) == -1) {
-                    if (scheduleThread.progress.get() < scheduleThread.maxProgress) {
+                    if (scheduleRunable.progress.get() < scheduleRunable.maxProgress) {
                         break;
                     }
 
-                    if (DownlaodService.status == DownlaodService.STATUS_DOWNLOAD_COMPLETE) {
+                    if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
                         break;
                     }
                     listener.downLoadComplete();
                     break;
                 }
 
-                if (DownlaodService.status == DownlaodService.STATUS_DOWNLOAD_START) {
-                    DownlaodService.status = DownlaodService.STATUS_DOWNLOAD_PROGRESS;
+                if (downerRequest.status == Downer.STATUS_DOWNLOAD_START) {
+                    downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                 }
-
                 randomAccessFile.write(buffer, 0, len);
                 startLength += len;
-                scheduleThread.progress.addAndGet(len);
-                tempOffset = (int) (((float) scheduleThread.progress.get() / scheduleThread.maxProgress) * 100);
-                if (tempOffset > scheduleThread.offset) {
-                    scheduleThread.offset = tempOffset;
-                    listener.downLoadProgress(scheduleThread.maxProgress, scheduleThread.progress.get());
+                scheduleRunable.progress.addAndGet(len);
+                tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
+                if (tempOffset > scheduleRunable.offset) {
+                    scheduleRunable.offset = tempOffset;
+                    listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
                     mark();
-                    Log.d(DownlaodManager.TAG, "Thread：" + getName()
+                    Log.d(Downer.TAG, "Thread：" + getName()
                             + " Position：" + startLength + "-" + endLength
-                            + " Download：" + scheduleThread.offset + "% " + scheduleThread.progress + "Byte/" + scheduleThread.maxProgress + "Byte");
+                            + " Download：" + scheduleRunable.offset + "% " + scheduleRunable.progress + "Byte/" + scheduleRunable.maxProgress + "Byte");
                 }
             } while (true);
         } catch (Exception e) {
@@ -150,12 +157,12 @@ public class DownloadThread extends Thread {
             downlaodBuffer = new DownlaodBuffer();
             downlaodBuffer.setDownloadUrl(downlaodOptions.getUrl());
             downlaodBuffer.setFileMd5(downlaodOptions.getMd5());
-            downlaodBuffer.setBufferLength(scheduleThread.progress.get());
-            downlaodBuffer.setFileLength(scheduleThread.maxProgress);
+            downlaodBuffer.setBufferLength(scheduleRunable.progress.get());
+            downlaodBuffer.setFileLength(scheduleRunable.maxProgress);
             downlaodBuffer.setBufferParts(new CopyOnWriteArrayList<DownlaodBuffer.BufferPart>());
             downlaodBuffer.setLastModified(System.currentTimeMillis());
         }
-        downlaodBuffer.setBufferLength(scheduleThread.progress.get());
+        downlaodBuffer.setBufferLength(scheduleRunable.progress.get());
         downlaodBuffer.setLastModified(System.currentTimeMillis());
         int index = -1;
         for (int i = 0; i < downlaodBuffer.getBufferParts().size(); i++) {
@@ -170,6 +177,6 @@ public class DownloadThread extends Thread {
         } else {
             downlaodBuffer.getBufferParts().set(index, bufferPart);
         }
-        scheduleThread.repository.setUpgradeBuffer(downlaodBuffer);
+        scheduleRunable.repository.setUpgradeBuffer(downlaodBuffer);
     }
 }

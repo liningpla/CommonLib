@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.captureinfo.R;
+import com.common.upgrade.Downer;
+import com.common.upgrade.DownerCallBack;
 import com.common.upgrade.DownlaodClient;
 import com.common.upgrade.OnDownloadListener;
 import com.common.upgrade.DownlaodException;
@@ -55,31 +57,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkUpdates() {
-        manager.checkForUpdates(new DownlaodOptions.Builder()
-                .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+        Downer.downLoad(this).setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
                 // 通知栏描述（可选）
                 .setDescription("更新通知栏")
                 // 下载链接或更新文档链接
-                .setUrl("https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk")
+                .setUrl("http://gdown.baidu.com/data/wisegame/2965a5c112549eb8/QQ_996.apk")
                 // 下载文件存储路径（可选）
                 .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.upgrade.apk"))
-                // 是否支持多线性下载（可选）
+                // 是否支持多线程下载（可选）
                 .setMultithreadEnabled(true)
                 // 线程池大小（可选）
-                .setMultithreadPools(10)
+                .setMultithreadPools(1)
                 // 文件MD5（可选）
                 .setMd5(null)
+                .setAutoInstallEnabled(true)
                 // 是否自动删除安装包（可选）
-                .setAutocleanEnabled(true)
-                .build(), new OnDownloadListener() {
-
-            @Override
-            public void onDownBefore(DownlaodClient downlaodClient) {
-
-            }
-
+                .setAutocleanEnabled(true).execute(new DownerCallBack() {
             @Override
             public void onProgress(long max, long progress) {
 
@@ -94,7 +89,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onComplete() {
 
             }
+
+            @Override
+            public void onErrorInstall(DownlaodException e) {
+
+            }
+
+            @Override
+            public void onCompleteInstall() {
+
+            }
         });
+
+
+//        manager.checkForUpdates(new DownlaodOptions.Builder()
+//                .setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+//                // 通知栏标题（可选）
+//                .setTitle("腾讯QQ")
+//                // 通知栏描述（可选）
+//                .setDescription("更新通知栏")
+//                // 下载链接或更新文档链接
+//                .setUrl("https://qd.myapp.com/myapp/qqteam/AndroidQQ/mobileqq_android.apk")
+//                // 下载文件存储路径（可选）
+//                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.upgrade.apk"))
+//                // 是否支持多线性下载（可选）
+//                .setMultithreadEnabled(true)
+//                // 线程池大小（可选）
+//                .setMultithreadPools(10)
+//                // 文件MD5（可选）
+//                .setMd5(null)
+//                // 是否自动删除安装包（可选）
+//                .setAutocleanEnabled(true)
+//                .build(), new OnDownloadListener() {
+//
+//            @Override
+//            public void onDownBefore(DownlaodClient downlaodClient) {
+//
+//            }
+//
+//            @Override
+//            public void onProgress(long max, long progress) {
+//
+//            }
+//
+//            @Override
+//            public void onError(DownlaodException e) {
+//
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//
+//            }
+//        });
     }
 
     private void autoCheckUpdates() {
@@ -252,21 +299,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.button_check_updates_default_common){
+        if (v.getId() == R.id.button_check_updates_default_common) {
             checkUpdates();
         }
-        if(v.getId() == R.id.button_check_updates_default_forced){
+        if (v.getId() == R.id.button_check_updates_default_forced) {
             forceCheckUpdates();
         }
-        if(v.getId() == R.id.button_check_updates_custom){
+        if (v.getId() == R.id.button_check_updates_custom) {
             customerCheckUpdates();
         }
-        if(v.getId() == R.id.button_check_updates_custom_download){
+        if (v.getId() == R.id.button_check_updates_custom_download) {
             if (DownlaodUtil.mayRequestExternalStorage(this, true)) {
                 customerDownloadUpdates();
             }
         }
-        if(v.getId() == R.id.button_cancle){
+        if (v.getId() == R.id.button_cancle) {
             manager.cancel();
         }
 

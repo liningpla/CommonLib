@@ -21,6 +21,10 @@ public final class DownlaodOptions implements Parcelable {
             return new DownlaodOptions[size];
         }
     };
+    /**文件总长度*/
+    private long filelength = 0L;
+    /**重定向后的真实下载url*/
+    private String trueUrl;
     /**
      * 通知栏图标
      */
@@ -106,6 +110,14 @@ public final class DownlaodOptions implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
+    public void setFilelength(long filelength) {this.filelength = filelength; }
+
+    public long getFilelength() {return filelength; }
+
+    public String getTrueUrl() { return trueUrl;}
+
+    public void setTrueUrl(String trueUrl) {this.trueUrl = trueUrl;}
 
     public Bitmap getIcon() {
         return icon;
