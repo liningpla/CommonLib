@@ -35,7 +35,7 @@ import java.util.List;
  */
 
 public class DownlaodUtil {
-    private static final String TAG = DownlaodManager.TAG;
+    private static final String TAG = Downer.TAG;
 
     /**
      * 外部存储卡权限

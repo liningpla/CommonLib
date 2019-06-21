@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**调度线程类*/
 public class ScheduleRunable implements Runnable {
 
-    private Context mContext;
+    public Context mContext;
     /**下载请求信息类*/
     public DownerRequest downerRequest;
     /**下载参数类*/
@@ -48,7 +48,8 @@ public class ScheduleRunable implements Runnable {
     private NotificationManager notificationManager;
     /**下载数据库管理类*/
     public DownlaodRepository repository;
-
+    /**通知id，分配生成的三位数*/
+    private int NOTIFY_ID;
     public Handler mHandler;
 
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
@@ -105,8 +106,9 @@ public class ScheduleRunable implements Runnable {
                     }
                     setNotify(mContext.getString(R.string.message_download_complete));
                     if(downlaodOptions.isAutomountEnabled()){//自动安装
-
+                        new InstallThread(ScheduleRunable.this).start();
                     }
+                    clearNotify();
                 }
             });
         }
@@ -146,6 +148,7 @@ public class ScheduleRunable implements Runnable {
         this.fileLength = downlaodOptions.getFilelength();
         this.downerCallBack = downerRequest.downerCallBack;
         this.mHandler = new Handler(context.getMainLooper());
+        NOTIFY_ID = (int) (Math.random()*900 + 100);
         if (repository == null) {
             repository = DownlaodRepository.getInstance(context);
         }
@@ -154,10 +157,11 @@ public class ScheduleRunable implements Runnable {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void initNotify() {
+        Log.i(Downer.TAG, "ScheduleRunable:  initNotify icon: "+downlaodOptions.getIcon()+"  Title:"+downlaodOptions.getTitle());
         notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder = new Notification.Builder(mContext, String.valueOf(DownerService.NOTIFY_ID))
-                    .setGroup(String.valueOf(DownerService.NOTIFY_ID))
+            builder = new Notification.Builder(mContext, DownerService.NOTIFY_CHANNEL_ID)
+                    .setGroup(DownerService.NOTIFY_CHANNEL_ID)
                     .setGroupSummary(false)
                     .setSmallIcon(android.R.drawable.stat_sys_download)
                     .setLargeIcon(downlaodOptions.getIcon())
@@ -196,12 +200,19 @@ public class ScheduleRunable implements Runnable {
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
         }
         builder.setContentText(description);
-        notificationManager.notify(DownerService.NOTIFY_ID, builder.build());
+        notificationManager.notify(NOTIFY_ID, builder.build());
     }
     /**通知栏意图*/
     private PendingIntent getDefalutIntent(int flags) {
         Intent intent = new Intent(mContext, DownerService.class);
         return PendingIntent.getService(mContext, 0, intent, flags);
+    }
+
+    /**
+     * 清除通知栏
+     */
+    private void clearNotify() {
+        notificationManager.cancel(NOTIFY_ID);
     }
 
     @Override
@@ -210,7 +221,6 @@ public class ScheduleRunable implements Runnable {
             Log.i(Downer.TAG, "ScheduleRunable:  run ");
             listener.downLoadStart();
             connectHttp(downlaodOptions.getUrl());
-            Thread.sleep(DownlaodService.DELAY);
             long startLength = 0;
             long endLength = -1;
             File targetFile = downlaodOptions.getStorage();

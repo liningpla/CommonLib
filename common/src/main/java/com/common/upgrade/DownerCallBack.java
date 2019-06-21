@@ -7,10 +7,8 @@ import android.os.Parcelable;
  * 下载监听返回，通知发起请求者，有可能为空，需要非空判断
  */
 public abstract class DownerCallBack implements Parcelable {
-    /*下载之前*/
-    public void  onDownBefore(){}
     /*连接下载服务*/
-    public void onConnected(){}
+    public abstract void onConnected(DownerRequest request);
     /*断开下载服务*/
     public void onDisconnected(){}
     /*下载开始*/
@@ -29,12 +27,10 @@ public abstract class DownerCallBack implements Parcelable {
     public void onCheckInstall(){}
     /*开始安装*/
     public void onStartInstall(){}
-    /*取消安装*/
-    public void onCancelInstall(){}
     /*安装失败*/
-    public abstract void onErrorInstall(DownlaodException e);
+    public  void onErrorInstall(DownlaodException e){}
     /*安装完成*/
-    public abstract void onCompleteInstall();
+    public  void onCompleteInstall(){}
     @Override
     public int describeContents() {
         return 0;

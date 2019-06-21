@@ -41,18 +41,16 @@ public class DownerService extends Service {
     /**下载进度通知栏管理*/
     private NotificationManager notificationManager;
     /**通知栏ID*/
-    public static final int NOTIFY_ID = 0x6710;
+    public static final String NOTIFY_CHANNEL_ID = "DownLoad Manager";
     /**传给service，添加下载*/
     public static void startDownerService(Context context, DownerRequest downerRequest){
         if(downerRequest.downerCallBack != null){//链接服务下载
-            downerRequest.downerCallBack.onConnected();
+            downerRequest.downerCallBack.onConnected(downerRequest);
         }
         Intent intent = new Intent(context, DownerService.class);
         intent.setAction("android.intent.action.RESPOND_VIA_MESSAGE");
         intent.putExtra(DOWN_REQUEST, downerRequest);
         context.startService(intent);
-
-
     }
 
     @Override
@@ -98,8 +96,7 @@ public class DownerService extends Service {
     private void initNotify() {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(String.valueOf(NOTIFY_ID),
-                    getApplication().getApplicationInfo().packageName, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(NOTIFY_CHANNEL_ID, NOTIFY_CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
             channel.enableLights(true);
             channel.setLightColor(Color.GREEN);
             channel.setShowBadge(false);
@@ -132,19 +129,31 @@ public class DownerService extends Service {
                     if(scheduleRunable.downerCallBack != null){
                         scheduleRunable.downerCallBack.onDisconnected();
                     }
-                    Log.i(Downer.TAG, "Schedule is disconnected");
+                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is disconnected");
                     break;
                 case SCHEDULE_STATUS_RESUME:
                     if(scheduleRunable.downerRequest != null){
                         scheduleRunable.downerRequest.resume(DownerService.this);
                     }
-                    Log.i(Downer.TAG, "Schedule is resume");
+                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is resume");
                     break;
                 case SCHEDULE_STATUS_PAUSE:
                     if(scheduleRunable.downerRequest != null){
                         scheduleRunable.downerRequest.pause();
                     }
-                    Log.i(Downer.TAG, "Schedule is pause");
+                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is pause");
+                    break;
+                case Downer.STATUS_INSTALL_START:
+                    if(scheduleRunable.downerCallBack != null){
+                        scheduleRunable.downerCallBack.onStartInstall();
+                    }
+                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install start");
+                    break;
+                case Downer.STATUS_INSTALL_COMPLETE:
+                    if(scheduleRunable.downerCallBack != null){
+                        scheduleRunable.downerCallBack.onCompleteInstall();
+                    }
+                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install completed");
                     break;
             }
         }
@@ -205,11 +214,13 @@ public class DownerService extends Service {
             }
             String action = intent.getAction();
             if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {//开始安装
-                Log.i(DownlaodManager.TAG, "onReceive：Added " + packageName);
+                iteratorSchedule(Downer.STATUS_INSTALL_START);
+                Log.i(Downer.TAG, "onReceive：Added " + packageName);
             } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {//安装完成
-                Log.i(DownlaodManager.TAG, "onReceive：Replaced " + packageName);
+                Log.i(Downer.TAG, "onReceive：Replaced " + packageName);
+                iteratorSchedule(Downer.STATUS_INSTALL_COMPLETE);
             } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {//卸载
-                Log.i(DownlaodManager.TAG, "onReceive：Removed " + packageName);
+                Log.i(Downer.TAG, "onReceive：Removed " + packageName);
             }
         }
         public void registerReceiver(Context context) {

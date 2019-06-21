@@ -124,7 +124,7 @@ public class DownloadTask extends Thread {
             } while (true);
         } catch (Exception e) {
             e.printStackTrace();
-            DownlaodService.status = DownlaodService.STATUS_DOWNLOAD_ERROR;
+            downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
             listener.downLoadError();
         } finally {
             if (randomAccessFile != null) {
