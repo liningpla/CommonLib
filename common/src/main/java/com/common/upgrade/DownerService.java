@@ -213,10 +213,10 @@ public class DownerService extends Service {
                 packageName = intent.getData().getSchemeSpecificPart();
             }
             String action = intent.getAction();
-            if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {//开始安装
-                iteratorSchedule(Downer.STATUS_INSTALL_START);
+            if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {//安装完成
+                iteratorSchedule(Downer.STATUS_INSTALL_COMPLETE);
                 Log.i(Downer.TAG, "onReceive：Added " + packageName);
-            } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {//安装完成
+            } else if (Intent.ACTION_PACKAGE_REPLACED.equals(action)) {//更新版本完成
                 Log.i(Downer.TAG, "onReceive：Replaced " + packageName);
                 iteratorSchedule(Downer.STATUS_INSTALL_COMPLETE);
             } else if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {//卸载

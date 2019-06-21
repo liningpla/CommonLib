@@ -105,10 +105,10 @@ public class ScheduleRunable implements Runnable {
                         downerCallBack.onComplete();
                     }
                     setNotify(mContext.getString(R.string.message_download_complete));
+                    Log.i(Downer.TAG, "ScheduleRunable:  downLoadComplete isAuto: "+downlaodOptions.isAutomountEnabled());
                     if(downlaodOptions.isAutomountEnabled()){//自动安装
                         new InstallThread(ScheduleRunable.this).start();
                     }
-                    clearNotify();
                 }
             });
         }
@@ -204,6 +204,7 @@ public class ScheduleRunable implements Runnable {
     }
     /**通知栏意图*/
     private PendingIntent getDefalutIntent(int flags) {
+        Log.i(Downer.TAG, "ScheduleRunable:  PendingIntent ");
         Intent intent = new Intent(mContext, DownerService.class);
         return PendingIntent.getService(mContext, 0, intent, flags);
     }

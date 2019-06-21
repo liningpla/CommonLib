@@ -88,6 +88,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void forceCheckUpdates() {
+        String url = "https://9a826bfe835999ad255eda8021b03fc0.dd.cdntips.com/imtt.dd.qq.com/16891/74620E25664EF6AC4E9EF0CF4BEA98A4.apk?mkey=5d0c8c633cf74ea1&f=8ea4&fsname=com.when.coco_7.1.6_1066.apk&csr=1bbd&cip=60.247.104.84&proto=https";
+
+        Downer.downLoad().setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+                // 通知栏标题（可选）
+                .setTitle("365日历")
+                // 通知栏描述（可选）
+                .setDescription("更新通知栏")
+                // 下载链接或更新文档链接
+                .setUrl(url)
+                // 下载文件存储路径（可选）
+                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.365.apk"))
+                // 是否支持多线程下载（可选）
+                .setMultithreadEnabled(true)
+                // 线程池大小（可选）
+                .setMultithreadPools(1)
+                // 文件MD5（可选）
+                .setMd5(null)
+                .setAutoInstallEnabled(true)
+                // 是否自动删除安装包（可选）
+                .setAutocleanEnabled(true).execute(MainActivity.this, new DownerCallBack() {
+            @Override
+            public void onConnected(DownerRequest request) {
+                downerRequest = request;
+            }
+            @Override
+            public void onProgress(long max, long progress) {
+            }
+            @Override
+            public void onError(DownlaodException e) {
+            }
+            @Override
+            public void onComplete() {
+            }
+        });
     }
 
     private void customerCheckUpdates() {

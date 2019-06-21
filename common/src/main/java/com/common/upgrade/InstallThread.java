@@ -44,6 +44,10 @@ public class InstallThread extends Thread {
                     return;
                 }
             }
+            if(downerCallBack!=null){
+                downerCallBack.onStartInstall();
+                Log.i(Downer.TAG, "InstallThread:run:Schedule install start ");
+            }
             DownlaodUtil.installApk(mContext, downlaodOptions.getStorage().getPath());
         } catch (IOException e) {
             downerRequest.status = Downer.STATUS_INSTALL_ERROR;

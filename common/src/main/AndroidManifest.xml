@@ -53,7 +53,7 @@
         <!-- DownlaodFileProvider -->
         <provider
             android:name="com.common.upgrade.DownlaodFileProvider"
-            android:authorities="${applicationId}.UpgradeFileProvider"
+            android:authorities="com.common.upgrade.DownlaodFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
