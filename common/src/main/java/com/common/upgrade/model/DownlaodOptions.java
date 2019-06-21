@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  */
@@ -159,12 +160,27 @@ public final class DownlaodOptions implements Parcelable {
         return autocleanEnabled;
     }
 
-    public static class Builder {
+    public static class Builder implements Parcelable {
         private Params params;
 
         public Builder() {
             params = new Params();
         }
+
+        protected Builder(Parcel in) {
+        }
+
+        public static final Creator<Builder> CREATOR = new Creator<Builder>() {
+            @Override
+            public Builder createFromParcel(Parcel in) {
+                return new Builder(in);
+            }
+
+            @Override
+            public Builder[] newArray(int size) {
+                return new Builder[size];
+            }
+        };
 
         public Builder setIcon(Bitmap icon) {
             params.icon = icon;
@@ -219,9 +235,18 @@ public final class DownlaodOptions implements Parcelable {
         public DownlaodOptions build() {
             return new DownlaodOptions(params);
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+        }
     }
 
-    static class Params {
+    static class Params implements Serializable {
         Bitmap icon;
         CharSequence title;
         CharSequence description;

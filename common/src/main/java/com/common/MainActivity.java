@@ -4,6 +4,7 @@ import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcel;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkUpdates() {
-        Downer.downLoad(this).setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+        Downer.downLoad().setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
                 // 通知栏描述（可选）
@@ -74,7 +75,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMd5(null)
                 .setAutoInstallEnabled(true)
                 // 是否自动删除安装包（可选）
-                .setAutocleanEnabled(true).execute(new DownerCallBack() {
+                .setAutocleanEnabled(true).execute(MainActivity.this, new DownerCallBack() {
+
             @Override
             public void onProgress(long max, long progress) {
 

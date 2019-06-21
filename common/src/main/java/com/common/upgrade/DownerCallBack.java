@@ -1,9 +1,12 @@
 package com.common.upgrade;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * 下载监听返回，通知发起请求者，有可能为空，需要非空判断
  */
-public abstract class DownerCallBack {
+public abstract class DownerCallBack implements Parcelable {
     /*下载之前*/
     public void  onDownBefore(){}
     /*连接下载服务*/
@@ -32,7 +35,15 @@ public abstract class DownerCallBack {
     public abstract void onErrorInstall(DownlaodException e);
     /*安装完成*/
     public abstract void onCompleteInstall();
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 
 
 }

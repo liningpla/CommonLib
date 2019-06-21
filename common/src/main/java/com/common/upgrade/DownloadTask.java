@@ -58,7 +58,7 @@ public class DownloadTask extends Thread {
         InputStream inputStream = null;
         RandomAccessFile randomAccessFile = null;
         try {
-            URL url = new URL(downlaodOptions.getUrl());
+            URL url = new URL(downlaodOptions.getTrueUrl());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);

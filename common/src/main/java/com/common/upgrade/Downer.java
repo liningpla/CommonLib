@@ -1,9 +1,5 @@
 package com.common.upgrade;
 
-import android.content.Context;
-
-import static com.common.upgrade.DownerService.scheduleRunables;
-
 /**下载师傅*/
 public class Downer {
 
@@ -41,7 +37,7 @@ public class Downer {
     public static final int STATUS_INSTALL_COMPLETE = 0x2005;
 
     /**开始下载*/
-    public static DownerRequest downLoad(Context context){
-        return new DownerRequest(context);
+    public static DownerRequest downLoad(){
+        return new DownerRequest();
     }
 }

@@ -14,8 +14,10 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+
 import com.common.threadPool.Priority;
 import com.common.threadPool.ThreadManger;
+
 import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -42,9 +44,15 @@ public class DownerService extends Service {
     public static final int NOTIFY_ID = 0x6710;
     /**传给service，添加下载*/
     public static void startDownerService(Context context, DownerRequest downerRequest){
-        Intent intent = new Intent(context, DownlaodService.class);
+        if(downerRequest.downerCallBack != null){//链接服务下载
+            downerRequest.downerCallBack.onConnected();
+        }
+        Intent intent = new Intent(context, DownerService.class);
+        intent.setAction("android.intent.action.RESPOND_VIA_MESSAGE");
         intent.putExtra(DOWN_REQUEST, downerRequest);
         context.startService(intent);
+
+
     }
 
     @Override
@@ -55,22 +63,23 @@ public class DownerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.i(Downer.TAG, "DownerService:  onCreate ");
         init();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        DownerRequest downerRequest = (DownerRequest) intent.getSerializableExtra(DOWN_REQUEST);
-        if(downerRequest.downerCallBack != null){//链接服务下载
-            downerRequest.downerCallBack.onConnected();
-        }
-        String url = downerRequest.options.getTrueUrl();
+        Log.i(Downer.TAG, "DownerService:  onStartCommand ");
+        DownerRequest downerRequest = intent.getParcelableExtra(DOWN_REQUEST);
+        String url = downerRequest.options.getUrl();
+        Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url);
         if(!scheduleRunables.containsKey(url)){
             ScheduleRunable scheduleRunable = new ScheduleRunable(this, downerRequest);
             SoftReference<ScheduleRunable> softSchedule = new SoftReference<>(scheduleRunable);
-            scheduleRunables.put(downerRequest.options.getTrueUrl(), softSchedule);
+            scheduleRunables.put(url, softSchedule);
+            ThreadManger.getInstance().execute(Priority.NORMAL, scheduleRunable);
+            Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
         }
-        ThreadManger.getInstance().execute(Priority.NORMAL, scheduleRunables.get(url).get());
         return START_STICKY;
     }
 
@@ -102,6 +111,7 @@ public class DownerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.i(Downer.TAG, "DownerService:  onDestroy ");
         if (netWorkStateReceiver != null) {
             netWorkStateReceiver.unregisterReceiver(this);
         }
@@ -126,7 +136,7 @@ public class DownerService extends Service {
                     break;
                 case SCHEDULE_STATUS_RESUME:
                     if(scheduleRunable.downerRequest != null){
-                        scheduleRunable.downerRequest.resume();
+                        scheduleRunable.downerRequest.resume(DownerService.this);
                     }
                     Log.i(Downer.TAG, "Schedule is resume");
                     break;
@@ -214,4 +224,5 @@ public class DownerService extends Service {
             context.unregisterReceiver(this);
         }
     }
+
 }

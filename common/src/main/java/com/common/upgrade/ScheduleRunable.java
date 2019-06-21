@@ -16,10 +16,13 @@ import com.common.upgrade.model.DownlaodOptions;
 import com.common.upgrade.model.DownlaodRepository;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-
-import static com.common.upgrade.DownerService.scheduleRunables;
 
 /**调度线程类*/
 public class ScheduleRunable implements Runnable {
@@ -94,7 +97,6 @@ public class ScheduleRunable implements Runnable {
         @Override
         public void downLoadComplete() {
             /*通知外部调用者，完成下载*/
-            scheduleRunables.remove(downerRequest.options.getTrueUrl());
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -206,8 +208,9 @@ public class ScheduleRunable implements Runnable {
     public void run() {
         try {
             Log.i(Downer.TAG, "ScheduleRunable:  run ");
-            Thread.sleep(DownlaodService.DELAY);
             listener.downLoadStart();
+            connectHttp(downlaodOptions.getUrl());
+            Thread.sleep(DownlaodService.DELAY);
             long startLength = 0;
             long endLength = -1;
             File targetFile = downlaodOptions.getStorage();
@@ -299,6 +302,42 @@ public class ScheduleRunable implements Runnable {
 
     }
 
+    /**
+     * 解析url，解析文件长度
+     */
+    private void connectHttp(String url) {
+        String tureUrl = url;
+        HttpURLConnection readConnection = null;
+        try {
+            readConnection = (HttpURLConnection) new URL(url).openConnection();
+            readConnection.setRequestMethod("GET");
+            readConnection.setDoInput(true);
+            readConnection.setDoOutput(false);
+            readConnection.setConnectTimeout(Downer.CONNECT_TIMEOUT);
+            readConnection.setReadTimeout(Downer.READ_TIMEOUT);
+            readConnection.connect();
+            int statusCode = readConnection.getResponseCode();
+            if (statusCode == HttpURLConnection.HTTP_OK) {
+                while ((statusCode == Downer.SC_MOVED_TEMPORARILY) || (statusCode == Downer.SC_MOVED_PERMANENTLY)) {
+                    tureUrl = readConnection.getHeaderField(Downer.REDIRECT_LOCATION_KEY);
+                    connectHttp(tureUrl);
+                }
+            }
+            fileLength = readConnection.getContentLength();
+            downlaodOptions.setTrueUrl(tureUrl);
+            Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  fileLength:"+fileLength+" tureUrl:"+tureUrl);
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (readConnection != null) {
+                readConnection.disconnect();
+            }
+        }
+    }
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public interface ScheduleListener{
         void downLoadStart();
@@ -308,4 +347,5 @@ public class ScheduleRunable implements Runnable {
         void downLoadCancel();
         void downLoadPause();
     }
+
 }
