@@ -43,7 +43,7 @@ public class DownerService extends Service {
     /**下载进度通知栏管理*/
     private NotificationManager notificationManager;
     /**通知栏ID*/
-    public static final String NOTIFY_CHANNEL_ID = "DownLoad Manager";
+    public static final String NOTIFY_CHANNEL_ID = "下载管理";
     /**传给service，添加下载*/
     public static void startDownerService(Context context, DownerRequest downerRequest){
         if(downerRequest.downerCallBack != null){//链接服务下载
