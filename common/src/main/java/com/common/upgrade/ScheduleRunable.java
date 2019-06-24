@@ -95,6 +95,7 @@ public class ScheduleRunable implements Runnable {
                         downerCallBack.onError(new DownlaodException());
                     }
                     setNotify(mContext.getString(R.string.message_download_error));
+                    clearNotify();
                 }
             });
 
@@ -114,6 +115,7 @@ public class ScheduleRunable implements Runnable {
                         Log.i(Downer.TAG, "ScheduleRunable:  downLoadComplete is Auto Install");
                         new InstallThread(ScheduleRunable.this).start();
                     }
+                    clearNotify();
                 }
             });
         }
