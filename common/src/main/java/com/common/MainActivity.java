@@ -24,8 +24,6 @@ import java.io.File;
  * 支持：分流下载
  * 支持：动态网络监听下载
  * 支持：8.0 适配
- * <p>
- * 更新文档模板路径：../android-upgrade/upgradelibrary/app-update.xml
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = Downer.TAG;
