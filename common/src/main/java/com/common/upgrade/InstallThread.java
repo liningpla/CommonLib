@@ -37,29 +37,15 @@ public class InstallThread extends Thread {
                 downerCallBack.onStartInstall();
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install start ");
             }
-            if (downlaodOptions.getMd5() != null && !check()) {
-                downerRequest.status = Downer.STATUS_INSTALL_ERROR;
-                if(downerCallBack!=null){
-                    downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_INVALID));
-                    Log.i(Downer.TAG, "InstallThread:run:Schedule install  md5 check error");
-                }
-                return;
+            if(check()){
+                downerRequest.apkPageName = (String) DownlaodUtil.getApkInfo(mContext, downlaodOptions.getStorage().getPath()).get("packageName");
+                DownlaodUtil.installApk(mContext, downlaodOptions.getStorage().getPath());
             }
-            String filePath = downlaodOptions.getStorage().getPath();
-            File file = new File(filePath);
-            if (!file.exists() && downerCallBack!=null) {
-                downerRequest.status = Downer.STATUS_INSTALL_ERROR;
-                downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_FILE));
-                Log.i(Downer.TAG, "DownlaodUtil:installApk：file is not exists");
-                return;
-            }
-            downerRequest.apkPageName = (String) DownlaodUtil.getApkInfo(mContext, filePath).get("packageName");
-            DownlaodUtil.installApk(mContext, filePath);
         } catch (IOException e) {
             downerRequest.status = Downer.STATUS_INSTALL_ERROR;
             if(downerCallBack!=null){
-                downerCallBack.onErrorInstall(new DownlaodException());
-                Log.i(Downer.TAG, "InstallThread:run:Exception:Schedule install error");
+                downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_INVALID));
+                Log.i(Downer.TAG, "InstallThread:run:Schedule install  md5 check error");
             }
         }
     }
@@ -69,7 +55,6 @@ public class InstallThread extends Thread {
      *
      * @return
      */
-    @SuppressWarnings("TryFinallyCanBeTryWithResources")
     private boolean check() throws IOException {
         MessageDigest messageDigest = null;
         FileInputStream fileInputStream = null;
@@ -79,15 +64,33 @@ public class InstallThread extends Thread {
                 downerCallBack.onCheckInstall();
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install check");
             }
-            fileInputStream = new FileInputStream(downlaodOptions.getStorage());
-            messageDigest = MessageDigest.getInstance("MD5");
-            byte[] buffer = new byte[1024];
-            int len = -1;
-            while ((len = fileInputStream.read(buffer)) != -1) {
-                messageDigest.update(buffer, 0, len);
+            File file = new File(downlaodOptions.getStorage().getPath());
+            if (!file.exists()) {
+                if(downerCallBack!=null){
+                    downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_FILE));
+                    Log.i(Downer.TAG, "InstallThread:installApk：file is not exists");
+                }
+                return false;
             }
-            BigInteger bigInteger = new BigInteger(1, messageDigest.digest());
-            return TextUtils.equals(bigInteger.toString(), downlaodOptions.getMd5());
+            if (downlaodOptions.getMd5() != null) {
+                fileInputStream = new FileInputStream(downlaodOptions.getStorage());
+                messageDigest = MessageDigest.getInstance("MD5");
+                byte[] buffer = new byte[1024];
+                int len = -1;
+                while ((len = fileInputStream.read(buffer)) != -1) {
+                    messageDigest.update(buffer, 0, len);
+                }
+                BigInteger bigInteger = new BigInteger(1, messageDigest.digest());
+                boolean isMd5 = TextUtils.equals(bigInteger.toString(), downlaodOptions.getMd5());
+                if(!isMd5){//true
+                    downerRequest.status = Downer.STATUS_INSTALL_ERROR;
+                    if(downerCallBack!=null){
+                        downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_INVALID));
+                        Log.i(Downer.TAG, "InstallThread:run:Schedule install  md5 check error");
+                    }
+                }
+                return isMd5;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -7,6 +7,7 @@ import android.os.Parcelable;
  * 下载监听返回，通知发起请求者，有可能为空，需要非空判断
  */
 public abstract class DownerCallBack implements Parcelable {
+
     /*连接下载服务*/
     public abstract void onConnected(DownerRequest request);
     /*断开下载服务*/
@@ -31,15 +32,32 @@ public abstract class DownerCallBack implements Parcelable {
     public  void onErrorInstall(DownlaodException e){}
     /*安装完成*/
     public  void onCompleteInstall(){}
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
 
-    }
+
+
+
+    public static final Creator<DownerCallBack> CREATOR = new Creator<DownerCallBack>() {
+        @Override
+        public DownerCallBack createFromParcel(Parcel in) {
+            return new DownerCallBack(in) {
+                public void onConnected(DownerRequest request) {}
+                public void onProgress(long max, long progress) {}
+                 public void onError(DownlaodException e) {}
+                 public void onComplete() {}
+            };
+        }
+        @Override
+        public DownerCallBack[] newArray(int size) {
+            return new DownerCallBack[size];
+        }
+    };
+    @Override
+    public int describeContents() {return 0;}
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {}
+    protected DownerCallBack(Parcel in) {}
+    protected DownerCallBack() {}
 
 
 }
