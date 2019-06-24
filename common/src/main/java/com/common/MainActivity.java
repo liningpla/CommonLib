@@ -4,6 +4,7 @@ import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -106,12 +107,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             @Override
             public void onProgress(long max, long progress) {
+
             }
             @Override
             public void onError(DownlaodException e) {
             }
             @Override
             public void onComplete() {
+                Log.i(Downer.TAG, "MainActivity:onComplete: ");
             }
         });
     }
