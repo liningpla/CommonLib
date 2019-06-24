@@ -42,7 +42,6 @@ public class InstallThread extends Thread {
                 DownlaodUtil.installApk(mContext, downlaodOptions.getStorage().getPath());
             }
         } catch (IOException e) {
-            downerRequest.status = Downer.STATUS_INSTALL_ERROR;
             if(downerCallBack!=null){
                 downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_INVALID));
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install  md5 check error");
@@ -59,7 +58,6 @@ public class InstallThread extends Thread {
         MessageDigest messageDigest = null;
         FileInputStream fileInputStream = null;
         try {
-            downerRequest.status = Downer.STATUS_INSTALL_CHECK;
             if(downerCallBack!=null){
                 downerCallBack.onCheckInstall();
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install check");
@@ -83,7 +81,6 @@ public class InstallThread extends Thread {
                 BigInteger bigInteger = new BigInteger(1, messageDigest.digest());
                 boolean isMd5 = TextUtils.equals(bigInteger.toString(), downlaodOptions.getMd5());
                 if(!isMd5){//true
-                    downerRequest.status = Downer.STATUS_INSTALL_ERROR;
                     if(downerCallBack!=null){
                         downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_INVALID));
                         Log.i(Downer.TAG, "InstallThread:run:Schedule install  md5 check error");

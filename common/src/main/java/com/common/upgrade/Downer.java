@@ -27,12 +27,6 @@ public class Downer {
     public static final int STATUS_DOWNLOAD_ERROR = 0x1005;
     /**下载完成*/
     public static final int STATUS_DOWNLOAD_COMPLETE = 0x1006;
-    /**安装效验*/
-    public static final int STATUS_INSTALL_CHECK = 0x2001;
-    /**安装开始*/
-    public static final int STATUS_INSTALL_START = 0x2002;
-    /**安装错误*/
-    public static final int STATUS_INSTALL_ERROR = 0x2004;
     /**安装完成*/
     public static final int STATUS_INSTALL_COMPLETE = 0x2005;
 
