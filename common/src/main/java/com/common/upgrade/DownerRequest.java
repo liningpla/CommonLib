@@ -2,8 +2,6 @@ package com.common.upgrade;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,7 +12,7 @@ import java.io.File;
 /**
  * 下载请求类
  */
-public class DownerRequest implements Parcelable {
+public class DownerRequest {
 
     /**下载参数构造类*/
     private DownlaodOptions.Builder optionsBulider;
@@ -35,24 +33,6 @@ public class DownerRequest implements Parcelable {
         optionsBulider.setMultithreadEnabled(Downer.init().isMuliti);
         optionsBulider.setMultithreadPools(Downer.init().pools);
     }
-
-    protected DownerRequest(Parcel in) {
-        options = in.readParcelable(DownlaodOptions.class.getClassLoader());
-        status = in.readInt();
-        downerCallBack = in.readParcelable(DownerCallBack.class.getClassLoader());
-    }
-
-    public static final Creator<DownerRequest> CREATOR = new Creator<DownerRequest>() {
-        @Override
-        public DownerRequest createFromParcel(Parcel in) {
-            return new DownerRequest(in);
-        }
-
-        @Override
-        public DownerRequest[] newArray(int size) {
-            return new DownerRequest[size];
-        }
-    };
 
     /**
      * 设置下载图标
@@ -171,17 +151,5 @@ public class DownerRequest implements Parcelable {
     public void pause(){
         Log.i(Downer.TAG, "DownerRequest:  pause ");
         status = Downer.STATUS_DOWNLOAD_PAUSE;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(options, flags);
-        dest.writeInt(status);
-        dest.writeParcelable(downerCallBack, flags);
     }
 }

@@ -40,18 +40,22 @@ public class DownerService extends Service {
     private PackagesReceiver packagesReceiver;
     /**下载任务管理*/
     public Map<String, SoftReference<ScheduleRunable>> scheduleRunables = new LinkedHashMap<>();
+    /**下载监听管理*/
+    public static Map<String, SoftReference<DownerRequest>> downerRequests = new LinkedHashMap<>();
     /**下载进度通知栏管理*/
     private NotificationManager notificationManager;
     /**通知栏ID*/
     public static final String NOTIFY_CHANNEL_ID = "下载管理";
     /**传给service，添加下载*/
     public static void startDownerService(Context context, DownerRequest downerRequest){
+        SoftReference<DownerRequest> softRequest = new SoftReference<>(downerRequest);
+        downerRequests.put(downerRequest.options.getUrl(), softRequest);
         if(downerRequest.downerCallBack != null){//链接服务下载
             downerRequest.downerCallBack.onConnected(downerRequest);
         }
         Intent intent = new Intent(context, DownerService.class);
         intent.setAction("android.intent.action.RESPOND_VIA_MESSAGE");
-        intent.putExtra(DOWN_REQUEST, downerRequest);
+        intent.putExtra(DOWN_REQUEST, downerRequest.options.getUrl());
         context.startService(intent);
     }
 
@@ -69,9 +73,16 @@ public class DownerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        DownerRequest downerRequest = intent.getParcelableExtra(DOWN_REQUEST);
-        String url = downerRequest.options.getUrl();
-        Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url+" status:"+downerRequest.status);
+        String url = intent.getStringExtra(DOWN_REQUEST);
+        DownerRequest downerRequest = null;
+        if(!downerRequests.containsKey(url)){
+            return START_STICKY;
+        }
+        if(downerRequests.get(url).get() == null){
+            return START_STICKY;
+        }
+        downerRequest = downerRequests.get(url).get();
+        Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url);
         if(isNeedSchedule(url)){
             ScheduleRunable scheduleRunable = new ScheduleRunable(this, downerRequest);
             SoftReference<ScheduleRunable> softSchedule = new SoftReference<>(scheduleRunable);
@@ -140,6 +151,10 @@ public class DownerService extends Service {
         }
         if (packagesReceiver != null) {
             packagesReceiver.unregisterReceiver(this);
+        }
+        if(downerRequests != null){
+            downerRequests.clear();
+            downerRequests = null;
         }
         iteratorSchedule(SCHEDULE_STATUS_DISCONNECTED, "");
     }

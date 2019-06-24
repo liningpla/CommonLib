@@ -42,7 +42,6 @@
             android:name="com.common.upgrade.DownerService"
             android:enabled="true"
             android:exported="true"
-            android:process=":downer"
             >
             <intent-filter>
                 <action android:name="android.intent.action.RESPOND_VIA_MESSAGE"  />
