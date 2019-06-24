@@ -29,6 +29,11 @@ public class DownerRequest implements Parcelable {
 
     public DownerRequest() {
         optionsBulider = new DownlaodOptions.Builder();
+        optionsBulider.setSupportRange(Downer.init().isSupportRange);
+        optionsBulider.setAutocleanEnabled(Downer.init().isClean);
+        optionsBulider.setAutomountEnabled(Downer.init().isInstall);
+        optionsBulider.setMultithreadEnabled(Downer.init().isMuliti);
+        optionsBulider.setMultithreadPools(Downer.init().pools);
     }
 
     protected DownerRequest(Parcel in) {

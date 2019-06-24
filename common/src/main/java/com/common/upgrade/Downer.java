@@ -30,7 +30,17 @@ public class Downer {
     /**安装完成*/
     public static final int STATUS_INSTALL_COMPLETE = 0x2005;
 
-    private static Downer downer = new Downer();
+    private static Downer downer;
+
+    public boolean isMuliti;
+
+    public int pools;
+
+    public boolean isInstall;
+
+    public boolean isClean;
+
+    public boolean isSupportRange;
 
     /**开始下载*/
     public static DownerRequest downLoad(){
@@ -38,6 +48,48 @@ public class Downer {
     }
 
     public static Downer init(){
+        if(downer == null){
+            downer = new Downer();
+        }
+        return downer;
+    }
+    /**
+     * 是否支持多线程下载
+     */
+    public Downer setMultithreadEnabled(boolean isMuliti) {
+        this.isMuliti = isMuliti;
+        return downer;
+    }
+
+    /**
+     * 设置线程池大小
+     */
+    public Downer setMultithreadPools(int pools) {
+        this.pools = pools;
+        return downer;
+    }
+
+    /**
+     * 是否自动删除安装（可选）
+     */
+    public Downer setAutoInstallEnabled(boolean isInstall) {
+        this.isInstall = isInstall;
+        return downer;
+    }
+
+    /**
+     * 是否自动删除安装包（可选）
+     */
+    public Downer setAutocleanEnabled(boolean isClean) {
+        this.isClean = isClean;
+        return downer;
+    }
+
+    /**
+     * 是否使用断点续传
+     */
+    public Downer setSupportRange(boolean isSupportRange) {
+        this.isSupportRange = isSupportRange;
         return downer;
     }
 

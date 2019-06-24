@@ -45,6 +45,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.button_check_updates_custom).setOnClickListener(this);
         findViewById(R.id.button_check_updates_custom_download).setOnClickListener(this);
         findViewById(R.id.button_cancle).setOnClickListener(this);
+
+        Downer.init() // 是否支持多线程下载（可选）
+                .setMultithreadEnabled(true)
+                // 线程池大小（可选）
+                .setMultithreadPools(4)
+                // 文件MD5（可选）
+                .setAutoInstallEnabled(true)
+                // 是否自动删除安装包（可选）
+                .setAutocleanEnabled(true);
     }
 
     @Override
@@ -62,15 +71,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setUrl("http://gdown.baidu.com/data/wisegame/2965a5c112549eb8/QQ_996.apk")
                 // 下载文件存储路径（可选）
                 .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.upgrade.apk"))
-                // 是否支持多线程下载（可选）
-                .setMultithreadEnabled(true)
-                // 线程池大小（可选）
-                .setMultithreadPools(4)
                 // 文件MD5（可选）
-                .setMd5(null)
-                .setAutoInstallEnabled(true)
-                // 是否自动删除安装包（可选）
-                .setAutocleanEnabled(true).execute(MainActivity.this, new DownerCallBack() {
+                .setMd5(null).execute(MainActivity.this, new DownerCallBack() {
             @Override
             public void onConnected(DownerRequest request) {
                 downerRequest = request;
@@ -99,16 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setUrl(url)
                 // 下载文件存储路径（可选）
                 .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.365.apk"))
-                // 是否支持多线程下载（可选）
-                .setMultithreadEnabled(true)
-                // 线程池大小（可选）
-                .setMultithreadPools(4)
-                .setSupportRange(false)
                 // 文件MD5（可选）
-                .setMd5(null)
-                .setAutoInstallEnabled(true)
-                // 是否自动删除安装包（可选）
-                .setAutocleanEnabled(true).execute(MainActivity.this, new DownerCallBack() {
+                .setMd5(null).execute(MainActivity.this, new DownerCallBack() {
             @Override
             public void onConnected(DownerRequest request) {
                 downerRequest = request;
