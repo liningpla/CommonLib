@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Downer.init() .setMultithreadEnabled(true)// 是否支持多线程下载（可选）
                       // 线程池大小（可选）
                       .setMultithreadPools(4)
+                      .setSupportRange(true)
                       // 文件MD5（可选）
                       .setAutoInstallEnabled(true)
                       // 是否自动删除安装包（可选）
