@@ -160,15 +160,6 @@ public class DownerRequest implements Parcelable {
         status = Downer.STATUS_DOWNLOAD_PAUSE;
     }
 
-    /**恢复下载任务*/
-    public void resume(Context context){
-        Log.i(Downer.TAG, "DownerRequest:  resume ");
-        status = Downer.STATUS_DOWNLOAD_START;
-        /**启动DownerService*/
-        DownerService.startDownerService(context, this);
-    }
-
-
     @Override
     public int describeContents() {
         return 0;

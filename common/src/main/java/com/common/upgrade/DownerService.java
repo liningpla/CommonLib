@@ -162,7 +162,7 @@ public class DownerService extends Service {
                     break;
                 case SCHEDULE_STATUS_RESUME:
                     if(scheduleRunable.downerRequest != null && scheduleRunable.downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
-                        scheduleRunable.downerRequest.resume(DownerService.this);
+                        ThreadManger.getInstance().execute(Priority.NORMAL, scheduleRunable);
                     }
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is resume");
                     break;

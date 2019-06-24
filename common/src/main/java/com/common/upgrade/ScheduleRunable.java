@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**调度线程类*/
@@ -51,7 +52,8 @@ public class ScheduleRunable implements Runnable {
     /**通知id，分配生成的三位数*/
     private int NOTIFY_ID;
     public Handler mHandler;
-
+    /**该分包下载缓存*/
+    private volatile DownlaodBuffer downlaodBuffer;
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleListener listener = new ScheduleListener() {
         @Override
@@ -131,7 +133,7 @@ public class ScheduleRunable implements Runnable {
         }
         @Override
         public void downLoadPause() {
-            Log.i(Downer.TAG, "ScheduleRunable: downLoadPause");
+            Log.i(Downer.TAG, "ScheduleRunable: downLoadPause offset = "+offset);
             /*通知外部调用者，暂停成功*/
             mHandler.post(new Runnable() {
                 @Override
@@ -224,7 +226,6 @@ public class ScheduleRunable implements Runnable {
     @Override
     public void run() {
         try {
-            Log.i(Downer.TAG, "ScheduleRunable:  run ");
             downerRequest.status = Downer.STATUS_DOWNLOAD_START;
             listener.downLoadStart();
             connectHttp(downlaodOptions.getUrl());
@@ -360,6 +361,38 @@ public class ScheduleRunable implements Runnable {
             }
         }
     }
+
+    /**
+     * 标记下载位置
+     */
+    public void mark(long startLength, long endLength) {
+        if (downlaodBuffer == null) {
+            downlaodBuffer = new DownlaodBuffer();
+            downlaodBuffer.setDownloadUrl(downlaodOptions.getUrl());
+            downlaodBuffer.setFileMd5(downlaodOptions.getMd5());
+            downlaodBuffer.setBufferLength(progress.get());
+            downlaodBuffer.setFileLength(maxProgress);
+            downlaodBuffer.setBufferParts(new CopyOnWriteArrayList<DownlaodBuffer.BufferPart>());
+            downlaodBuffer.setLastModified(System.currentTimeMillis());
+        }
+        downlaodBuffer.setBufferLength(progress.get());
+        downlaodBuffer.setLastModified(System.currentTimeMillis());
+        int index = -1;
+        for (int i = 0; i < downlaodBuffer.getBufferParts().size(); i++) {
+            if (downlaodBuffer.getBufferParts().get(i).getEndLength() == endLength) {
+                index = i;
+                break;
+            }
+        }
+        DownlaodBuffer.BufferPart bufferPart = new DownlaodBuffer.BufferPart(startLength, endLength);
+        if (index == -1) {
+            downlaodBuffer.getBufferParts().add(bufferPart);
+        } else {
+            downlaodBuffer.getBufferParts().set(index, bufferPart);
+        }
+        repository.setUpgradeBuffer(downlaodBuffer);
+    }
+
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public interface ScheduleListener{
         void downLoadStart();

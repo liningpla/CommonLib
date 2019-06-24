@@ -27,8 +27,6 @@ public class DownloadTask extends Thread {
     ScheduleRunable.ScheduleListener listener;
     /**此分包的调度类*/
     private ScheduleRunable scheduleRunable;
-    /**该分包下载缓存*/
-    private DownlaodBuffer downlaodBuffer;
     /**下载请求信息类*/
     public DownerRequest downerRequest;
 
@@ -47,7 +45,7 @@ public class DownloadTask extends Thread {
         setName("DownloadTask-" + id);
         setPriority(Thread.NORM_PRIORITY);
         setDaemon(false);
-        Log.d(Downer.TAG, "DownloadTask initialized");
+        Log.d(Downer.TAG, "DownloadTask initialized startLength = "+startLength+"  endLength = "+endLength);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -119,7 +117,7 @@ public class DownloadTask extends Thread {
                     downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                     scheduleRunable.offset = tempOffset;
                     listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
-                    mark();
+                    scheduleRunable.mark(startLength, endLength);
 //                    Log.d(Downer.TAG, "Thread：" + getName()
 //                            + " Position：" + startLength + "-" + endLength
 //                            + " Download：" + scheduleRunable.offset + "% " + scheduleRunable.progress + "Byte/" + scheduleRunable.maxProgress + "Byte");
@@ -152,34 +150,5 @@ public class DownloadTask extends Thread {
         }
     }
 
-    /**
-     * 标记下载位置
-     */
-    private void mark() {
-        if (downlaodBuffer == null) {
-            downlaodBuffer = new DownlaodBuffer();
-            downlaodBuffer.setDownloadUrl(downlaodOptions.getUrl());
-            downlaodBuffer.setFileMd5(downlaodOptions.getMd5());
-            downlaodBuffer.setBufferLength(scheduleRunable.progress.get());
-            downlaodBuffer.setFileLength(scheduleRunable.maxProgress);
-            downlaodBuffer.setBufferParts(new CopyOnWriteArrayList<DownlaodBuffer.BufferPart>());
-            downlaodBuffer.setLastModified(System.currentTimeMillis());
-        }
-        downlaodBuffer.setBufferLength(scheduleRunable.progress.get());
-        downlaodBuffer.setLastModified(System.currentTimeMillis());
-        int index = -1;
-        for (int i = 0; i < downlaodBuffer.getBufferParts().size(); i++) {
-            if (downlaodBuffer.getBufferParts().get(i).getEndLength() == endLength) {
-                index = i;
-                break;
-            }
-        }
-        DownlaodBuffer.BufferPart bufferPart = new DownlaodBuffer.BufferPart(startLength, endLength);
-        if (index == -1) {
-            downlaodBuffer.getBufferParts().add(bufferPart);
-        } else {
-            downlaodBuffer.getBufferParts().set(index, bufferPart);
-        }
-        scheduleRunable.repository.setUpgradeBuffer(downlaodBuffer);
-    }
+
 }
