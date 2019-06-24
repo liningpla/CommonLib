@@ -72,7 +72,7 @@ public class DownerService extends Service {
         DownerRequest downerRequest = intent.getParcelableExtra(DOWN_REQUEST);
         String url = downerRequest.options.getUrl();
         Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url+" status:"+downerRequest.status);
-        if(isNeedSchedule(downerRequest)){
+        if(isNeedSchedule(url)){
             ScheduleRunable scheduleRunable = new ScheduleRunable(this, downerRequest);
             SoftReference<ScheduleRunable> softSchedule = new SoftReference<>(scheduleRunable);
             scheduleRunables.put(url, softSchedule);
@@ -83,8 +83,7 @@ public class DownerService extends Service {
     }
 
     /**下载请求是否需要调度*/
-    private boolean isNeedSchedule(DownerRequest downerRequest){
-        String url = downerRequest.options.getUrl();
+    private boolean isNeedSchedule(String url){
         //程序启动状态下下载没有调度过
         if(!scheduleRunables.containsKey(url)){
             return true;
@@ -93,7 +92,13 @@ public class DownerService extends Service {
         ScheduleRunable scheduleRunable = scheduleRunables.get(url).get();
         File dowed = scheduleRunable.downerRequest.options.getStorage();
         //虽然调度过，但是下载的文件不存在，需要下载的文件没有下载完成，都需要继续调度下载
-        if(dowed == null || !dowed.exists() || dowed.length() < downerRequest.options.getFilelength()){
+        if(dowed == null){
+            return true;
+        }
+        if(!dowed.exists()){
+            return true;
+        }
+        if(dowed.length() < scheduleRunable.fileLength){
             return true;
         }
         return false;
