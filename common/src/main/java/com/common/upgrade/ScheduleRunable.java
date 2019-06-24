@@ -285,12 +285,12 @@ public class ScheduleRunable implements Runnable {
             if (endLength >= part) {
                 pools = (int) (endLength / part);
             }
-            Log.i(Downer.TAG, "ScheduleRunable:  run pools = "+pools+"  part = "+part+" getMultithreadPools = "+downlaodOptions.getMultithreadPools());
+
             if (pools > downlaodOptions.getMultithreadPools()) {
                 pools = downlaodOptions.getMultithreadPools();
                 part = (int) (endLength / pools);
             }
-
+            Log.i(Downer.TAG, "ScheduleRunable:  run pools = "+pools+"  part = "+part+" getMultithreadPools = "+downlaodOptions.getMultithreadPools());
             long tempStartLength = 0;
             long tempEndLength = 0;
             for (int id = 1; id <= pools; id++) {

@@ -98,6 +98,6 @@ public class InstallThread extends Thread {
                 fileInputStream.close();
             }
         }
-        return false;
+        return true;
     }
 }
