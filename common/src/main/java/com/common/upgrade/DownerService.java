@@ -16,8 +16,8 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.common.threadPool.Priority;
-import com.common.threadPool.ThreadManger;
+import com.common.upgrade.thread.Priority;
+import com.common.upgrade.thread.ThreadManger;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
