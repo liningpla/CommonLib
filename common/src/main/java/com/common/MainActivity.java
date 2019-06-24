@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMultithreadEnabled(true)
                 // 线程池大小（可选）
                 .setMultithreadPools(4)
+                .setSupportRange(false)
                 // 文件MD5（可选）
                 .setMd5(null)
                 .setAutoInstallEnabled(true)

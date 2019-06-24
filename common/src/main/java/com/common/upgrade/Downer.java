@@ -30,8 +30,15 @@ public class Downer {
     /**安装完成*/
     public static final int STATUS_INSTALL_COMPLETE = 0x2005;
 
+    private static Downer downer = new Downer();
+
     /**开始下载*/
     public static DownerRequest downLoad(){
         return new DownerRequest();
     }
+
+    public static Downer init(){
+        return downer;
+    }
+
 }

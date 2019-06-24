@@ -232,6 +232,9 @@ public class ScheduleRunable implements Runnable {
             long startLength = 0;
             long endLength = -1;
             File targetFile = downlaodOptions.getStorage();
+            if(!downlaodOptions.isSupportRange() && targetFile.exists()){//不支持断点续传
+                targetFile.delete();
+            }
             if (targetFile.exists()) {
                 DownlaodBuffer upgradeBuffer = repository.getUpgradeBuffer(downlaodOptions.getUrl());
                 if (upgradeBuffer != null) {
@@ -366,6 +369,9 @@ public class ScheduleRunable implements Runnable {
      * 标记下载位置
      */
     public void mark(long startLength, long endLength) {
+        if(!downlaodOptions.isSupportRange()){//不支持断点续传
+            return;
+        }
         if (downlaodBuffer == null) {
             downlaodBuffer = new DownlaodBuffer();
             downlaodBuffer.setDownloadUrl(downlaodOptions.getUrl());

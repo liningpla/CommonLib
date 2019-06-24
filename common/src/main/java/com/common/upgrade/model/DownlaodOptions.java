@@ -67,6 +67,11 @@ public final class DownlaodOptions implements Parcelable {
      */
     private final boolean autocleanEnabled;
 
+    /**
+     * 是否自动清除安装包
+     */
+    private final boolean isSupportRange;
+
     private DownlaodOptions(Params params) {
         icon = params.icon;
         title = params.title;
@@ -78,6 +83,7 @@ public final class DownlaodOptions implements Parcelable {
         multithreadPools = params.multithreadPools;
         automountEnabled = params.autocleanEnabled;
         autocleanEnabled = params.autocleanEnabled;
+        isSupportRange = params.isSupportRange;
     }
 
     protected DownlaodOptions(Parcel in) {
@@ -91,6 +97,7 @@ public final class DownlaodOptions implements Parcelable {
         multithreadPools = in.readInt();
         automountEnabled = in.readByte() != 0;
         autocleanEnabled = in.readByte() != 0;
+        isSupportRange = in.readByte() != 0;
     }
 
     @Override
@@ -158,6 +165,10 @@ public final class DownlaodOptions implements Parcelable {
 
     public boolean isAutocleanEnabled() {
         return autocleanEnabled;
+    }
+
+    public boolean isSupportRange() {
+        return isSupportRange;
     }
 
     public static class Builder implements Parcelable {
@@ -232,6 +243,11 @@ public final class DownlaodOptions implements Parcelable {
             return this;
         }
 
+        public Builder setSupportRange(boolean isSupportRange){
+            params.isSupportRange = isSupportRange;
+            return this;
+        }
+
         public DownlaodOptions build() {
             return new DownlaodOptions(params);
         }
@@ -253,6 +269,7 @@ public final class DownlaodOptions implements Parcelable {
             dest.writeInt(params.multithreadPools);
             dest.writeInt((byte) (params.automountEnabled ? 1 : 0));
             dest.writeInt((byte) (params.autocleanEnabled ? 1 : 0));
+            dest.writeInt((byte) (params.isSupportRange ? 1 : 0));
         }
     }
 
@@ -267,6 +284,7 @@ public final class DownlaodOptions implements Parcelable {
         int multithreadPools;
         boolean automountEnabled;
         boolean autocleanEnabled;
+        boolean isSupportRange;
     }
 
 }

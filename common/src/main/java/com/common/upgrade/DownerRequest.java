@@ -132,6 +132,14 @@ public class DownerRequest implements Parcelable {
     }
 
     /**
+     * 是否使用断点续传
+     */
+    public DownerRequest setSupportRange(boolean isSupportRange) {
+        optionsBulider.setSupportRange(isSupportRange);
+        return this;
+    }
+
+    /**
      * 执行下载
      */
     public void execute(Context context, DownerCallBack callBack) {
