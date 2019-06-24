@@ -10,6 +10,11 @@ public class DownlaodException extends IOException {
      * 安装包md5效验失败
      */
     public static final int ERROR_CODE_PACKAGE_INVALID = 10020;
+
+    /**
+     * 安装包文件不存在
+     */
+    public static final int ERROR_CODE_PACKAGE_FILE = 10021;
     /**
      * 未知错误
      */

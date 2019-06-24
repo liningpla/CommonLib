@@ -71,6 +71,7 @@ public class DownloadTask extends Thread {
                 connection.setRequestProperty("Range", "bytes=" + startLength + "-" + endLength);
                 connection.connect();
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_PARTIAL) {
+                    downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
                     listener.downLoadError();
                     return;
                 }
@@ -102,6 +103,7 @@ public class DownloadTask extends Thread {
                     if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
                         break;
                     }
+                    downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                     listener.downLoadComplete();
                     break;
                 }
@@ -114,12 +116,13 @@ public class DownloadTask extends Thread {
                 scheduleRunable.progress.addAndGet(len);
                 tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
                 if (tempOffset > scheduleRunable.offset) {
+                    downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                     scheduleRunable.offset = tempOffset;
                     listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
                     mark();
-                    Log.d(Downer.TAG, "Thread：" + getName()
-                            + " Position：" + startLength + "-" + endLength
-                            + " Download：" + scheduleRunable.offset + "% " + scheduleRunable.progress + "Byte/" + scheduleRunable.maxProgress + "Byte");
+//                    Log.d(Downer.TAG, "Thread：" + getName()
+//                            + " Position：" + startLength + "-" + endLength
+//                            + " Download：" + scheduleRunable.offset + "% " + scheduleRunable.progress + "Byte/" + scheduleRunable.maxProgress + "Byte");
                 }
             } while (true);
         } catch (Exception e) {

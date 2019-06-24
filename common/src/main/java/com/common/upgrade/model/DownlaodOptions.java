@@ -243,6 +243,16 @@ public final class DownlaodOptions implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeParcelable(params.icon, flags);
+            dest.writeValue(params.title);
+            dest.writeValue(params.description);
+            dest.writeSerializable(params.storage);
+            dest.writeString(params.url);
+            dest.writeString(params.md5);
+            dest.writeByte((byte) (params.multithreadEnabled ? 1 : 0));
+            dest.writeInt(params.multithreadPools);
+            dest.writeInt((byte) (params.automountEnabled ? 1 : 0));
+            dest.writeInt((byte) (params.autocleanEnabled ? 1 : 0));
         }
     }
 

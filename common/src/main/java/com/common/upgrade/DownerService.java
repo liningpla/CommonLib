@@ -19,6 +19,7 @@ import android.util.Log;
 import com.common.threadPool.Priority;
 import com.common.threadPool.ThreadManger;
 
+import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -68,11 +69,10 @@ public class DownerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(Downer.TAG, "DownerService:  onStartCommand ");
         DownerRequest downerRequest = intent.getParcelableExtra(DOWN_REQUEST);
         String url = downerRequest.options.getUrl();
-        Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url);
-        if(!scheduleRunables.containsKey(url)){
+        Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url+" status:"+downerRequest.status);
+        if(isNeedSchedule(downerRequest)){
             ScheduleRunable scheduleRunable = new ScheduleRunable(this, downerRequest);
             SoftReference<ScheduleRunable> softSchedule = new SoftReference<>(scheduleRunable);
             scheduleRunables.put(url, softSchedule);
@@ -82,6 +82,24 @@ public class DownerService extends Service {
         return START_STICKY;
     }
 
+    /**下载请求是否需要调度*/
+    private boolean isNeedSchedule(DownerRequest downerRequest){
+        String url = downerRequest.options.getUrl();
+        //程序启动状态下下载没有调度过
+        if(!scheduleRunables.containsKey(url)){
+            return true;
+        }
+        //程序启动状态下，下载调度过
+        ScheduleRunable scheduleRunable = scheduleRunables.get(url).get();
+        File dowed = scheduleRunable.downerRequest.options.getStorage();
+        //虽然调度过，但是下载的文件不存在，需要下载的文件没有下载完成，都需要继续调度下载
+        if(dowed == null || !dowed.exists() || dowed.length() < downerRequest.options.getFilelength()){
+            return true;
+        }
+        return false;
+    }
+
+    /**初始化网络监听，安装管理监听，通知栏通知*/
     private void init(){
         if (netWorkStateReceiver == null) {
             netWorkStateReceiver = new NetWorkStateReceiver();
@@ -93,6 +111,8 @@ public class DownerService extends Service {
         }
         initNotify();
     }
+
+    /**初始化通知栏通知*/
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void initNotify() {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -136,7 +156,7 @@ public class DownerService extends Service {
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is disconnected");
                     break;
                 case SCHEDULE_STATUS_RESUME:
-                    if(scheduleRunable.downerRequest != null){
+                    if(scheduleRunable.downerRequest != null && scheduleRunable.downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
                         scheduleRunable.downerRequest.resume(DownerService.this);
                     }
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is resume");

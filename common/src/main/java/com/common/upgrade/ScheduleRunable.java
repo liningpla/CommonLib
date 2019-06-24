@@ -63,6 +63,7 @@ public class ScheduleRunable implements Runnable {
                     if(downerCallBack != null){
                         downerCallBack.onStart();
                     }
+                    Log.i(Downer.TAG, "ScheduleRunable: downLoadStart");
                     setNotify(mContext.getString(R.string.message_download_start));
                 }
             });
@@ -83,6 +84,7 @@ public class ScheduleRunable implements Runnable {
         }
         @Override
         public void downLoadError() {
+            Log.i(Downer.TAG, "ScheduleRunable: downLoadError");
             /*通知外部调用者，下载异常*/
             mHandler.post(new Runnable() {
                 @Override
@@ -97,6 +99,7 @@ public class ScheduleRunable implements Runnable {
         }
         @Override
         public void downLoadComplete() {
+            Log.i(Downer.TAG, "ScheduleRunable: downLoadComplete");
             /*通知外部调用者，完成下载*/
             mHandler.post(new Runnable() {
                 @Override
@@ -105,8 +108,8 @@ public class ScheduleRunable implements Runnable {
                         downerCallBack.onComplete();
                     }
                     setNotify(mContext.getString(R.string.message_download_complete));
-                    Log.i(Downer.TAG, "ScheduleRunable:  downLoadComplete isAuto: "+downlaodOptions.isAutomountEnabled());
                     if(downlaodOptions.isAutomountEnabled()){//自动安装
+                        Log.i(Downer.TAG, "ScheduleRunable:  downLoadComplete is Auto Install");
                         new InstallThread(ScheduleRunable.this).start();
                     }
                 }
@@ -114,6 +117,7 @@ public class ScheduleRunable implements Runnable {
         }
         @Override
         public void downLoadCancel() {
+            Log.i(Downer.TAG, "ScheduleRunable: downLoadCancel");
             /*通知外部调用者，取消成功*/
             mHandler.post(new Runnable() {
                 @Override
@@ -121,12 +125,13 @@ public class ScheduleRunable implements Runnable {
                     if(downerCallBack != null){
                         downerCallBack.onCancel();
                     }
-
+                    clearNotify();
                 }
             });
         }
         @Override
         public void downLoadPause() {
+            Log.i(Downer.TAG, "ScheduleRunable: downLoadPause");
             /*通知外部调用者，暂停成功*/
             mHandler.post(new Runnable() {
                 @Override
@@ -220,6 +225,7 @@ public class ScheduleRunable implements Runnable {
     public void run() {
         try {
             Log.i(Downer.TAG, "ScheduleRunable:  run ");
+            downerRequest.status = Downer.STATUS_DOWNLOAD_START;
             listener.downLoadStart();
             connectHttp(downlaodOptions.getUrl());
             long startLength = 0;
@@ -236,6 +242,7 @@ public class ScheduleRunable implements Runnable {
                             if (expiryDate <= DownlaodBuffer.EXPIRY_DATE) {
                                 if (upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength()) {
                                     listener.downLoadProgress(maxProgress, progress.get());
+                                    downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                                     listener.downLoadComplete();
                                     return;
                                 }
@@ -258,10 +265,12 @@ public class ScheduleRunable implements Runnable {
                 parentFileExists = parentFile.mkdirs();
             }
             if (!parentFileExists) {
+                downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
                 listener.downLoadError();
                 return;
             }
             if ((endLength = fileLength) == -1) {
+                downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
                 listener.downLoadError();
                 return;
             }
@@ -276,10 +285,12 @@ public class ScheduleRunable implements Runnable {
             if (endLength >= part) {
                 pools = (int) (endLength / part);
             }
+            Log.i(Downer.TAG, "ScheduleRunable:  run pools = "+pools+"  part = "+part+" getMultithreadPools = "+downlaodOptions.getMultithreadPools());
             if (pools > downlaodOptions.getMultithreadPools()) {
                 pools = downlaodOptions.getMultithreadPools();
                 part = (int) (endLength / pools);
             }
+
             long tempStartLength = 0;
             long tempEndLength = 0;
             for (int id = 1; id <= pools; id++) {

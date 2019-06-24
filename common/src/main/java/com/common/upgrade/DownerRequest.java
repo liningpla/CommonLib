@@ -34,6 +34,7 @@ public class DownerRequest implements Parcelable {
     protected DownerRequest(Parcel in) {
         options = in.readParcelable(DownlaodOptions.class.getClassLoader());
         status = in.readInt();
+        downerCallBack = in.readParcelable(DownerCallBack.class.getClassLoader());
     }
 
     public static final Creator<DownerRequest> CREATOR = new Creator<DownerRequest>() {
@@ -134,9 +135,7 @@ public class DownerRequest implements Parcelable {
      * 执行下载
      */
     public void execute(Context context, DownerCallBack callBack) {
-        if(callBack != null){
-            this.downerCallBack = callBack;
-        }
+        this.downerCallBack = callBack;
         Log.i(Downer.TAG, "DownerRequest:  execute ");
         options = optionsBulider.build();
         DownerService.startDownerService(context, this);
@@ -179,5 +178,6 @@ public class DownerRequest implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(options, flags);
         dest.writeInt(status);
+        dest.writeParcelable(downerCallBack, flags);
     }
 }

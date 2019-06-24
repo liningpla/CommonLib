@@ -3,7 +3,7 @@ package com.common.upgrade;
 /**下载师傅*/
 public class Downer {
 
-    public static final String TAG = "download";
+    public static final String TAG = "HiDower";
     /**连接超时时长*/
     public static final int CONNECT_TIMEOUT = 60 * 1000;
     /**读取超时时长*/

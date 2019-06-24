@@ -6,10 +6,14 @@ import android.util.Log;
 
 import com.common.upgrade.model.DownlaodOptions;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+
+import static com.common.upgrade.DownlaodException.ERROR_CODE_PACKAGE_FILE;
+import static com.common.upgrade.DownlaodException.ERROR_CODE_PACKAGE_INVALID;
 
 public class InstallThread extends Thread {
     private Context mContext;
@@ -29,27 +33,28 @@ public class InstallThread extends Thread {
     public void run() {
         super.run();
         try {
-            downerRequest.apkPageName = (String) DownlaodUtil.getApkInfo(mContext, downlaodOptions.getStorage().getPath()).get("packageName");
-            if (downlaodOptions.getMd5() != null) {
-                downerRequest.status = Downer.STATUS_INSTALL_CHECK;
-                if(downerCallBack!=null){
-                    downerCallBack.onCheckInstall();
-                    Log.i(Downer.TAG, "InstallThread:run:Schedule install check");
-                }
-                if (!check()) {
-                    downerRequest.status = Downer.STATUS_INSTALL_ERROR;
-                    if(downerCallBack!=null){
-                        downerCallBack.onErrorInstall(new DownlaodException());
-                        Log.i(Downer.TAG, "InstallThread:run:Schedule install error");
-                    }
-                    return;
-                }
-            }
             if(downerCallBack!=null){
                 downerCallBack.onStartInstall();
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install start ");
             }
-            DownlaodUtil.installApk(mContext, downlaodOptions.getStorage().getPath());
+            if (downlaodOptions.getMd5() != null && !check()) {
+                downerRequest.status = Downer.STATUS_INSTALL_ERROR;
+                if(downerCallBack!=null){
+                    downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_INVALID));
+                    Log.i(Downer.TAG, "InstallThread:run:Schedule install  md5 check error");
+                }
+                return;
+            }
+            String filePath = downlaodOptions.getStorage().getPath();
+            File file = new File(filePath);
+            if (!file.exists() && downerCallBack!=null) {
+                downerRequest.status = Downer.STATUS_INSTALL_ERROR;
+                downerCallBack.onErrorInstall(new DownlaodException(ERROR_CODE_PACKAGE_FILE));
+                Log.i(Downer.TAG, "DownlaodUtil:installApk：file is not exists");
+                return;
+            }
+            downerRequest.apkPageName = (String) DownlaodUtil.getApkInfo(mContext, filePath).get("packageName");
+            DownlaodUtil.installApk(mContext, filePath);
         } catch (IOException e) {
             downerRequest.status = Downer.STATUS_INSTALL_ERROR;
             if(downerCallBack!=null){
@@ -69,6 +74,11 @@ public class InstallThread extends Thread {
         MessageDigest messageDigest = null;
         FileInputStream fileInputStream = null;
         try {
+            downerRequest.status = Downer.STATUS_INSTALL_CHECK;
+            if(downerCallBack!=null){
+                downerCallBack.onCheckInstall();
+                Log.i(Downer.TAG, "InstallThread:run:Schedule install check");
+            }
             fileInputStream = new FileInputStream(downlaodOptions.getStorage());
             messageDigest = MessageDigest.getInstance("MD5");
             byte[] buffer = new byte[1024];
