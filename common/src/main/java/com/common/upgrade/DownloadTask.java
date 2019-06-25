@@ -80,45 +80,42 @@ public class DownloadTask extends Thread {
             int len = -1;
             int tempOffset = 0;
             do {
-                /*收到取消通知，执行取消操作，通知调度器*/
-                if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
-                    listener.downLoadCancel();
-                    break;
-                }
-                if ((len = inputStream.read(buffer)) == -1) {
-                    if (scheduleRunable.progress.get() < scheduleRunable.maxProgress) {
-                        break;
-                    }
-
-                    if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
-                        break;
-                    }
-                    Log.d(Downer.TAG, "DownloadTask startLength = "+startLength+"  endLength = "+endLength);
-                    downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
-                    listener.downLoadComplete();
-                    break;
-                }
-
-                if (downerRequest.status == Downer.STATUS_DOWNLOAD_START) {
-                    downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
-                }
-                /*收到暂停通知，执行暂停操作，通知调度器*/
-                if (downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE) {
-                    randomAccessFile.write(buffer, 0, len);
-                    startLength += len;
-                    scheduleRunable.progress.addAndGet(len);
-                    tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
-                    if (tempOffset > scheduleRunable.offset) {
-                        scheduleRunable.offset = tempOffset;
-                        listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
-                        scheduleRunable.mark(startLength, endLength);
-//                    Log.d(Downer.TAG, "Thread：" + getName()
-//                            + " Position：" + startLength + "-" + endLength
-//                            + " Download：" + scheduleRunable.offset + "% " + scheduleRunable.progress + "Byte/" + scheduleRunable.maxProgress + "Byte");
-                    }
-                }else{
-                    listener.downLoadPause();
-                }
+               if( (len=inputStream.read(buffer)) != -1){
+                   /*收到取消通知，执行取消操作，通知调度器*/
+                   if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
+                       listener.downLoadCancel();
+                       break;
+                   }
+                   if (downerRequest.status == Downer.STATUS_DOWNLOAD_START) {
+                       downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
+                   }
+                   /*收到暂停通知，执行暂停操作，通知调度器*/
+                   if (downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE) {
+                       randomAccessFile.write(buffer, 0, len);
+                       startLength += len;
+                       scheduleRunable.progress.addAndGet(len);
+                       tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
+                       if (tempOffset > scheduleRunable.offset) {
+                           scheduleRunable.offset = tempOffset;
+                           if(scheduleRunable.offset > 100){
+                               listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.maxProgress);
+                           }else{
+                               listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
+                           }
+                           scheduleRunable.mark(startLength, endLength);
+                       }
+                   }else{
+                       listener.downLoadPause();
+                   }
+               }else{
+                   if(startLength > endLength){
+                       return;
+                   }
+                   Log.d(Downer.TAG, "DownloadTask startLength = "+startLength+"  endLength = "+endLength);
+                   downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
+                   listener.downLoadComplete();
+                   break;
+               }
             } while (true);
         } catch (Exception e) {
             e.printStackTrace();
