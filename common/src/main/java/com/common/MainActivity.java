@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setMd5(null).execute(MainActivity.this, new DownerCallBack() {
             @Override
             public void onConnected(DownerRequest request) {
-                downerRequest = request;
             }
             @Override
             public void onProgress(long max, long progress) {

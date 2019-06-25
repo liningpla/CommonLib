@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**调度线程类*/
@@ -57,8 +58,10 @@ public class ScheduleRunable implements Runnable {
     public Handler mHandler;
     /**该分包下载缓存*/
     private volatile DownlaodBuffer downlaodBuffer;
-    /**控制对外暂停派发*/
+    /**并发时控制对外暂停派发*/
     private volatile AtomicBoolean isPause;
+    /**并发时控制通知栏跟新*/
+    private volatile AtomicInteger notyStatus;
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleListener listener = new ScheduleListener() {
         @Override
@@ -72,6 +75,7 @@ public class ScheduleRunable implements Runnable {
                         downerCallBack.onStart();
                     }
                     Log.i(Downer.TAG, "ScheduleRunable: downLoadStart");
+                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_START);
                     setNotify(mContext.getString(R.string.message_download_start));
                 }
             });
@@ -89,6 +93,7 @@ public class ScheduleRunable implements Runnable {
                         clearNotify();
                         return;
                     }
+                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
                     setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
                 }
             });
@@ -104,6 +109,7 @@ public class ScheduleRunable implements Runnable {
                     if(downerCallBack != null){
                         downerCallBack.onError(new DownlaodException());
                     }
+                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
                     setNotify(mContext.getString(R.string.message_download_error));
                     clearNotify();
                 }
@@ -120,6 +126,7 @@ public class ScheduleRunable implements Runnable {
                     if(downerCallBack != null){
                         downerCallBack.onComplete();
                     }
+                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
                     setNotify(mContext.getString(R.string.message_download_complete));
                     if(downlaodOptions.isAutomountEnabled()){//自动安装
                         Log.i(Downer.TAG, "ScheduleRunable:  downLoadComplete is Auto Install");
@@ -155,6 +162,7 @@ public class ScheduleRunable implements Runnable {
                         if(downerCallBack != null){
                             downerCallBack.onPause();
                         }
+                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PAUSE);
                         setNotify(mContext.getString(R.string.message_download_pause));
                     }
                 }
@@ -169,6 +177,7 @@ public class ScheduleRunable implements Runnable {
         this.fileLength = downlaodOptions.getFilelength();
         this.downerCallBack = downerRequest.downerCallBack;
         this.mHandler = new Handler(context.getMainLooper());
+        notyStatus = new AtomicInteger();
         NOTIFY_ID = (int) (Math.random()*900 + 100);
         if (repository == null) {
             repository = DownlaodRepository.getInstance(context);
@@ -211,13 +220,20 @@ public class ScheduleRunable implements Runnable {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setNotify(String description) {
-        if (downerRequest.status == Downer.STATUS_DOWNLOAD_START) {
+        if (notyStatus.get() == Downer.STATUS_DOWNLOAD_START) {
+            clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
-        } else if (downerRequest.status == Downer.STATUS_DOWNLOAD_PROGRESS) {
+        } else if (notyStatus.get() == Downer.STATUS_DOWNLOAD_PROGRESS) {
             int offset = (this != null)?this.offset:0;
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
-        } else {
+            Log.i(Downer.TAG, "ScheduleRunable:setNotify  rogress " + downlaodOptions.getTitle());
+        } else if(notyStatus.get() == Downer.STATUS_DOWNLOAD_PAUSE){
+            clearNotify();
+            builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
+            Log.i(Downer.TAG, "ScheduleRunable:setNotify  pause " + downlaodOptions.getTitle());
+        }else{
+            clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
         }
         builder.setContentText(description);
