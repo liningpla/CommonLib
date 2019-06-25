@@ -23,7 +23,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -44,7 +43,7 @@ public class ScheduleRunable implements Runnable {
     /**下载进度*/
     public volatile AtomicLong progress;
     /**下载偏移量*/
-    public volatile AtomicInteger offset;
+    public volatile int offset;
     /**下载进度通知栏*/
     private Notification.Builder builder;
     /**下载进度通知栏管理*/
@@ -56,12 +55,12 @@ public class ScheduleRunable implements Runnable {
     public Handler mHandler;
     /**该分包下载缓存*/
     private volatile DownlaodBuffer downlaodBuffer;
-    private volatile AtomicBoolean isPause;
+    private volatile boolean isPause;
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleListener listener = new ScheduleListener() {
         @Override
         public void downLoadStart() {
-            isPause = new AtomicBoolean(false);
+            isPause = false;
             /*通知外部调用者，开始下载*/
             mHandler.post(new Runnable() {
                 @Override
@@ -139,8 +138,8 @@ public class ScheduleRunable implements Runnable {
         }
         @Override
         public void downLoadPause() {
-            if(!isPause.get()){
-                isPause.getAndSet(true);
+            if(!isPause){
+                isPause = true;
                 Log.i(Downer.TAG, "ScheduleRunable: downLoadPause offset = "+offset);
                 /*通知外部调用者，暂停成功*/
                 mHandler.post(new Runnable() {
@@ -163,7 +162,6 @@ public class ScheduleRunable implements Runnable {
         this.fileLength = downlaodOptions.getFilelength();
         this.downerCallBack = downerRequest.downerCallBack;
         this.mHandler = new Handler(context.getMainLooper());
-        offset = new AtomicInteger();
         NOTIFY_ID = (int) (Math.random()*900 + 100);
         if (repository == null) {
             repository = DownlaodRepository.getInstance(context);
@@ -209,7 +207,7 @@ public class ScheduleRunable implements Runnable {
         if (downerRequest.status == Downer.STATUS_DOWNLOAD_START) {
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else if (downerRequest.status == Downer.STATUS_DOWNLOAD_PROGRESS) {
-            int offset = (this != null)?this.offset.get():0;
+            int offset = (this != null)?this.offset:0;
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else {
