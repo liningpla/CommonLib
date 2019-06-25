@@ -85,7 +85,7 @@ public class DownloadTask extends Thread {
                     listener.downLoadCancel();
                     break;
                 }
-                if ((len = inputStream.read(buffer)) == -1) {//下载完成
+                if ((len = inputStream.read(buffer)) == -1) {
                     if (scheduleRunable.progress.get() < scheduleRunable.maxProgress) {
                         break;
                     }
@@ -93,7 +93,7 @@ public class DownloadTask extends Thread {
                     if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
                         break;
                     }
-                    Log.d(Downer.TAG, "DownloadTask-" + id+":run:Position：" + startLength + "-" + endLength+" title:"+downlaodOptions.getTitle()+"-"+scheduleRunable.progress + "Byte/" + scheduleRunable.maxProgress + "Byte");
+                    Log.d(Downer.TAG, "DownloadTask startLength = "+startLength+"  endLength = "+endLength);
                     downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                     listener.downLoadComplete();
                     break;
@@ -106,12 +106,12 @@ public class DownloadTask extends Thread {
                 if (downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE) {
                     randomAccessFile.write(buffer, 0, len);
                     startLength += len;
-                    scheduleRunable.mark(startLength, endLength);
                     scheduleRunable.progress.addAndGet(len);
                     tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
                     if (tempOffset > scheduleRunable.offset) {
                         scheduleRunable.offset = tempOffset;
                         listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
+                        scheduleRunable.mark(startLength, endLength);
 //                    Log.d(Downer.TAG, "Thread：" + getName()
 //                            + " Position：" + startLength + "-" + endLength
 //                            + " Download：" + scheduleRunable.offset + "% " + scheduleRunable.progress + "Byte/" + scheduleRunable.maxProgress + "Byte");
