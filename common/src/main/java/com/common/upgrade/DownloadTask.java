@@ -2,7 +2,6 @@ package com.common.upgrade;
 
 import android.util.Log;
 
-import com.common.upgrade.model.DownlaodBuffer;
 import com.common.upgrade.model.DownlaodOptions;
 
 import java.io.File;
@@ -11,7 +10,6 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**分包线程类*/
 public class DownloadTask extends Thread {
