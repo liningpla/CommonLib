@@ -76,7 +76,7 @@ public class DownloadTask extends Thread {
             inputStream = connection.getInputStream();
             randomAccessFile = new RandomAccessFile(file, "rwd");
             randomAccessFile.seek(startLength);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[1 * 1024 * 1024];
             int len = -1;
             int tempOffset = 0;
             do {
@@ -93,7 +93,6 @@ public class DownloadTask extends Thread {
                        randomAccessFile.write(buffer, 0, len);
                        startLength += len;
                        scheduleRunable.progress.addAndGet(len);
-//                       Log.d(Downer.TAG, "DownloadTask progress = "+scheduleRunable.progress.get());
                        tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
                        if (tempOffset > scheduleRunable.offset) {
                            scheduleRunable.offset = tempOffset;
