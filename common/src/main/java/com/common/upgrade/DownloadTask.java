@@ -112,7 +112,6 @@ public class DownloadTask extends Thread {
                 scheduleRunable.progress.addAndGet(len);
                 tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
                 if (tempOffset > scheduleRunable.offset) {
-                    downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                     scheduleRunable.offset = tempOffset;
                     listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
                     scheduleRunable.mark(startLength, endLength);
