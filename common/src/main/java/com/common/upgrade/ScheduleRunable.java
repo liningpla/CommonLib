@@ -80,15 +80,10 @@ public class ScheduleRunable implements Runnable {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
                     if(downerCallBack != null){
-                        /** 多线程赋值有问题，这里是无奈之举，再研究一下线程安全*/
-                        if(max == progress){
-                            setNotify(mContext.getString(R.string.message_download_complete));
-                        }else{
-                            downerCallBack.onProgress(max, progress);
-                        }
+                        downerCallBack.onProgress(max, progress);
                     }
+                    setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
                 }
             });
 
