@@ -82,6 +82,10 @@ public class ScheduleRunable implements Runnable {
                     if(downerCallBack != null){
                         downerCallBack.onProgress(max, progress);
                     }
+                    if(max == progress){//下载完成
+                        downLoadComplete();
+                        return;
+                    }
                     setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
                 }
             });
@@ -208,6 +212,7 @@ public class ScheduleRunable implements Runnable {
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else if (downerRequest.status == Downer.STATUS_DOWNLOAD_PROGRESS) {
             int offset = (this != null)?this.offset:0;
+            Log.i(Downer.TAG, "ScheduleRunable:setNotify: offset = "+offset);
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else {
