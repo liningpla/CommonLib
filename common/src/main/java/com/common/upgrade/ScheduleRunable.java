@@ -23,6 +23,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -55,16 +56,17 @@ public class ScheduleRunable implements Runnable {
     public Handler mHandler;
     /**该分包下载缓存*/
     private volatile DownlaodBuffer downlaodBuffer;
-    private volatile boolean isPause;
+    /**控制对外暂停派发*/
+    private volatile AtomicBoolean isPause;
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleListener listener = new ScheduleListener() {
         @Override
         public void downLoadStart() {
-            isPause = false;
             /*通知外部调用者，开始下载*/
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    isPause = new AtomicBoolean(false);
                     if(downerCallBack != null){
                         downerCallBack.onStart();
                     }
@@ -82,8 +84,8 @@ public class ScheduleRunable implements Runnable {
                     if(downerCallBack != null){
                         downerCallBack.onProgress(max, progress);
                     }
-                    if(max == progress){//下载完成
-                        downLoadComplete();
+                    if(max == progress){//下载完成，不再显示通知。
+                        clearNotify();
                         return;
                     }
                     setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
@@ -142,20 +144,20 @@ public class ScheduleRunable implements Runnable {
         }
         @Override
         public void downLoadPause() {
-            if(!isPause){
-                isPause = true;
-                Log.i(Downer.TAG, "ScheduleRunable: downLoadPause offset = "+offset);
-                /*通知外部调用者，暂停成功*/
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
+            /*通知外部调用者，暂停成功*/
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!isPause.get()){
+                        Log.i(Downer.TAG, "ScheduleRunable: downLoadPause offset = "+offset);
+                        isPause.getAndSet(true);
                         if(downerCallBack != null){
                             downerCallBack.onPause();
                         }
                         setNotify(mContext.getString(R.string.message_download_pause));
                     }
-                });
-            }
+                }
+            });
         }
     };
 
@@ -212,7 +214,6 @@ public class ScheduleRunable implements Runnable {
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else if (downerRequest.status == Downer.STATUS_DOWNLOAD_PROGRESS) {
             int offset = (this != null)?this.offset:0;
-            Log.i(Downer.TAG, "ScheduleRunable:setNotify: offset = "+offset);
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else {
