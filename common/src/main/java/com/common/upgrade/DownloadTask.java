@@ -85,13 +85,7 @@ public class DownloadTask extends Thread {
                     listener.downLoadCancel();
                     break;
                 }
-                /*收到暂停通知，执行暂停操作，通知调度器*/
-                if (downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE) {
-                    listener.downLoadPause();
-                    break;
-                }
-
-                if ((len = inputStream.read(buffer)) == -1) {
+                if ((len = inputStream.read(buffer)) == -1) {//下载完成
                     if (scheduleRunable.progress.get() < scheduleRunable.maxProgress) {
                         break;
                     }
@@ -99,6 +93,7 @@ public class DownloadTask extends Thread {
                     if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
                         break;
                     }
+                    Log.d(Downer.TAG, "DownloadTask-" + id+":run:Position：" + startLength + "-" + endLength+" title:"+downlaodOptions.getTitle());
                     downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                     listener.downLoadComplete();
                     break;
@@ -107,23 +102,34 @@ public class DownloadTask extends Thread {
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_START) {
                     downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                 }
-                randomAccessFile.write(buffer, 0, len);
-                startLength += len;
-                scheduleRunable.progress.addAndGet(len);
-                tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
-                if (tempOffset > scheduleRunable.offset) {
-                    scheduleRunable.offset = tempOffset;
-                    listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
-                    scheduleRunable.mark(startLength, endLength);
+                /*收到暂停通知，执行暂停操作，通知调度器*/
+                if (downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE) {
+                    randomAccessFile.write(buffer, 0, len);
+                    startLength += len;
+                    scheduleRunable.progress.addAndGet(len);
+                    tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
+                    if (tempOffset > scheduleRunable.offset.get()) {
+                        scheduleRunable.offset.getAndSet(tempOffset);
+                        /**scheduleRunable.progress 多线程赋值有问题，这里是无奈之举，再研究一下*/
+                        if(scheduleRunable.progress.get() > scheduleRunable.maxProgress){
+                            scheduleRunable.progress.getAndSet(scheduleRunable.maxProgress);
+                        }
+                        listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
+                        scheduleRunable.mark(startLength, endLength);
 //                    Log.d(Downer.TAG, "Thread：" + getName()
 //                            + " Position：" + startLength + "-" + endLength
 //                            + " Download：" + scheduleRunable.offset + "% " + scheduleRunable.progress + "Byte/" + scheduleRunable.maxProgress + "Byte");
+                    }
+                }else{
+                    listener.downLoadPause();
                 }
             } while (true);
         } catch (Exception e) {
             e.printStackTrace();
-            downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
-            listener.downLoadError();
+            if(downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE){
+                downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
+                listener.downLoadError();
+            }
         } finally {
             if (randomAccessFile != null) {
                 try {
