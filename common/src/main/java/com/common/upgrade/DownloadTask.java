@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**分包线程类*/
-public class DownloadTask extends Thread {
+public class DownloadTask implements Runnable {
     /**分包任务id*/
     private int id;
     /**分包任务开始下载长度位置*/
@@ -40,16 +40,12 @@ public class DownloadTask extends Thread {
         this.downlaodOptions = scheduleRunable.downlaodOptions;
         this.listener = scheduleRunable.listener;
         this.downerRequest = scheduleRunable.downerRequest;
-        setName("DownloadTask-" + id);
-        setPriority(Thread.NORM_PRIORITY);
-        setDaemon(false);
         Log.d(Downer.TAG, "DownloadTask initialized startLength = "+startLength+"  endLength = "+endLength);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void run() {
-        super.run();
         HttpURLConnection connection = null;
         InputStream inputStream = null;
         RandomAccessFile randomAccessFile = null;

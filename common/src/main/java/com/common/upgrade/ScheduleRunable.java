@@ -14,6 +14,8 @@ import com.captureinfo.R;
 import com.common.upgrade.model.DownlaodBuffer;
 import com.common.upgrade.model.DownlaodOptions;
 import com.common.upgrade.model.DownlaodRepository;
+import com.common.upgrade.thread.Priority;
+import com.common.upgrade.thread.ThreadManger;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +26,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**调度线程类*/
@@ -331,14 +332,11 @@ public class ScheduleRunable implements Runnable {
      * @param entLength   结束下载位置
      */
     private void submit(ScheduleRunable scheduleThread, int id, long startLength, long entLength) {
-        Thread thread = null;
         if (!downlaodOptions.isMultithreadEnabled()) {
-            thread = new DownloadTask(scheduleThread, id);
+            ThreadManger.getInstance().execute(Priority.NORMAL,  new DownloadTask(scheduleThread, id));
         } else {
-            thread = new DownloadTask(scheduleThread, id, startLength, entLength);
+            ThreadManger.getInstance().execute(Priority.NORMAL,  new DownloadTask(scheduleThread, id, startLength, entLength));
         }
-        thread.start();
-
     }
 
     /**

@@ -89,11 +89,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void forceCheckUpdates() {
-        String url = "https://9a826bfe835999ad255eda8021b03fc0.dd.cdntips.com/imtt.dd.qq.com/16891/74620E25664EF6AC4E9EF0CF4BEA98A4.apk?mkey=5d0c8c633cf74ea1&f=8ea4&fsname=com.when.coco_7.1.6_1066.apk&csr=1bbd&cip=60.247.104.84&proto=https";
+        String url = "http://s9.pstatp.com/package/apk/aweme/app_aweGW_v6.8.0_e140aa5.apk?v=1560868759";
 
         Downer.downLoad().setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
-                .setTitle("365日历")
+                .setTitle("抖音APP")
                 // 通知栏描述（可选）
                 .setDescription("更新通知栏")
                 // 下载链接或更新文档链接
