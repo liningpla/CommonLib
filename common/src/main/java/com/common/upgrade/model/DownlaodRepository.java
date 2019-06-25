@@ -78,6 +78,7 @@ public class DownlaodRepository implements DownlaodDataSource {
     @Override
     public void setUpgradeBuffer(DownlaodBuffer buffer) {
         SQLiteDatabase db = helper.getWritableDatabase();
+        db.enableWriteAheadLogging();
         String sql = "INSERT OR REPLACE INTO " +
                 DownlaodPersistenceContrat.UpgradeBufferEntry.TABLE_NAME + "(" +
                 DownlaodPersistenceContrat.UpgradeBufferEntry.COLUMN_NAME_DOWNLOAD_URL + "," +

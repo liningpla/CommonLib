@@ -81,7 +81,6 @@ public class DownloadTask extends Thread {
             int tempOffset = 0;
             do {
                if( (len=inputStream.read(buffer)) != -1){
-                   /*收到取消通知，执行取消操作，通知调度器*/
                    if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
                        listener.downLoadCancel();
                        break;
@@ -94,6 +93,7 @@ public class DownloadTask extends Thread {
                        randomAccessFile.write(buffer, 0, len);
                        startLength += len;
                        scheduleRunable.progress.addAndGet(len);
+//                       Log.d(Downer.TAG, "DownloadTask progress = "+scheduleRunable.progress.get());
                        tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
                        if (tempOffset > scheduleRunable.offset) {
                            scheduleRunable.offset = tempOffset;
@@ -105,9 +105,13 @@ public class DownloadTask extends Thread {
                            scheduleRunable.mark(startLength, endLength);
                        }
                    }else{
+                       /*收到取消通知，执行取消操作，通知调度器*/
                        listener.downLoadPause();
                    }
                }else{
+                   /*如果 b 的长度为 0，则不读取任何字节并返回 0；否则，尝试读取至少一个字节。如果因为流位于文件末尾而没有可用的字节，则返回值 -1
+                   * 因此分包下，读取中间大小时，读取完成总是startLength 比 endLength 大一，只有读取末尾时才正常startLength = endLength
+                   * */
                    if(startLength > endLength){
                        return;
                    }
