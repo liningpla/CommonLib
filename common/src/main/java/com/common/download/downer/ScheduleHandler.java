@@ -154,11 +154,7 @@ public class ScheduleHandler {
                     if(downerCallBack != null){
                         downerCallBack.onProgress(max, progress);
                     }
-                    if(max == progress){//下载完成，不再显示通知。
-                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
-                        clearNotify();
-                        return;
-                    }
+                    schedule.offset = (int) (((float) schedule.progress.get() / schedule.maxProgress) * 100);
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
                     setNotify(DownerdUtil.formatByte(progress) + "/" + DownerdUtil.formatByte(max));
                 }
