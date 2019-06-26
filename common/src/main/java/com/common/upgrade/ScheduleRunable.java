@@ -60,8 +60,10 @@ public class ScheduleRunable implements Runnable {
     private volatile DownlaodBuffer downlaodBuffer;
     /**并发时控制对外暂停派发*/
     private volatile AtomicBoolean isPause;
-    /**并发时控制通知栏跟新*/
+    /**并发时控制通知栏更新*/
     private volatile AtomicInteger notyStatus;
+    /**并发时控制失败派发*/
+    private volatile AtomicBoolean isError;
 
     public ScheduleRunable(Context context, DownerRequest downerRequest){
         mContext = context;
@@ -71,6 +73,7 @@ public class ScheduleRunable implements Runnable {
         this.downerCallBack = downerRequest.downerCallBack;
         this.mHandler = new Handler(context.getMainLooper());
         notyStatus = new AtomicInteger();
+        isError = new AtomicBoolean(false);
         NOTIFY_ID = (int) (Math.random()*900 + 100);
         if (repository == null) {
             repository = DownlaodRepository.getInstance(context);
@@ -347,6 +350,7 @@ public class ScheduleRunable implements Runnable {
                         downerCallBack.onProgress(max, progress);
                     }
                     if(max == progress){//下载完成，不再显示通知。
+                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
                         clearNotify();
                         return;
                     }
@@ -358,17 +362,21 @@ public class ScheduleRunable implements Runnable {
         }
         @Override
         public void downLoadError() {
-            Log.i(Downer.TAG, "ScheduleRunable: downLoadError");
             /*通知外部调用者，下载异常*/
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(downerCallBack != null){
-                        downerCallBack.onError(new DownlaodException());
+                    if (!isError.get()){
+                        Log.i(Downer.TAG, "ScheduleRunable: downLoadError");
+                        isError.getAndSet(true);
+                        downerRequest.release();
+                        if(downerCallBack != null){
+                            downerCallBack.onError(new DownlaodException());
+                        }
+                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
+                        setNotify(mContext.getString(R.string.message_download_error));
+                        clearNotify();
                     }
-                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
-                    setNotify(mContext.getString(R.string.message_download_error));
-                    clearNotify();
                 }
             });
 
@@ -376,6 +384,7 @@ public class ScheduleRunable implements Runnable {
         @Override
         public void downLoadComplete() {
             Log.i(Downer.TAG, "ScheduleRunable: downLoadComplete");
+            downerRequest.release();
             /*通知外部调用者，完成下载*/
             mHandler.post(new Runnable() {
                 @Override
@@ -396,6 +405,7 @@ public class ScheduleRunable implements Runnable {
         @Override
         public void downLoadCancel() {
             Log.i(Downer.TAG, "ScheduleRunable: downLoadCancel");
+            downerRequest.release();
             /*通知外部调用者，取消成功*/
             mHandler.post(new Runnable() {
                 @Override

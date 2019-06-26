@@ -152,4 +152,11 @@ public class DownerRequest {
         Log.i(Downer.TAG, "DownerRequest:  pause ");
         status = Downer.STATUS_DOWNLOAD_PAUSE;
     }
+
+    /**释放自己*/
+    public void release(){
+        if(DownerService.downerRequests != null){
+            DownerService.downerRequests.remove(options.getUrl());
+        }
+    }
 }
