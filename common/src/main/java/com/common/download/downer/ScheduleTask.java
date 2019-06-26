@@ -76,24 +76,23 @@ public class ScheduleTask implements Runnable {
             int len = -1;
             int tempOffset = 0;
             do {
+                if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
+                    listener.downLoadCancel();
+                    break;
+                }
+                if (downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE) {
+                    /*收到取消通知，执行取消操作，通知调度器*/
+                    listener.downLoadPause();
+                    return;
+                }
                if( (len=inputStream.read(buffer)) != -1){
-                   if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
-                       listener.downLoadCancel();
-                       break;
-                   }
-                   /*收到暂停通知，执行暂停操作，通知调度器*/
-                   if (downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE) {
-                       randomAccessFile.write(buffer, 0, len);
-                       startLength += len;
-                       scheduleRunable.progress.addAndGet(len);
-                       tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
-                       if (tempOffset > scheduleRunable.offset) {
-                           listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
-                           scheduleRunable.mark(startLength, endLength);
-                       }
-                   }else{
-                       /*收到取消通知，执行取消操作，通知调度器*/
-                       listener.downLoadPause();
+                   randomAccessFile.write(buffer, 0, len);
+                   startLength += len;
+                   scheduleRunable.progress.addAndGet(len);
+                   tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
+                   if (tempOffset > scheduleRunable.offset) {
+                       listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
+                       scheduleRunable.mark(startLength, endLength);
                    }
                }else{
                    /*如果 b 的长度为 0，则不读取任何字节并返回 0；否则，尝试读取至少一个字节。如果因为流位于文件末尾而没有可用的字节，则返回值 -1
