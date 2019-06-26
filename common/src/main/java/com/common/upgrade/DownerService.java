@@ -112,6 +112,9 @@ public class DownerService extends Service {
         if(dowed.length() < scheduleRunable.fileLength){
             return true;
         }
+        if(scheduleRunable.downerRequest.options.isAutomountEnabled()){//已经下载成功，自动安装
+            new InstallThread(scheduleRunable).start();
+        }
         return false;
     }
 
