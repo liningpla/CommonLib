@@ -153,6 +153,11 @@ public class DownerRequest {
         status = Downer.STATUS_DOWNLOAD_PAUSE;
     }
 
+    /**重新下载*/
+    public void reStart(Context context){
+        DownerService.startDownerService(context, this);
+    }
+
     /**释放自己*/
     public void release(){
         if(DownerService.downerRequests != null){

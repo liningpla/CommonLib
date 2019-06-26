@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**分包线程类*/
-public class DownloadTask implements Runnable {
+public class ScheduleTask implements Runnable {
     /**分包任务id*/
     private int id;
     /**分包任务开始下载长度位置*/
@@ -28,11 +28,11 @@ public class DownloadTask implements Runnable {
     /**下载请求信息类*/
     public DownerRequest downerRequest;
 
-    public DownloadTask(ScheduleRunable scheduleRunable, int id) {
+    public ScheduleTask(ScheduleRunable scheduleRunable, int id) {
         this(scheduleRunable, id, 0, 0);
     }
 
-    public DownloadTask(ScheduleRunable scheduleRunable, int id, long startLength, long endLength) {
+    public ScheduleTask(ScheduleRunable scheduleRunable, int id, long startLength, long endLength) {
         this.scheduleRunable = scheduleRunable;
         this.id = id;
         this.startLength = startLength;
@@ -40,7 +40,7 @@ public class DownloadTask implements Runnable {
         this.downlaodOptions = scheduleRunable.downlaodOptions;
         this.listener = scheduleRunable.listener;
         this.downerRequest = scheduleRunable.downerRequest;
-        Log.d(Downer.TAG, "DownloadTask initialized startLength = "+startLength+"  endLength = "+endLength);
+        Log.d(Downer.TAG, "ScheduleTask initialized startLength = "+startLength+"  endLength = "+endLength);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -110,7 +110,7 @@ public class DownloadTask implements Runnable {
                    if(startLength > endLength){
                        return;
                    }
-                   Log.d(Downer.TAG, "DownloadTask startLength = "+startLength+"  endLength = "+endLength);
+                   Log.d(Downer.TAG, "ScheduleTask startLength = "+startLength+"  endLength = "+endLength);
                    downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                    listener.downLoadComplete();
                    break;
