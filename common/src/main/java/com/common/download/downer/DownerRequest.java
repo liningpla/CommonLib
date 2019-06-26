@@ -151,6 +151,9 @@ public class DownerRequest {
     /**暂停下载任务*/
     public void pause(){
         Log.i(Downer.TAG, "DownerRequest:  pause ");
+        if(status == Downer.STATUS_DOWNLOAD_COMPLETE){//完成了
+            return;
+        }
         status = Downer.STATUS_DOWNLOAD_PAUSE;
     }
 

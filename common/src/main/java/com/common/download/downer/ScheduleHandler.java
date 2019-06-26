@@ -18,6 +18,7 @@ import com.common.download.InstallThread;
 import com.common.download.model.DownerContrat;
 import com.common.download.model.DownerOptions;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -146,21 +147,29 @@ public class ScheduleHandler {
             });
         }
         @Override
-        public void downLoadProgress(final long max, final long progress) {
+        public void downLoadProgress(long max, long progress) {
+            if(progress >= max){
+                return;
+            }
+            if(downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE){
+                progress = max;
+            }
+            final long uiMax = max;
+            final long uiProgress = progress;
             /*通知外部调用者，实时进度*/
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(progress >= max){
-                        return;
-                    }
                     downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                     if(downerCallBack != null){
-                        downerCallBack.onProgress(max, progress);
+                        downerCallBack.onProgress(uiMax, uiProgress);
                     }
-                    schedule.offset = (int) (((float) progress / max) * 100);
+                    schedule.offset = (int) (((float) uiProgress / uiMax) * 100);
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
-                    setNotify(DownerdUtil.formatByte(progress) + "/" + DownerdUtil.formatByte(max));
+                    if(uiProgress == uiMax){
+                        return;
+                    }
+                    setNotify(DownerdUtil.formatByte(uiProgress) + "/" + DownerdUtil.formatByte(uiMax));
                 }
             });
 
@@ -175,7 +184,6 @@ public class ScheduleHandler {
                         downerRequest.status = Downer.STATUS_DOWNLOAD_PAUSE;
                         Log.i(Downer.TAG, "ScheduleHandler: downLoadError");
                         isError.getAndSet(true);
-                        downerRequest.release();
                         if(downerCallBack != null){
                             downerCallBack.onError(new DownerException());
                         }
@@ -188,7 +196,6 @@ public class ScheduleHandler {
         @Override
         public void downLoadComplete() {
             Log.i(Downer.TAG, "ScheduleHandler: downLoadComplete");
-            downerRequest.release();
             /*通知外部调用者，完成下载*/
             mHandler.post(new Runnable() {
                 @Override
@@ -204,6 +211,7 @@ public class ScheduleHandler {
                         new InstallThread(schedule).start();
                     }
                     clearNotify();
+                    downerRequest.release();
                 }
             });
         }
@@ -225,7 +233,7 @@ public class ScheduleHandler {
         @Override
         public void downLoadPause() {
             /*通知外部调用者，暂停成功*/
-            mHandler.post(new Runnable() {
+            mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if(!isPause.get()){
@@ -238,7 +246,7 @@ public class ScheduleHandler {
                         setNotify(DownerContrat.DownerString.DOWN_PAUSE);
                     }
                 }
-            });
+            }, new Random().nextInt(200));
         }
     };
 }
