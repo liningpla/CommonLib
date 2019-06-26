@@ -150,11 +150,14 @@ public class ScheduleHandler {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    if(progress >= max){
+                        return;
+                    }
                     downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                     if(downerCallBack != null){
                         downerCallBack.onProgress(max, progress);
                     }
-                    schedule.offset = (int) (((float) schedule.progress.get() / schedule.maxProgress) * 100);
+                    schedule.offset = (int) (((float) progress / max) * 100);
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
                     setNotify(DownerdUtil.formatByte(progress) + "/" + DownerdUtil.formatByte(max));
                 }
