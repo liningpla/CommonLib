@@ -44,7 +44,6 @@ public class ScheduleHandler {
     private volatile AtomicInteger notyStatus;
     /**并发时控制失败派发*/
     private volatile AtomicBoolean isError;
-    private volatile int reTray = 3;
     /**通知id，分配生成的三位数*/
     public int NOTIFY_ID;
     public ScheduleHandler(ScheduleRunable scheduleRunable){
@@ -170,23 +169,17 @@ public class ScheduleHandler {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(reTray < 0){
-                        if (!isError.get()){
-                            Log.i(Downer.TAG, "ScheduleHandler: downLoadError");
-                            isError.getAndSet(true);
-                            downerRequest.release();
-                            if(downerCallBack != null){
-                                downerCallBack.onError(new DownerException());
-                            }
-                            notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
-                            setNotify(DownerContrat.DownerString.DONW_ORROR);
-                            clearNotify();
+                    if (!isError.get()){
+                        Log.i(Downer.TAG, "ScheduleHandler: downLoadError");
+                        isError.getAndSet(true);
+                        downerRequest.release();
+                        if(downerCallBack != null){
+                            downerCallBack.onError(new DownerException());
                         }
-                    }else{
-                        reTray --;
-//                        downerRequest.reStart(mContext);
+                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
+                        setNotify(DownerContrat.DownerString.DONW_ORROR);
+                        clearNotify();
                     }
-
                 }
             });
 
