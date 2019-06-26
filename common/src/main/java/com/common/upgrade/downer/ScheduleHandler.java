@@ -1,4 +1,4 @@
-package com.common.upgrade;
+package com.common.upgrade.downer;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -12,7 +12,12 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.captureinfo.R;
-import com.common.upgrade.model.DownlaodOptions;
+import com.common.upgrade.Downer;
+import com.common.upgrade.DownerException;
+import com.common.upgrade.DownerdUtil;
+import com.common.upgrade.InstallThread;
+import com.common.upgrade.model.DownerContrat;
+import com.common.upgrade.model.DownerOptions;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +33,7 @@ public class ScheduleHandler {
     /**下载请求状态返回，用来通知外部调用者，有可能为空，需要非空判断*/
     private DownerCallBack downerCallBack;
     /**下载参数类*/
-    private DownlaodOptions downlaodOptions;
+    private DownerOptions downerOptions;
     /**下载进度通知栏*/
     private Notification.Builder builder;
     /**下载进度通知栏管理*/
@@ -47,7 +52,7 @@ public class ScheduleHandler {
         schedule = scheduleRunable;
         mContext = schedule.mContext;
         downerRequest = schedule.downerRequest;
-        downlaodOptions = schedule.downlaodOptions;
+        downerOptions = schedule.downerOptions;
         downerCallBack = schedule.downerCallBack;
         notyStatus = new AtomicInteger();
         isError = new AtomicBoolean(false);
@@ -59,16 +64,16 @@ public class ScheduleHandler {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void initNotify() {
-        Log.i(Downer.TAG, "ScheduleHandler:  initNotify icon: "+downlaodOptions.getIcon()+"  Title:"+downlaodOptions.getTitle());
+        Log.i(Downer.TAG, "ScheduleHandler:  initNotify icon: "+ downerOptions.getIcon()+"  Title:"+ downerOptions.getTitle());
         notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder = new Notification.Builder(mContext, DownerService.NOTIFY_CHANNEL_ID)
                     .setGroup(DownerService.NOTIFY_CHANNEL_ID)
                     .setGroupSummary(false)
                     .setSmallIcon(android.R.drawable.stat_sys_download)
-                    .setLargeIcon(downlaodOptions.getIcon())
+                    .setLargeIcon(downerOptions.getIcon())
                     .setContentIntent(getDefalutIntent(PendingIntent.FLAG_UPDATE_CURRENT))
-                    .setContentTitle(downlaodOptions.getTitle())
+                    .setContentTitle(downerOptions.getTitle())
                     .setWhen(System.currentTimeMillis())
                     .setPriority(Notification.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
@@ -77,9 +82,9 @@ public class ScheduleHandler {
         } else {
             builder = new Notification.Builder(mContext)
                     .setSmallIcon(android.R.drawable.stat_sys_download)
-                    .setLargeIcon(downlaodOptions.getIcon())
+                    .setLargeIcon(downerOptions.getIcon())
                     .setContentIntent(getDefalutIntent(PendingIntent.FLAG_UPDATE_CURRENT))
-                    .setContentTitle(downlaodOptions.getTitle())
+                    .setContentTitle(downerOptions.getTitle())
                     .setWhen(System.currentTimeMillis())
                     .setPriority(Notification.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
@@ -107,7 +112,7 @@ public class ScheduleHandler {
         } else if(notyStatus.get() == Downer.STATUS_DOWNLOAD_PAUSE){
             clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
-            Log.i(Downer.TAG, "ScheduleHandler:setNotify  pause " + downlaodOptions.getTitle());
+            Log.i(Downer.TAG, "ScheduleHandler:setNotify  pause " + downerOptions.getTitle());
         }else{
             clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
@@ -136,7 +141,7 @@ public class ScheduleHandler {
                     }
                     Log.i(Downer.TAG, "ScheduleHandler: downLoadStart");
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_START);
-                    setNotify(mContext.getString(R.string.message_download_start));
+                    setNotify(DownerContrat.DownerString.DOWN_CONNECTING);
                 }
             });
         }
@@ -155,7 +160,7 @@ public class ScheduleHandler {
                         return;
                     }
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
-                    setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
+                    setNotify(DownerdUtil.formatByte(progress) + "/" + DownerdUtil.formatByte(max));
                 }
             });
 
@@ -172,10 +177,10 @@ public class ScheduleHandler {
                             isError.getAndSet(true);
                             downerRequest.release();
                             if(downerCallBack != null){
-                                downerCallBack.onError(new DownlaodException());
+                                downerCallBack.onError(new DownerException());
                             }
                             notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
-                            setNotify(mContext.getString(R.string.message_download_error));
+                            setNotify(DownerContrat.DownerString.DONW_ORROR);
                             clearNotify();
                         }
                     }else{
@@ -199,8 +204,8 @@ public class ScheduleHandler {
                         downerCallBack.onComplete();
                     }
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
-                    setNotify(mContext.getString(R.string.message_download_complete));
-                    if(downlaodOptions.isAutomountEnabled()){//自动安装
+                    setNotify(DownerContrat.DownerString.DOWN_COMPLETE);
+                    if(downerOptions.isAutomountEnabled()){//自动安装
                         Log.i(Downer.TAG, "ScheduleHandler:  downLoadComplete is Auto Install");
                         new InstallThread(schedule).start();
                     }
@@ -236,7 +241,7 @@ public class ScheduleHandler {
                             downerCallBack.onPause();
                         }
                         notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PAUSE);
-                        setNotify(mContext.getString(R.string.message_download_pause));
+                        setNotify(DownerContrat.DownerString.DOWN_PAUSE);
                     }
                 }
             });

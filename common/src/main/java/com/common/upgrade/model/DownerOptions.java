@@ -10,16 +10,16 @@ import java.io.Serializable;
 /**
  */
 
-public final class DownlaodOptions implements Parcelable {
-    public static final Creator<DownlaodOptions> CREATOR = new Creator<DownlaodOptions>() {
+public final class DownerOptions implements Parcelable {
+    public static final Creator<DownerOptions> CREATOR = new Creator<DownerOptions>() {
         @Override
-        public DownlaodOptions createFromParcel(Parcel in) {
-            return new DownlaodOptions(in);
+        public DownerOptions createFromParcel(Parcel in) {
+            return new DownerOptions(in);
         }
 
         @Override
-        public DownlaodOptions[] newArray(int size) {
-            return new DownlaodOptions[size];
+        public DownerOptions[] newArray(int size) {
+            return new DownerOptions[size];
         }
     };
     /**文件总长度*/
@@ -72,7 +72,7 @@ public final class DownlaodOptions implements Parcelable {
      */
     private final boolean isSupportRange;
 
-    private DownlaodOptions(Params params) {
+    private DownerOptions(Params params) {
         icon = params.icon;
         title = params.title;
         description = params.description;
@@ -86,7 +86,7 @@ public final class DownlaodOptions implements Parcelable {
         isSupportRange = params.isSupportRange;
     }
 
-    protected DownlaodOptions(Parcel in) {
+    protected DownerOptions(Parcel in) {
         icon = in.readParcelable(Bitmap.class.getClassLoader());
         title = (CharSequence) in.readValue(CharSequence.class.getClassLoader());
         description = (CharSequence) in.readValue(CharSequence.class.getClassLoader());
@@ -248,8 +248,8 @@ public final class DownlaodOptions implements Parcelable {
             return this;
         }
 
-        public DownlaodOptions build() {
-            return new DownlaodOptions(params);
+        public DownerOptions build() {
+            return new DownerOptions(params);
         }
 
         @Override

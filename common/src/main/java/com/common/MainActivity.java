@@ -12,10 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.captureinfo.R;
 import com.common.upgrade.Downer;
-import com.common.upgrade.DownerCallBack;
-import com.common.upgrade.DownerRequest;
-import com.common.upgrade.DownlaodException;
-import com.common.upgrade.DownlaodUtil;
+import com.common.upgrade.downer.DownerCallBack;
+import com.common.upgrade.downer.DownerRequest;
+import com.common.upgrade.DownerException;
+import com.common.upgrade.DownerdUtil;
 
 import java.io.File;
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onProgress(long max, long progress) {
             }
             @Override
-            public void onError(DownlaodException e) {
+            public void onError(DownerException e) {
             }
             @Override
             public void onComplete() {
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
             @Override
-            public void onError(DownlaodException e) {
+            public void onError(DownerException e) {
             }
             @Override
             public void onComplete() {
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == DownlaodUtil.REQUEST_CODE_WRITE_EXTERNAL_STORAGE ||
+        if (requestCode == DownerdUtil.REQUEST_CODE_WRITE_EXTERNAL_STORAGE ||
                 grantResults.length == 1 &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             customerDownloadUpdates();
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             customerCheckUpdates();
         }
         if (v.getId() == R.id.button_check_updates_custom_download) {
-            if (DownlaodUtil.mayRequestExternalStorage(this, true)) {
+            if (DownerdUtil.mayRequestExternalStorage(this, true)) {
                 customerDownloadUpdates();
             }
         }

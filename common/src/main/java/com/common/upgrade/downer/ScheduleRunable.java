@@ -1,11 +1,12 @@
-package com.common.upgrade;
+package com.common.upgrade.downer;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.common.upgrade.model.DownlaodBuffer;
-import com.common.upgrade.model.DownlaodOptions;
-import com.common.upgrade.model.DownlaodRepository;
+import com.common.upgrade.Downer;
+import com.common.upgrade.model.DownerBuffer;
+import com.common.upgrade.model.DownerOptions;
+import com.common.upgrade.model.DownerRepository;
 import com.common.upgrade.thread.Priority;
 import com.common.upgrade.thread.ThreadManger;
 
@@ -26,7 +27,7 @@ public class ScheduleRunable implements Runnable {
     /**下载请求信息类*/
     public DownerRequest downerRequest;
     /**下载参数类*/
-    public DownlaodOptions downlaodOptions;
+    public DownerOptions downerOptions;
     /**下载请求状态返回，用来通知外部调用者，有可能为空，需要非空判断*/
     public DownerCallBack downerCallBack;
     /**下载文件总长度*/
@@ -37,22 +38,22 @@ public class ScheduleRunable implements Runnable {
     public volatile AtomicLong progress;
     /**下载偏移量*/
     public volatile int offset;
-    public DownlaodRepository repository;
+    public DownerRepository repository;
     /**通知栏以及UI的对外调度器*/
     public ScheduleHandler mHandler;
     /**该分包下载缓存*/
-    private volatile DownlaodBuffer downlaodBuffer;
+    private volatile DownerBuffer downerBuffer;
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleListener listener;
 
     public ScheduleRunable(Context context, DownerRequest downerRequest){
         mContext = context;
         this.downerRequest = downerRequest;
-        this.downlaodOptions = downerRequest.options;
-        this.fileLength = downlaodOptions.getFilelength();
+        this.downerOptions = downerRequest.options;
+        this.fileLength = downerOptions.getFilelength();
         this.downerCallBack = downerRequest.downerCallBack;
         if (repository == null) {
-            repository = DownlaodRepository.getInstance(context);
+            repository = DownerRepository.getInstance(context);
         }
         this.mHandler = new ScheduleHandler(this);
         this.listener = mHandler.listener;
@@ -63,29 +64,29 @@ public class ScheduleRunable implements Runnable {
         try {
             downerRequest.status = Downer.STATUS_DOWNLOAD_START;
             listener.downLoadStart();
-            connectHttp(downlaodOptions.getUrl());
+            connectHttp(downerOptions.getUrl());
             long startLength = 0;
             long endLength = -1;
-            File targetFile = downlaodOptions.getStorage();
-            if(!downlaodOptions.isSupportRange() && targetFile.exists()){//不支持断点续传
+            File targetFile = downerOptions.getStorage();
+            if(!downerOptions.isSupportRange() && targetFile.exists()){//不支持断点续传
                 targetFile.delete();
             }
             if (targetFile.exists()) {
-                DownlaodBuffer upgradeBuffer = repository.getUpgradeBuffer(downlaodOptions.getUrl());
+                DownerBuffer upgradeBuffer = repository.getUpgradeBuffer(downerOptions.getUrl());
                 if (upgradeBuffer != null) {
                     if (upgradeBuffer.getBufferLength() <= targetFile.length()) {
                         if ((endLength = fileLength) != -1 && endLength == upgradeBuffer.getFileLength()) {
                             progress = new AtomicLong(upgradeBuffer.getBufferLength());
                             maxProgress = upgradeBuffer.getFileLength();
                             long expiryDate = Math.abs(System.currentTimeMillis() - upgradeBuffer.getLastModified());
-                            if (expiryDate <= DownlaodBuffer.EXPIRY_DATE) {
+                            if (expiryDate <= DownerBuffer.EXPIRY_DATE) {
                                 if (upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength()) {
                                     listener.downLoadProgress(maxProgress, progress.get());
                                     downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                                     listener.downLoadComplete();
                                     return;
                                 }
-                                List<DownlaodBuffer.BufferPart> bufferParts = upgradeBuffer.getBufferParts();
+                                List<DownerBuffer.BufferPart> bufferParts = upgradeBuffer.getBufferParts();
                                 for (int id = 0; id < bufferParts.size(); id++) {
                                     startLength = bufferParts.get(id).getStartLength();
                                     endLength = bufferParts.get(id).getEndLength();
@@ -115,7 +116,7 @@ public class ScheduleRunable implements Runnable {
             }
             progress = new AtomicLong(startLength);
             maxProgress = endLength;
-            if (!downlaodOptions.isMultithreadEnabled()) {
+            if (!downerOptions.isMultithreadEnabled()) {
                 submit(this, 0, startLength, endLength);
                 return;
             }
@@ -125,11 +126,11 @@ public class ScheduleRunable implements Runnable {
                 pools = (int) (endLength / part);
             }
 
-            if (pools > downlaodOptions.getMultithreadPools()) {
-                pools = downlaodOptions.getMultithreadPools();
+            if (pools > downerOptions.getMultithreadPools()) {
+                pools = downerOptions.getMultithreadPools();
                 part = (int) (endLength / pools);
             }
-            Log.i(Downer.TAG, "ScheduleRunable:  run pools = "+pools+"  part = "+part+" getMultithreadPools = "+downlaodOptions.getMultithreadPools());
+            Log.i(Downer.TAG, "ScheduleRunable:  run pools = "+pools+"  part = "+part+" getMultithreadPools = "+ downerOptions.getMultithreadPools());
             long tempStartLength = 0;
             long tempEndLength = 0;
             for (int id = 1; id <= pools; id++) {
@@ -153,7 +154,7 @@ public class ScheduleRunable implements Runnable {
      * @param entLength   结束下载位置
      */
     private void submit(ScheduleRunable scheduleThread, int id, long startLength, long entLength) {
-        if (!downlaodOptions.isMultithreadEnabled()) {
+        if (!downerOptions.isMultithreadEnabled()) {
             ThreadManger.getInstance().execute(Priority.NORMAL,  new ScheduleTask(scheduleThread, id));
         } else {
             ThreadManger.getInstance().execute(Priority.NORMAL,  new ScheduleTask(scheduleThread, id, startLength, entLength));
@@ -182,7 +183,7 @@ public class ScheduleRunable implements Runnable {
                 }
             }
             fileLength = readConnection.getContentLength();
-            downlaodOptions.setTrueUrl(tureUrl);
+            downerOptions.setTrueUrl(tureUrl);
             Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  fileLength:"+fileLength+" tureUrl:"+tureUrl);
         } catch (ProtocolException e) {
             e.printStackTrace();
@@ -201,34 +202,34 @@ public class ScheduleRunable implements Runnable {
      * 标记下载位置
      */
     public void mark(long startLength, long endLength) {
-        if(!downlaodOptions.isSupportRange()){//不支持断点续传
+        if(!downerOptions.isSupportRange()){//不支持断点续传
             return;
         }
-        if (downlaodBuffer == null) {
-            downlaodBuffer = new DownlaodBuffer();
-            downlaodBuffer.setDownloadUrl(downlaodOptions.getUrl());
-            downlaodBuffer.setFileMd5(downlaodOptions.getMd5());
-            downlaodBuffer.setBufferLength(progress.get());
-            downlaodBuffer.setFileLength(maxProgress);
-            downlaodBuffer.setBufferParts(new CopyOnWriteArrayList<DownlaodBuffer.BufferPart>());
-            downlaodBuffer.setLastModified(System.currentTimeMillis());
+        if (downerBuffer == null) {
+            downerBuffer = new DownerBuffer();
+            downerBuffer.setDownloadUrl(downerOptions.getUrl());
+            downerBuffer.setFileMd5(downerOptions.getMd5());
+            downerBuffer.setBufferLength(progress.get());
+            downerBuffer.setFileLength(maxProgress);
+            downerBuffer.setBufferParts(new CopyOnWriteArrayList<DownerBuffer.BufferPart>());
+            downerBuffer.setLastModified(System.currentTimeMillis());
         }
-        downlaodBuffer.setBufferLength(progress.get());
-        downlaodBuffer.setLastModified(System.currentTimeMillis());
+        downerBuffer.setBufferLength(progress.get());
+        downerBuffer.setLastModified(System.currentTimeMillis());
         int index = -1;
-        for (int i = 0; i < downlaodBuffer.getBufferParts().size(); i++) {
-            if (downlaodBuffer.getBufferParts().get(i).getEndLength() == endLength) {
+        for (int i = 0; i < downerBuffer.getBufferParts().size(); i++) {
+            if (downerBuffer.getBufferParts().get(i).getEndLength() == endLength) {
                 index = i;
                 break;
             }
         }
-        DownlaodBuffer.BufferPart bufferPart = new DownlaodBuffer.BufferPart(startLength, endLength);
+        DownerBuffer.BufferPart bufferPart = new DownerBuffer.BufferPart(startLength, endLength);
         if (index == -1) {
-            downlaodBuffer.getBufferParts().add(bufferPart);
+            downerBuffer.getBufferParts().add(bufferPart);
         } else {
-            downlaodBuffer.getBufferParts().set(index, bufferPart);
+            downerBuffer.getBufferParts().set(index, bufferPart);
         }
-        repository.setUpgradeBuffer(downlaodBuffer);
+        repository.setUpgradeBuffer(downerBuffer);
     }
 
     /**调度类监听，用来通知栏UI更新和下载状态变化*/

@@ -1,11 +1,12 @@
-package com.common.upgrade;
+package com.common.upgrade.downer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.common.upgrade.model.DownlaodOptions;
+import com.common.upgrade.Downer;
+import com.common.upgrade.model.DownerOptions;
 
 import java.io.File;
 
@@ -15,18 +16,18 @@ import java.io.File;
 public class DownerRequest {
 
     /**下载参数构造类*/
-    private DownlaodOptions.Builder optionsBulider;
+    private DownerOptions.Builder optionsBulider;
     /**下载监听返回，通知发起请求者，有可能为空，需要非空判断*/
     public DownerCallBack downerCallBack;
     /**下载参数类*/
-    public DownlaodOptions options;
+    public DownerOptions options;
     /**下载状态*/
     public volatile int status;
     /**如果下载的是apk，记录apk包明*/
     public String apkPageName;
 
     public DownerRequest() {
-        optionsBulider = new DownlaodOptions.Builder();
+        optionsBulider = new DownerOptions.Builder();
         optionsBulider.setSupportRange(Downer.init().isSupportRange);
         optionsBulider.setAutocleanEnabled(Downer.init().isClean);
         optionsBulider.setAutomountEnabled(Downer.init().isInstall);

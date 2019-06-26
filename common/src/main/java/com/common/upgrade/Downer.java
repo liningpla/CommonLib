@@ -1,5 +1,7 @@
 package com.common.upgrade;
 
+import com.common.upgrade.downer.DownerRequest;
+
 /**下载师傅*/
 public class Downer {
 

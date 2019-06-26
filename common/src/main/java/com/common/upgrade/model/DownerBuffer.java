@@ -8,20 +8,20 @@ import java.util.List;
 /**
  */
 
-public class DownlaodBuffer implements Parcelable {
+public class DownerBuffer implements Parcelable {
     /**
      * 缓存有效期
      */
     public static final int EXPIRY_DATE = 7 * 24 * 60 * 60 * 1000;
-    public static final Creator<DownlaodBuffer> CREATOR = new Creator<DownlaodBuffer>() {
+    public static final Creator<DownerBuffer> CREATOR = new Creator<DownerBuffer>() {
         @Override
-        public DownlaodBuffer createFromParcel(Parcel in) {
-            return new DownlaodBuffer(in);
+        public DownerBuffer createFromParcel(Parcel in) {
+            return new DownerBuffer(in);
         }
 
         @Override
-        public DownlaodBuffer[] newArray(int size) {
-            return new DownlaodBuffer[size];
+        public DownerBuffer[] newArray(int size) {
+            return new DownerBuffer[size];
         }
     };
     /**
@@ -49,10 +49,10 @@ public class DownlaodBuffer implements Parcelable {
      */
     private long lastModified;
 
-    public DownlaodBuffer() {
+    public DownerBuffer() {
     }
 
-    public DownlaodBuffer(String downloadUrl, String fileMd5, long fileLength, long bufferLength, List<BufferPart> bufferParts, long lastModified) {
+    public DownerBuffer(String downloadUrl, String fileMd5, long fileLength, long bufferLength, List<BufferPart> bufferParts, long lastModified) {
         this.downloadUrl = downloadUrl;
         this.fileMd5 = fileMd5;
         this.fileLength = fileLength;
@@ -61,7 +61,7 @@ public class DownlaodBuffer implements Parcelable {
         this.lastModified = lastModified;
     }
 
-    protected DownlaodBuffer(Parcel in) {
+    protected DownerBuffer(Parcel in) {
         downloadUrl = in.readString();
         fileMd5 = in.readString();
         fileLength = in.readLong();
@@ -135,7 +135,7 @@ public class DownlaodBuffer implements Parcelable {
 
     @Override
     public String toString() {
-        return "DownlaodBuffer{" +
+        return "DownerBuffer{" +
                 "downloadUrl='" + downloadUrl + '\'' +
                 ", fileMd5='" + fileMd5 + '\'' +
                 ", fileLength=" + fileLength +

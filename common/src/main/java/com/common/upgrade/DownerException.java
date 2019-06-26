@@ -4,7 +4,7 @@ import java.io.IOException;
 
 /**
  */
-public class DownlaodException extends IOException {
+public class DownerException extends IOException {
 
     /**
      * 安装包md5效验失败
@@ -22,11 +22,11 @@ public class DownlaodException extends IOException {
 
     private int code;
 
-    public DownlaodException() {
+    public DownerException() {
         this(ERROR_CODE_UNKNOWN);
     }
 
-    public DownlaodException(int code) {
+    public DownerException(int code) {
         this.code = code;
     }
 

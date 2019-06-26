@@ -1,7 +1,9 @@
-package com.common.upgrade;
+package com.common.upgrade.downer;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.common.upgrade.DownerException;
 
 /**
  * 下载监听返回，通知发起请求者，有可能为空，需要非空判断
@@ -21,7 +23,7 @@ public abstract class DownerCallBack implements Parcelable {
     /*下载取消*/
     public void onCancel() {}
     /*下载开始*/
-    public abstract void onError(DownlaodException e);
+    public abstract void onError(DownerException e);
     /*下载完成*/
     public abstract void onComplete();
     /*检查安装*/
@@ -29,7 +31,7 @@ public abstract class DownerCallBack implements Parcelable {
     /*开始安装*/
     public void onStartInstall(){}
     /*安装失败*/
-    public  void onErrorInstall(DownlaodException e){}
+    public  void onErrorInstall(DownerException e){}
     /*安装完成*/
     public  void onCompleteInstall(){}
 
@@ -43,7 +45,7 @@ public abstract class DownerCallBack implements Parcelable {
             return new DownerCallBack(in) {
                 public void onConnected(DownerRequest request) {}
                 public void onProgress(long max, long progress) {}
-                 public void onError(DownlaodException e) {}
+                 public void onError(DownerException e) {}
                  public void onComplete() {}
             };
         }

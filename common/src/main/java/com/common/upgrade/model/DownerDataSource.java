@@ -2,7 +2,7 @@ package com.common.upgrade.model;
 
 /**
  */
-public interface DownlaodDataSource {
+public interface DownerDataSource {
 
     /**
      * 获取升级缓存
@@ -10,13 +10,13 @@ public interface DownlaodDataSource {
      * @param url
      * @return
      */
-    DownlaodBuffer getUpgradeBuffer(String url);
+    DownerBuffer getUpgradeBuffer(String url);
 
     /**
      * 设置升级缓存
      *
      * @param buffer
      */
-    void setUpgradeBuffer(DownlaodBuffer buffer);
+    void setUpgradeBuffer(DownerBuffer buffer);
 
 }

@@ -1,8 +1,9 @@
-package com.common.upgrade;
+package com.common.upgrade.downer;
 
 import android.util.Log;
 
-import com.common.upgrade.model.DownlaodOptions;
+import com.common.upgrade.Downer;
+import com.common.upgrade.model.DownerOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class ScheduleTask implements Runnable {
     /**分包任务介绍下载长度位置*/
     private long endLength;
     /**现在参数类*/
-    private DownlaodOptions downlaodOptions;
+    private DownerOptions downerOptions;
     /**外部监听类*/
     ScheduleRunable.ScheduleListener listener;
     /**此分包的调度类*/
@@ -37,7 +38,7 @@ public class ScheduleTask implements Runnable {
         this.id = id;
         this.startLength = startLength;
         this.endLength = endLength;
-        this.downlaodOptions = scheduleRunable.downlaodOptions;
+        this.downerOptions = scheduleRunable.downerOptions;
         this.listener = scheduleRunable.listener;
         this.downerRequest = scheduleRunable.downerRequest;
         Log.d(Downer.TAG, "ScheduleTask initialized startLength = "+startLength+"  endLength = "+endLength);
@@ -50,12 +51,12 @@ public class ScheduleTask implements Runnable {
         InputStream inputStream = null;
         RandomAccessFile randomAccessFile = null;
         try {
-            URL url = new URL(downlaodOptions.getTrueUrl());
+            URL url = new URL(downerOptions.getTrueUrl());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             connection.setDoOutput(false);
-            File file = downlaodOptions.getStorage();
+            File file = downerOptions.getStorage();
 
             if (endLength == 0) {
                 connection.connect();

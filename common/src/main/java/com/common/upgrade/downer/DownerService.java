@@ -1,4 +1,4 @@
-package com.common.upgrade;
+package com.common.upgrade.downer;
 
 import android.annotation.TargetApi;
 import android.app.NotificationChannel;
@@ -16,6 +16,8 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.common.upgrade.Downer;
+import com.common.upgrade.InstallThread;
 import com.common.upgrade.thread.Priority;
 import com.common.upgrade.thread.ThreadManger;
 

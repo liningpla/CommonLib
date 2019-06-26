@@ -34,7 +34,7 @@ import java.util.List;
 /**
  */
 
-public class DownlaodUtil {
+public class DownerdUtil {
     private static final String TAG = Downer.TAG;
 
     /**
@@ -216,19 +216,19 @@ public class DownlaodUtil {
      * @param path
      */
     public static void installApk(Context context, String path) {
-        Log.i(Downer.TAG, "DownlaodUtil:installApk:path："+path);
+        Log.i(Downer.TAG, "DownerdUtil:installApk:path："+path);
         File file = new File(path);
         if (!file.exists()) {
-            Log.i(Downer.TAG, "DownlaodUtil:installApk：file is not exists");
+            Log.i(Downer.TAG, "DownerdUtil:installApk：file is not exists");
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Log.i(Downer.TAG, "DownlaodUtil:installApk：context:"+context+" srt:"+String.format(DownlaodFileProvider.AUTHORITY, context.getPackageName()));
-            Uri uri = DownlaodFileProvider.getUriForFile(context,
-                    String.format(DownlaodFileProvider.AUTHORITY, context.getPackageName()), file);
+            Log.i(Downer.TAG, "DownerdUtil:installApk：context:"+context+" srt:"+String.format(DownerFileProvider.AUTHORITY, context.getPackageName()));
+            Uri uri = DownerFileProvider.getUriForFile(context,
+                    String.format(DownerFileProvider.AUTHORITY, context.getPackageName()), file);
             intent.setDataAndType(uri, "application/vnd.android.package-archive");
             context.startActivity(intent);
             return;
