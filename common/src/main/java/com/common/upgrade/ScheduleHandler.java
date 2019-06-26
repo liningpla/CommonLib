@@ -180,7 +180,7 @@ public class ScheduleHandler {
                         }
                     }else{
                         reTray --;
-                        downerRequest.reStart(mContext);
+//                        downerRequest.reStart(mContext);
                     }
 
                 }
