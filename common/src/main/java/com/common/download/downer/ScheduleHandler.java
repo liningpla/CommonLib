@@ -176,9 +176,8 @@ public class ScheduleHandler {
                         if(downerCallBack != null){
                             downerCallBack.onError(new DownerException());
                         }
+                        downerRequest.status = Downer.STATUS_DOWNLOAD_PAUSE;
                         notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
-                        setNotify(DownerContrat.DownerString.DONW_ORROR);
-                        clearNotify();
                     }
                 }
             });
