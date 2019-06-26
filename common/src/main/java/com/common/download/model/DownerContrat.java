@@ -15,7 +15,7 @@ public class DownerContrat {
     }
 
     public static abstract class DownerString {
-        public static final String DOWN_CONNECTING= "下载连接中&#8230;.";
+        public static final String DOWN_CONNECTING= "下载连接中……";
         public static final String DOWN_PAUSE = "下载暂停";
         public static final String DONW_CANCEL = "下载取消";
         public static final String DONW_ORROR = "下载出错";
