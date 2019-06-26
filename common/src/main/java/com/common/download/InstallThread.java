@@ -26,11 +26,13 @@ public class InstallThread extends Thread {
     private DownerOptions downerOptions;
     /**下载请求状态返回，用来通知外部调用者，有可能为空，需要非空判断*/
     private DownerCallBack downerCallBack;
+    private long maxLength;
     public InstallThread(ScheduleRunable scheduleRunable){
         this.downerOptions = scheduleRunable.downerOptions;
         this.mContext = scheduleRunable.mContext;
         this.downerRequest = scheduleRunable.downerRequest;
         this.downerCallBack = scheduleRunable.downerCallBack;
+        this.maxLength = scheduleRunable.maxProgress;
     }
     @Override
     public void run() {
@@ -61,10 +63,7 @@ public class InstallThread extends Thread {
         MessageDigest messageDigest = null;
         FileInputStream fileInputStream = null;
         try {
-            if(downerCallBack!=null){
-                downerCallBack.onCheckInstall();
-                Log.i(Downer.TAG, "InstallThread:run:Schedule install check");
-            }
+
             File file = new File(downerOptions.getStorage().getPath());
             if (!file.exists()) {
                 if(downerCallBack!=null){
@@ -72,6 +71,14 @@ public class InstallThread extends Thread {
                     Log.i(Downer.TAG, "InstallThread:installApk：file is not exists");
                 }
                 return false;
+            }else{
+                if(file.length() != maxLength){
+                    return false;
+                }
+            }
+            if(downerCallBack!=null){
+                downerCallBack.onCheckInstall();
+                Log.i(Downer.TAG, "InstallThread:run:Schedule install check");
             }
             if (downerOptions.getMd5() != null) {
                 fileInputStream = new FileInputStream(downerOptions.getStorage());

@@ -246,7 +246,7 @@ public class ScheduleHandler {
                         setNotify(DownerContrat.DownerString.DOWN_PAUSE);
                     }
                 }
-            }, new Random().nextInt(200));
+            }, new Random().nextInt(20));
         }
     };
 }
