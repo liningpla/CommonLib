@@ -1,4 +1,4 @@
-package com.common.upgrade.thread;
+package com.common.download.thread;
 
 /**
  * Created by lining on 2017/6/12.

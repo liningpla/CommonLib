@@ -1,4 +1,4 @@
-package com.common.upgrade.model;
+package com.common.download.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

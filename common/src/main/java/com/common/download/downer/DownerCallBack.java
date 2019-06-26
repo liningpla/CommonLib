@@ -1,9 +1,9 @@
-package com.common.upgrade.downer;
+package com.common.download.downer;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.common.upgrade.DownerException;
+import com.common.download.DownerException;
 
 /**
  * 下载监听返回，通知发起请求者，有可能为空，需要非空判断

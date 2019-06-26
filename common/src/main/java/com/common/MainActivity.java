@@ -11,11 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.captureinfo.R;
-import com.common.upgrade.Downer;
-import com.common.upgrade.downer.DownerCallBack;
-import com.common.upgrade.downer.DownerRequest;
-import com.common.upgrade.DownerException;
-import com.common.upgrade.DownerdUtil;
+import com.common.download.Downer;
+import com.common.download.downer.DownerCallBack;
+import com.common.download.downer.DownerRequest;
+import com.common.download.DownerException;
+import com.common.download.DownerdUtil;
 
 import java.io.File;
 

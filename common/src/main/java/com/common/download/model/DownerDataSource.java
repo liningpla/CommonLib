@@ -1,4 +1,4 @@
-package com.common.upgrade.model;
+package com.common.download.model;
 
 /**
  */

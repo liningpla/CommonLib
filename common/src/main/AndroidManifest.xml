@@ -39,7 +39,7 @@
 
         <!-- DownlaodService -->
         <service
-            android:name="com.common.upgrade.downer.DownerService"
+            android:name="com.common.download.downer.DownerService"
             android:enabled="true"
             android:exported="true"
             >
@@ -51,8 +51,8 @@
 
         <!-- DownerFileProvider -->
         <provider
-            android:name="com.common.upgrade.DownerFileProvider"
-            android:authorities="com.common.upgrade.DownerFileProvider"
+            android:name="com.common.download.DownerFileProvider"
+            android:authorities="com.common.download.DownerFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

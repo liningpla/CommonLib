@@ -1,4 +1,4 @@
-package com.common.upgrade.downer;
+package com.common.download.downer;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -11,13 +11,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.captureinfo.R;
-import com.common.upgrade.Downer;
-import com.common.upgrade.DownerException;
-import com.common.upgrade.DownerdUtil;
-import com.common.upgrade.InstallThread;
-import com.common.upgrade.model.DownerContrat;
-import com.common.upgrade.model.DownerOptions;
+import com.common.download.Downer;
+import com.common.download.DownerException;
+import com.common.download.DownerdUtil;
+import com.common.download.InstallThread;
+import com.common.download.model.DownerContrat;
+import com.common.download.model.DownerOptions;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;

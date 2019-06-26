@@ -1,4 +1,4 @@
-package com.common.upgrade;
+package com.common.download;
 
 import android.Manifest;
 import android.app.Activity;

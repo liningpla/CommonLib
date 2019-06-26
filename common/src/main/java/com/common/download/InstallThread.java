@@ -1,13 +1,13 @@
-package com.common.upgrade;
+package com.common.download;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.common.upgrade.downer.DownerCallBack;
-import com.common.upgrade.downer.DownerRequest;
-import com.common.upgrade.downer.ScheduleRunable;
-import com.common.upgrade.model.DownerOptions;
+import com.common.download.downer.DownerCallBack;
+import com.common.download.downer.DownerRequest;
+import com.common.download.downer.ScheduleRunable;
+import com.common.download.model.DownerOptions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-import static com.common.upgrade.DownerException.ERROR_CODE_PACKAGE_FILE;
-import static com.common.upgrade.DownerException.ERROR_CODE_PACKAGE_INVALID;
+import static com.common.download.DownerException.ERROR_CODE_PACKAGE_FILE;
+import static com.common.download.DownerException.ERROR_CODE_PACKAGE_INVALID;
 
 public class InstallThread extends Thread {
     private Context mContext;

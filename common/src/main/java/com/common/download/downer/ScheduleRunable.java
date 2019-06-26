@@ -1,14 +1,14 @@
-package com.common.upgrade.downer;
+package com.common.download.downer;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.common.upgrade.Downer;
-import com.common.upgrade.model.DownerBuffer;
-import com.common.upgrade.model.DownerOptions;
-import com.common.upgrade.model.DownerRepository;
-import com.common.upgrade.thread.Priority;
-import com.common.upgrade.thread.ThreadManger;
+import com.common.download.Downer;
+import com.common.download.model.DownerBuffer;
+import com.common.download.model.DownerOptions;
+import com.common.download.model.DownerRepository;
+import com.common.download.thread.Priority;
+import com.common.download.thread.ThreadManger;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,9 +1,9 @@
-package com.common.upgrade.downer;
+package com.common.download.downer;
 
 import android.util.Log;
 
-import com.common.upgrade.Downer;
-import com.common.upgrade.model.DownerOptions;
+import com.common.download.Downer;
+import com.common.download.model.DownerOptions;
 
 import java.io.File;
 import java.io.IOException;

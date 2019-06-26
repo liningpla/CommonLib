@@ -1,6 +1,6 @@
-package com.common.upgrade;
+package com.common.download;
 
-import com.common.upgrade.downer.DownerRequest;
+import com.common.download.downer.DownerRequest;
 
 /**下载师傅*/
 public class Downer {

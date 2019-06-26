@@ -1,12 +1,12 @@
-package com.common.upgrade.downer;
+package com.common.download.downer;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.common.upgrade.Downer;
-import com.common.upgrade.model.DownerOptions;
+import com.common.download.Downer;
+import com.common.download.model.DownerOptions;
 
 import java.io.File;
 
