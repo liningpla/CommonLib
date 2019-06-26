@@ -64,7 +64,6 @@ public class ScheduleTask implements Runnable {
                 connection.setRequestProperty("Range", "bytes=" + startLength + "-" + endLength);
                 connection.connect();
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_PARTIAL) {
-                    downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
                     listener.downLoadError();
                     return;
                 }
@@ -81,9 +80,6 @@ public class ScheduleTask implements Runnable {
                    if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
                        listener.downLoadCancel();
                        break;
-                   }
-                   if (downerRequest.status == Downer.STATUS_DOWNLOAD_START) {
-                       downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                    }
                    /*收到暂停通知，执行暂停操作，通知调度器*/
                    if (downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE) {
@@ -112,7 +108,6 @@ public class ScheduleTask implements Runnable {
                        return;
                    }
                    Log.d(Downer.TAG, "ScheduleTask startLength = "+startLength+"  endLength = "+endLength);
-                   downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                    listener.downLoadComplete();
                    break;
                }
@@ -120,7 +115,6 @@ public class ScheduleTask implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
             if(downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE){
-                downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
                 listener.downLoadError();
             }
         } finally {

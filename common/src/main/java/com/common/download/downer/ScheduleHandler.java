@@ -134,6 +134,7 @@ public class ScheduleHandler {
                 @Override
                 public void run() {
                     isPause = new AtomicBoolean(false);
+                    downerRequest.status = Downer.STATUS_DOWNLOAD_START;
                     if(downerCallBack != null){
                         downerCallBack.onStart();
                     }
@@ -149,6 +150,7 @@ public class ScheduleHandler {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    downerRequest.status = Downer.STATUS_DOWNLOAD_PROGRESS;
                     if(downerCallBack != null){
                         downerCallBack.onProgress(max, progress);
                     }
@@ -191,6 +193,7 @@ public class ScheduleHandler {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                     if(downerCallBack != null){
                         downerCallBack.onComplete();
                     }
