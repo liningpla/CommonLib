@@ -123,7 +123,6 @@ public class ScheduleRunable implements Runnable {
             int offset = (this != null)?this.offset:0;
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
-            Log.i(Downer.TAG, "ScheduleRunable:setNotify  rogress " + downlaodOptions.getTitle());
         } else if(notyStatus.get() == Downer.STATUS_DOWNLOAD_PAUSE){
             clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
