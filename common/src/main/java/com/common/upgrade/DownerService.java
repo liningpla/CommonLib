@@ -155,10 +155,6 @@ public class DownerService extends Service {
         if (packagesReceiver != null) {
             packagesReceiver.unregisterReceiver(this);
         }
-        if(downerRequests != null){
-            downerRequests.clear();
-            downerRequests = null;
-        }
         iteratorSchedule(SCHEDULE_STATUS_DISCONNECTED, "");
     }
 
