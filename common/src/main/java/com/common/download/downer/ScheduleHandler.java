@@ -46,6 +46,7 @@ public class ScheduleHandler {
     private volatile AtomicBoolean isError;
     /**通知id，分配生成的三位数*/
     public int NOTIFY_ID;
+//    private static final int DELAYED = 50;
     public ScheduleHandler(ScheduleRunable scheduleRunable){
         schedule = scheduleRunable;
         mContext = schedule.mContext;
@@ -133,8 +134,8 @@ public class ScheduleHandler {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    isPause = new AtomicBoolean(false);
                     downerRequest.status = Downer.STATUS_DOWNLOAD_START;
+                    isPause = new AtomicBoolean(false);
                     if(downerCallBack != null){
                         downerCallBack.onStart();
                     }
@@ -171,13 +172,13 @@ public class ScheduleHandler {
                 @Override
                 public void run() {
                     if (!isError.get()){
+                        downerRequest.status = Downer.STATUS_DOWNLOAD_PAUSE;
                         Log.i(Downer.TAG, "ScheduleHandler: downLoadError");
                         isError.getAndSet(true);
                         downerRequest.release();
                         if(downerCallBack != null){
                             downerCallBack.onError(new DownerException());
                         }
-                        downerRequest.status = Downer.STATUS_DOWNLOAD_PAUSE;
                         notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
                     }
                 }
