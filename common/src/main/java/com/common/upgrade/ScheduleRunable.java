@@ -62,113 +62,6 @@ public class ScheduleRunable implements Runnable {
     private volatile AtomicBoolean isPause;
     /**并发时控制通知栏跟新*/
     private volatile AtomicInteger notyStatus;
-    /**调度类监听，用来通知栏UI更新和下载状态变化*/
-    public ScheduleListener listener = new ScheduleListener() {
-        @Override
-        public void downLoadStart() {
-            /*通知外部调用者，开始下载*/
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    isPause = new AtomicBoolean(false);
-                    if(downerCallBack != null){
-                        downerCallBack.onStart();
-                    }
-                    Log.i(Downer.TAG, "ScheduleRunable: downLoadStart");
-                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_START);
-                    setNotify(mContext.getString(R.string.message_download_start));
-                }
-            });
-        }
-        @Override
-        public void downLoadProgress(final long max, final long progress) {
-            /*通知外部调用者，实时进度*/
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(downerCallBack != null){
-                        downerCallBack.onProgress(max, progress);
-                    }
-                    if(max == progress){//下载完成，不再显示通知。
-                        clearNotify();
-                        return;
-                    }
-                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
-                    setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
-                }
-            });
-
-        }
-        @Override
-        public void downLoadError() {
-            Log.i(Downer.TAG, "ScheduleRunable: downLoadError");
-            /*通知外部调用者，下载异常*/
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(downerCallBack != null){
-                        downerCallBack.onError(new DownlaodException());
-                    }
-                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
-                    setNotify(mContext.getString(R.string.message_download_error));
-                    clearNotify();
-                }
-            });
-
-        }
-        @Override
-        public void downLoadComplete() {
-            Log.i(Downer.TAG, "ScheduleRunable: downLoadComplete");
-            /*通知外部调用者，完成下载*/
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(downerCallBack != null){
-                        downerCallBack.onComplete();
-                    }
-                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
-                    setNotify(mContext.getString(R.string.message_download_complete));
-                    if(downlaodOptions.isAutomountEnabled()){//自动安装
-                        Log.i(Downer.TAG, "ScheduleRunable:  downLoadComplete is Auto Install");
-                        new InstallThread(ScheduleRunable.this).start();
-                    }
-                    clearNotify();
-                }
-            });
-        }
-        @Override
-        public void downLoadCancel() {
-            Log.i(Downer.TAG, "ScheduleRunable: downLoadCancel");
-            /*通知外部调用者，取消成功*/
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(downerCallBack != null){
-                        downerCallBack.onCancel();
-                    }
-                    clearNotify();
-                }
-            });
-        }
-        @Override
-        public void downLoadPause() {
-            /*通知外部调用者，暂停成功*/
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(!isPause.get()){
-                        Log.i(Downer.TAG, "ScheduleRunable: downLoadPause offset = "+offset);
-                        isPause.getAndSet(true);
-                        if(downerCallBack != null){
-                            downerCallBack.onPause();
-                        }
-                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PAUSE);
-                        setNotify(mContext.getString(R.string.message_download_pause));
-                    }
-                }
-            });
-        }
-    };
 
     public ScheduleRunable(Context context, DownerRequest downerRequest){
         mContext = context;
@@ -425,6 +318,114 @@ public class ScheduleRunable implements Runnable {
         }
         repository.setUpgradeBuffer(downlaodBuffer);
     }
+
+    /**调度类监听，用来通知栏UI更新和下载状态变化*/
+    public ScheduleListener listener = new ScheduleListener() {
+        @Override
+        public void downLoadStart() {
+            /*通知外部调用者，开始下载*/
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    isPause = new AtomicBoolean(false);
+                    if(downerCallBack != null){
+                        downerCallBack.onStart();
+                    }
+                    Log.i(Downer.TAG, "ScheduleRunable: downLoadStart");
+                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_START);
+                    setNotify(mContext.getString(R.string.message_download_start));
+                }
+            });
+        }
+        @Override
+        public void downLoadProgress(final long max, final long progress) {
+            /*通知外部调用者，实时进度*/
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(downerCallBack != null){
+                        downerCallBack.onProgress(max, progress);
+                    }
+                    if(max == progress){//下载完成，不再显示通知。
+                        clearNotify();
+                        return;
+                    }
+                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
+                    setNotify(DownlaodUtil.formatByte(progress) + "/" +DownlaodUtil.formatByte(max));
+                }
+            });
+
+        }
+        @Override
+        public void downLoadError() {
+            Log.i(Downer.TAG, "ScheduleRunable: downLoadError");
+            /*通知外部调用者，下载异常*/
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(downerCallBack != null){
+                        downerCallBack.onError(new DownlaodException());
+                    }
+                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
+                    setNotify(mContext.getString(R.string.message_download_error));
+                    clearNotify();
+                }
+            });
+
+        }
+        @Override
+        public void downLoadComplete() {
+            Log.i(Downer.TAG, "ScheduleRunable: downLoadComplete");
+            /*通知外部调用者，完成下载*/
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(downerCallBack != null){
+                        downerCallBack.onComplete();
+                    }
+                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
+                    setNotify(mContext.getString(R.string.message_download_complete));
+                    if(downlaodOptions.isAutomountEnabled()){//自动安装
+                        Log.i(Downer.TAG, "ScheduleRunable:  downLoadComplete is Auto Install");
+                        new InstallThread(ScheduleRunable.this).start();
+                    }
+                    clearNotify();
+                }
+            });
+        }
+        @Override
+        public void downLoadCancel() {
+            Log.i(Downer.TAG, "ScheduleRunable: downLoadCancel");
+            /*通知外部调用者，取消成功*/
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(downerCallBack != null){
+                        downerCallBack.onCancel();
+                    }
+                    clearNotify();
+                }
+            });
+        }
+        @Override
+        public void downLoadPause() {
+            /*通知外部调用者，暂停成功*/
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(!isPause.get()){
+                        Log.i(Downer.TAG, "ScheduleRunable: downLoadPause offset = "+offset);
+                        isPause.getAndSet(true);
+                        if(downerCallBack != null){
+                            downerCallBack.onPause();
+                        }
+                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PAUSE);
+                        setNotify(mContext.getString(R.string.message_download_pause));
+                    }
+                }
+            });
+        }
+    };
 
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public interface ScheduleListener{
