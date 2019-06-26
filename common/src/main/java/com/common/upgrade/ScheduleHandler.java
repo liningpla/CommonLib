@@ -99,7 +99,6 @@ public class ScheduleHandler {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setNotify(String description) {
         if (notyStatus.get() == Downer.STATUS_DOWNLOAD_START) {
-            clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else if (notyStatus.get() == Downer.STATUS_DOWNLOAD_PROGRESS) {
             int offset = (this != null)?schedule.offset:0;
@@ -120,6 +119,7 @@ public class ScheduleHandler {
      * 清除通知栏
      */
     private void clearNotify() {
+        Log.i(Downer.TAG, "ScheduleHandler: clearNotify");
         notificationManager.cancel(NOTIFY_ID);
     }
     /**调度类监听，用来通知栏UI更新和下载状态变化*/

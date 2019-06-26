@@ -152,7 +152,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         if (v.getId() == R.id.button_cancle) {
-            downerRequest.cancle();
+            if(downerRequest != null){
+                downerRequest.cancle();
+            }
         }
 
     }
