@@ -76,8 +76,10 @@ public class ScheduleTask implements Runnable {
             int len = -1;
             int tempOffset = 0;
             do {
+                if (downerRequest.status == Downer.STATUS_DOWNLOAD_ERROR) {
+                    break;
+                }
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
-                    listener.downLoadCancel();
                     break;
                 }
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE) {
@@ -98,10 +100,10 @@ public class ScheduleTask implements Runnable {
                    /*如果 b 的长度为 0，则不读取任何字节并返回 0；否则，尝试读取至少一个字节。如果因为流位于文件末尾而没有可用的字节，则返回值 -1
                    * 因此分包下，读取中间大小时，读取完成总是startLength 比 endLength 大一，只有读取末尾时才正常startLength = endLength
                    * */
+                   Log.d(Downer.TAG, "ScheduleTask startLength = "+startLength+"  endLength = "+endLength);
                    if(startLength > endLength){
                        break;
                    }
-                   Log.d(Downer.TAG, "ScheduleTask startLength = "+startLength+"  endLength = "+endLength);
                    listener.downLoadComplete();
                    break;
                }

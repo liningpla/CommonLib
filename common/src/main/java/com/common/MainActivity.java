@@ -60,8 +60,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStart();
     }
 
+    public void getObject(){
+
+
+
+    }
+
     private void checkUpdates() {
-        Downer.downLoad().setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+        Downer.downLoad(new Object()).setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("腾讯QQ")
                 // 通知栏描述（可选）
@@ -91,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void forceCheckUpdates() {
         String url = "http://s9.pstatp.com/package/apk/aweme/app_aweGW_v6.8.0_e140aa5.apk?v=1560868759";
 
-        Downer.downLoad().setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+        Downer.downLoad(new Object()).setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("抖音APP")
                 // 通知栏描述（可选）

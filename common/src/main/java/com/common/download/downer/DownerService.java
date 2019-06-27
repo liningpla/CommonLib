@@ -76,33 +76,34 @@ public class DownerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String url = intent.getStringExtra(DOWN_REQUEST);
-        DownerRequest downerRequest = null;
         if(!downerRequests.containsKey(url)){
             return START_STICKY;
         }
         if(downerRequests.get(url).get() == null){
             return START_STICKY;
         }
-        downerRequest = downerRequests.get(url).get();
         Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url);
-        if(isNeedSchedule(url)){
-            ScheduleRunable scheduleRunable = new ScheduleRunable(this, downerRequest);
+        DownerRequest downerRequest = downerRequests.get(url).get();
+        ScheduleRunable scheduleRunable;
+        if(scheduleRunables.containsKey(url) && scheduleRunables.get(url).get() != null){
+            scheduleRunable = scheduleRunables.get(url).get();
+            if(isNeedSchedule(scheduleRunable)){
+                ThreadManger.getInstance().execute(Priority.NORMAL, scheduleRunable);
+                Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
+            }
+        }else{
+            scheduleRunable = new ScheduleRunable(this, downerRequest);
             SoftReference<ScheduleRunable> softSchedule = new SoftReference<>(scheduleRunable);
             scheduleRunables.put(url, softSchedule);
             ThreadManger.getInstance().execute(Priority.NORMAL, scheduleRunable);
             Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
         }
+
         return START_STICKY;
     }
 
     /**下载请求是否需要调度*/
-    private boolean isNeedSchedule(String url){
-        //程序启动状态下下载没有调度过
-        if(!scheduleRunables.containsKey(url)){
-            return true;
-        }
-        //程序启动状态下，下载调度过
-        ScheduleRunable scheduleRunable = scheduleRunables.get(url).get();
+    private boolean isNeedSchedule(ScheduleRunable scheduleRunable){
         File dowed = scheduleRunable.downerRequest.options.getStorage();
         //虽然调度过，但是下载的文件不存在，需要下载的文件没有下载完成，都需要继续调度下载
         if(dowed == null){

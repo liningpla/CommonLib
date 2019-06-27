@@ -13,7 +13,7 @@ import java.io.File;
 /**
  * 下载请求类
  */
-public class DownerRequest {
+public class DownerRequest<T> {
 
     /**下载参数构造类*/
     private DownerOptions.Builder optionsBulider;
@@ -27,8 +27,12 @@ public class DownerRequest {
     public String apkPageName;
     /**通知id，分配生成的三位数*/
     public int NOTIFY_ID;
-
-    public DownerRequest() {
+    private T model;
+    public T getModel() {
+        return model;
+    }
+    public DownerRequest(T model) {
+        this.model = model;
         optionsBulider = new DownerOptions.Builder();
         optionsBulider.setSupportRange(Downer.init().isSupportRange);
         optionsBulider.setAutocleanEnabled(Downer.init().isClean);

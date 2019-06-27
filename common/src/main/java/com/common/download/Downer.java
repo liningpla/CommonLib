@@ -3,7 +3,7 @@ package com.common.download;
 import com.common.download.downer.DownerRequest;
 
 /**下载师傅*/
-public class Downer {
+public class Downer<T> {
 
     public static final String TAG = "HiDower";
     /**连接超时时长*/
@@ -45,8 +45,8 @@ public class Downer {
     public boolean isSupportRange;
 
     /**开始下载*/
-    public static DownerRequest downLoad(){
-        return new DownerRequest();
+    public static <T> DownerRequest downLoad(T model){
+        return new DownerRequest(model);
     }
 
     public static Downer init(){

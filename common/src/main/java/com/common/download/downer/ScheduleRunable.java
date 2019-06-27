@@ -238,7 +238,6 @@ public class ScheduleRunable implements Runnable {
         void downLoadProgress(long max, long progress);
         void downLoadError();
         void downLoadComplete();
-        void downLoadCancel();
         void downLoadPause();
     }
 
