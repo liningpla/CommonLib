@@ -52,7 +52,7 @@ public class MainActivity extends BaseAcivity {
         } catch (PackageManager.NameNotFoundException e) {
         }
         SDLog.i("lining","启动MainActivity 线程ID："+Thread.currentThread().getId());
-//        PauseAbleCountDownTimer countDownTimer = new PauseAbleCountDownTimer(1000*1000, 10*1000, true) {
+//        PauseTimer countDownTimer = new PauseTimer(1000*1000, 10*1000, true) {
 //            @Override
 //            public void onTick(final long millisUntilFinished) {
 //                runOnUiThread(new Runnable() {

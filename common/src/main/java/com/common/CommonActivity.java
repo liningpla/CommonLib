@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.captureinfo.R;
 import com.common.log.SDLog;
+import com.common.threadPool.PauseTimer;
 
 public class CommonActivity extends AppCompatActivity {
     private Button btn_sendTest, btn_close, btn_down;
@@ -32,7 +33,7 @@ public class CommonActivity extends AppCompatActivity {
         btn_sendTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMessage();
+                timer.start();
             }
         });
 
@@ -52,7 +53,21 @@ public class CommonActivity extends AppCompatActivity {
             }
         });
         SDLog.i("CommonActivity","--onCreate--");
+
+
+
     }
+    /**10*1000毫秒倒计时，  每隔1000毫秒执行onTick*/
+    PauseTimer timer = new PauseTimer(60*10*1000, 5*1000, false) {
+        @Override
+        public void onTick(long millisUntilFinished) {//阻塞当前线程，如果是主线程，避免处理复杂业务逻辑
+            //millisUntilFinished 还剩多少毫秒
+            sendMessage();
+        }
+        @Override
+        public void onFinish() {
+        }
+    };
 
     private void sendMessage(){
         count ++;

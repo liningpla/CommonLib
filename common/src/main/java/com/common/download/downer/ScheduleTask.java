@@ -108,9 +108,7 @@ public class ScheduleTask implements Runnable {
             } while (true);
         } catch (Exception e) {
             e.printStackTrace();
-            if(downerRequest.status != Downer.STATUS_DOWNLOAD_PAUSE){
-                listener.downLoadError();
-            }
+            listener.downLoadError();
         } finally {
             if (randomAccessFile != null) {
                 try {

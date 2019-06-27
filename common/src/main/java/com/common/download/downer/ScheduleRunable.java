@@ -232,13 +232,6 @@ public class ScheduleRunable implements Runnable {
         repository.setUpgradeBuffer(downerBuffer);
     }
 
-    /**关闭通知栏*/
-    public void closeNotify(){
-        if(mHandler != null){
-            mHandler.clearNotify();
-        }
-    }
-
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public interface ScheduleListener{
         void downLoadStart();

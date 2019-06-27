@@ -25,6 +25,8 @@ public class DownerRequest {
     public volatile int status;
     /**如果下载的是apk，记录apk包明*/
     public String apkPageName;
+    /**通知id，分配生成的三位数*/
+    public int NOTIFY_ID;
 
     public DownerRequest() {
         optionsBulider = new DownerOptions.Builder();
@@ -33,6 +35,7 @@ public class DownerRequest {
         optionsBulider.setAutomountEnabled(Downer.init().isInstall);
         optionsBulider.setMultithreadEnabled(Downer.init().isMuliti);
         optionsBulider.setMultithreadPools(Downer.init().pools);
+        NOTIFY_ID = (int) (Math.random()*900 + 100);
     }
 
     /**

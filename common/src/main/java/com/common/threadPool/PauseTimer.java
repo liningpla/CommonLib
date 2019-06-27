@@ -13,7 +13,7 @@ import java.io.Serializable;
  * Created by lining on 2017/6/27.
  */
 
-public abstract class PauseAbleCountDownTimer implements Serializable {
+public abstract class PauseTimer implements Serializable {
 
     private static final int MSG = 1;
 
@@ -41,16 +41,16 @@ public abstract class PauseAbleCountDownTimer implements Serializable {
 
 
     /**
-     * @param totalTime the total time
-     * @param countDownInterval the interval time
+     * @param totalTime the total time 毫秒
+     * @param countDownInterval the interval time 毫秒
      * @param isThread the current countdown is a separate thread
      * */
-    public PauseAbleCountDownTimer(long totalTime, long countDownInterval, boolean isThread) {
+    public PauseTimer(long totalTime, long countDownInterval, boolean isThread) {
         mTotalTime = totalTime;
         mCountdownInterval = countDownInterval;
         currLooper = Looper.myLooper();
         if(isThread){
-            handlerThread = new HandlerThread("PauseAbleCountDownTimer");
+            handlerThread = new HandlerThread("PauseTimer");
             handlerThread.start();
             currLooper = handlerThread.getLooper();
         }
@@ -60,7 +60,7 @@ public abstract class PauseAbleCountDownTimer implements Serializable {
     /**
      * Start the countdown.
      */
-    public synchronized final PauseAbleCountDownTimer start() {
+    public synchronized final PauseTimer start() {
         currentState = COUNTDOWN;
         if (mTotalTime <= 0) {
             onFinish();
@@ -138,7 +138,7 @@ public abstract class PauseAbleCountDownTimer implements Serializable {
             @Override
             public void handleMessage(Message msg) {
 
-                synchronized (PauseAbleCountDownTimer.this) {
+                synchronized (PauseTimer.this) {
                     if (currentState == CANCEL || currentState == PAUSE) {
                         return;
                     }

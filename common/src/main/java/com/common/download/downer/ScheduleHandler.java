@@ -45,9 +45,6 @@ public class ScheduleHandler {
     private volatile AtomicInteger notyStatus;
     /**并发时控制失败派发*/
     private volatile AtomicBoolean isError;
-    /**通知id，分配生成的三位数*/
-    public int NOTIFY_ID;
-//    private static final int DELAYED = 50;
     public ScheduleHandler(ScheduleRunable scheduleRunable){
         schedule = scheduleRunable;
         mContext = schedule.mContext;
@@ -57,7 +54,6 @@ public class ScheduleHandler {
         notyStatus = new AtomicInteger();
         isError = new AtomicBoolean(false);
         isPause = new AtomicBoolean(false);
-        NOTIFY_ID = (int) (Math.random()*900 + 100);
         mHandler = new Handler(Looper.getMainLooper());
         initNotify();
     }
@@ -110,22 +106,20 @@ public class ScheduleHandler {
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else if(notyStatus.get() == Downer.STATUS_DOWNLOAD_PAUSE){
-            clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
             Log.i(Downer.TAG, "ScheduleHandler:setNotify  pause " + downerOptions.getTitle());
         }else{
-            clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
         }
         builder.setContentText(description);
-        notificationManager.notify(NOTIFY_ID, builder.build());
+        notificationManager.notify(downerRequest.NOTIFY_ID, builder.build());
     }
     /**
      * 清除通知栏
      */
-    public void clearNotify() {
+    private void clearNotify() {
         Log.i(Downer.TAG, "ScheduleHandler: clearNotify");
-        notificationManager.cancel(NOTIFY_ID);
+        notificationManager.cancel(downerRequest.NOTIFY_ID);
     }
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleRunable.ScheduleListener listener = new ScheduleRunable.ScheduleListener() {
@@ -181,14 +175,16 @@ public class ScheduleHandler {
                 @Override
                 public void run() {
                     if (!isError.get()){
-                        downerRequest.status = Downer.STATUS_DOWNLOAD_PAUSE;
-                        Log.i(Downer.TAG, "ScheduleHandler: downLoadError");
+                        downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
                         isError.getAndSet(true);
                         if(downerCallBack != null){
                             downerCallBack.onError(new DownerException());
                         }
-                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
-                        setNotify(DownerContrat.DownerString.DOWN_CONNECTING);
+                        Log.i(Downer.TAG, "ScheduleHandler: downLoadError");
+
+                        //如果是失败，文案显示安装暂停状态
+                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PAUSE);
+                        setNotify(DownerContrat.DownerString.DOWN_PAUSE);
                     }
                 }
             });
