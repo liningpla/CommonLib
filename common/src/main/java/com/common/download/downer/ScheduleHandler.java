@@ -137,7 +137,7 @@ public class ScheduleHandler {
                     isPause.getAndSet(false);
                     isError.getAndSet(false);
                     if(downerCallBack != null){
-                        downerCallBack.onStart();
+                        downerCallBack.onStart(downerRequest.getModel());
                     }
                     Log.i(Downer.TAG, "ScheduleHandler: downLoadStart");
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_START);
@@ -191,7 +191,7 @@ public class ScheduleHandler {
                         downerRequest.status = Downer.STATUS_DOWNLOAD_STOP;
                         isError.getAndSet(true);
                         if(downerCallBack != null){
-                            downerCallBack.onStop(new DownerException());
+                            downerCallBack.onStop(downerRequest.getModel(), new DownerException());
                         }
                         notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_STOP);
                         if(DownerdUtil.isNetworkConnected(mContext)){
@@ -217,7 +217,7 @@ public class ScheduleHandler {
                 public void run() {
                     downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                     if(downerCallBack != null){
-                        downerCallBack.onComplete();
+                        downerCallBack.onComplete(downerRequest.getModel());
                     }
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
                     setNotify(DownerContrat.DownerString.DOWN_COMPLETE);
@@ -240,7 +240,7 @@ public class ScheduleHandler {
                         Log.i(Downer.TAG, "ScheduleHandler: downLoadPause offset = "+schedule.offset);
                         isPause.getAndSet(true);
                         if(downerCallBack != null){
-                            downerCallBack.onPause();
+                            downerCallBack.onPause(downerRequest.getModel());
                         }
                         notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PAUSE);
                         setNotify(DownerContrat.DownerString.DOWN_PAUSE);

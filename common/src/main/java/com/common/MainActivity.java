@@ -85,11 +85,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onProgress(long max, long progress) {
             }
+
             @Override
-            public void onStop(DownerException e) {
+            public void onStop(Object model, DownerException e) {
+                
             }
+
             @Override
-            public void onComplete() {
+            public void onComplete(Object model) {
+
             }
         });
     }
@@ -115,12 +119,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onProgress(long max, long progress) {
 
             }
+
             @Override
-            public void onStop(DownerException e) {
+            public void onStop(Object model, DownerException e) {
+
             }
+
             @Override
-            public void onComplete() {
-                Log.i(Downer.TAG, "MainActivity:onComplete: ");
+            public void onComplete(Object model) {
+
             }
         });
     }

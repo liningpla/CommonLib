@@ -48,7 +48,10 @@ public class Downer<T> {
     public static <T> DownerRequest downLoad(T model){
         return new DownerRequest(model);
     }
-
+    /**开始下载*/
+    public static DownerRequest downLoad(){
+        return downLoad(new Object());
+    }
     public static Downer init(){
         if(downer == null){
             downer = new Downer();

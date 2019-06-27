@@ -161,7 +161,7 @@ public class DownerService extends Service {
             switch (scheduleStatus){
                 case SCHEDULE_STATUS_DISCONNECTED:
                     if(scheduleRunable.downerCallBack != null){
-                        scheduleRunable.downerCallBack.onDisconnected();
+                        scheduleRunable.downerCallBack.onDisconnected(downerRequest.getModel());
                     }
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is disconnected");
                     break;
@@ -185,7 +185,7 @@ public class DownerService extends Service {
                     if(scheduleRunable.downerCallBack != null){
                         String requesPageName = scheduleRunable.downerRequest.apkPageName;
                         if(TextUtils.equals(requesPageName, apkpagename)){
-                            scheduleRunable.downerCallBack.onCompleteInstall();
+                            scheduleRunable.downerCallBack.onCompleteInstall(downerRequest.getModel());
                             Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install completed");
                         }
                     }
