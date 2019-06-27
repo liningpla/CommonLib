@@ -84,11 +84,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             @Override
             public void onProgress(long max, long progress) {
+                Log.i(Downer.TAG, "MainActivity:onProgress progress = "+progress+"  max = "+max);
             }
 
             @Override
             public void onStop(Object model, DownerException e) {
-                
+
             }
 
             @Override

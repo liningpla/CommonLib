@@ -47,6 +47,19 @@ public class DownerService extends Service {
     /**传给service，添加下载*/
     public static void startDownerService(Context context, DownerRequest downerRequest){
         SoftReference<DownerRequest> softRequest = new SoftReference<>(downerRequest);
+        //是否调度
+        boolean isSchedule = true;
+        if(downerRequests.containsKey(downerRequest.options.getUrl())){//已经添加到任务中
+            isSchedule = false;
+            //连接状态下，和加载状态下载，不再重复执行任务
+            if(downerRequest.status == Downer.STATUS_DOWNLOAD_STOP|| downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
+                isSchedule = true;
+            }
+        }
+        if(!isSchedule){
+            Log.i(Downer.TAG, "DownerService:startDownerService "+downerRequest.options.getTitle()+" is scheduleing");
+            return;
+        }
         downerRequests.put(downerRequest.options.getUrl(), softRequest);
         if(downerRequest.downerCallBack != null){//链接服务下载
             downerRequest.downerCallBack.onConnected(downerRequest);
@@ -80,10 +93,6 @@ public class DownerService extends Service {
         }
         Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url);
         DownerRequest downerRequest = downerRequests.get(url).get();
-        //连接状态下，和加载状态下载，不再重复执行任务
-        if(downerRequest.status == Downer.STATUS_DOWNLOAD_START || downerRequest.status == Downer.STATUS_DOWNLOAD_PROGRESS){
-            return START_STICKY;
-        }
         ThreadManger.getInstance().execute(Priority.NORMAL, downerRequest.scheduleRunable);
         Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
         return START_STICKY;

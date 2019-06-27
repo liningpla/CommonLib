@@ -45,6 +45,7 @@ public class ScheduleHandler {
     private volatile AtomicInteger notyStatus;
     /**并发时控制失败派发*/
     private volatile AtomicBoolean isError;
+    private long fileLengeh;
     public ScheduleHandler(ScheduleRunable scheduleRunable){
         schedule = scheduleRunable;
         mContext = schedule.mContext;
@@ -145,6 +146,7 @@ public class ScheduleHandler {
         }
         @Override
         public void downLoadProgress(long max, long progress) {
+            fileLengeh = max;
             if(progress >= max){
                 return;
             }
@@ -173,7 +175,6 @@ public class ScheduleHandler {
                     if(uiProgress == uiMax){
                         return;
                     }
-//                    Log.d(Downer.TAG, "Thread：" + downerOptions.getTitle()+"  "+DownerdUtil.formatByte(uiProgress) + "/" + DownerdUtil.formatByte(uiMax));
                     setNotify(DownerdUtil.formatByte(uiProgress) + "/" + DownerdUtil.formatByte(uiMax));
                 }
             });
@@ -215,6 +216,7 @@ public class ScheduleHandler {
                 public void run() {
                     downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                     if(downerCallBack != null){
+                        downerCallBack.onProgress(fileLengeh, fileLengeh);
                         downerCallBack.onComplete(downerRequest.getModel());
                     }
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);

@@ -177,6 +177,7 @@ public class DownerRequest<T> {
     public void release(){
         if(DownerService.downerRequests != null){
             DownerService.downerRequests.remove(options.getUrl());
+            Log.i(Downer.TAG, "DownerRequest:release "+options.getTitle()+" is released");
         }
     }
 }
