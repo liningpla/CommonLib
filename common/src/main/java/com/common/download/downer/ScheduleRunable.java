@@ -204,34 +204,40 @@ public class ScheduleRunable implements Runnable {
      * 标记下载位置
      */
     public void mark(long startLength, long endLength) {
-        if(!downerOptions.isSupportRange()){//不支持断点续传
-            return;
-        }
-        if (downerBuffer == null) {
-            downerBuffer = new DownerBuffer();
-            downerBuffer.setDownloadUrl(downerOptions.getUrl());
-            downerBuffer.setFileMd5(downerOptions.getMd5());
-            downerBuffer.setBufferLength(progress.get());
-            downerBuffer.setFileLength(maxProgress);
-            downerBuffer.setBufferParts(new CopyOnWriteArrayList<DownerBuffer.BufferPart>());
-            downerBuffer.setLastModified(System.currentTimeMillis());
-        }
-        downerBuffer.setBufferLength(progress.get());
-        downerBuffer.setLastModified(System.currentTimeMillis());
-        int index = -1;
-        for (int i = 0; i < downerBuffer.getBufferParts().size(); i++) {
-            if (downerBuffer.getBufferParts().get(i).getEndLength() == endLength) {
-                index = i;
-                break;
+        try {
+            if(!downerOptions.isSupportRange()){//不支持断点续传
+                return;
             }
+            if (downerBuffer == null) {
+                downerBuffer = new DownerBuffer();
+                downerBuffer.setDownloadUrl(downerOptions.getUrl());
+                downerBuffer.setFileMd5(downerOptions.getMd5());
+                downerBuffer.setBufferLength(progress.get());
+                downerBuffer.setFileLength(maxProgress);
+                downerBuffer.setBufferParts(new CopyOnWriteArrayList<DownerBuffer.BufferPart>());
+                downerBuffer.setLastModified(System.currentTimeMillis());
+            }
+            downerBuffer.setBufferLength(progress.get());
+            downerBuffer.setLastModified(System.currentTimeMillis());
+            int index = -1;
+            for (int i = 0; i < downerBuffer.getBufferParts().size(); i++) {
+                if (downerBuffer.getBufferParts().get(i).getEndLength() == endLength) {
+                    index = i;
+                    break;
+                }
+            }
+            DownerBuffer.BufferPart bufferPart = new DownerBuffer.BufferPart(startLength, endLength);
+            if (index == -1) {
+                downerBuffer.getBufferParts().add(bufferPart);
+            } else {
+                downerBuffer.getBufferParts().set(index, bufferPart);
+            }
+            repository.setUpgradeBuffer(downerBuffer);
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.i(Downer.TAG, "ScheduleRunable:mark = "+e.getMessage());
         }
-        DownerBuffer.BufferPart bufferPart = new DownerBuffer.BufferPart(startLength, endLength);
-        if (index == -1) {
-            downerBuffer.getBufferParts().add(bufferPart);
-        } else {
-            downerBuffer.getBufferParts().set(index, bufferPart);
-        }
-        repository.setUpgradeBuffer(downerBuffer);
+
     }
 
     /**调度类监听，用来通知栏UI更新和下载状态变化*/

@@ -45,8 +45,6 @@ public class ScheduleHandler {
     private volatile AtomicInteger notyStatus;
     /**并发时控制失败派发*/
     private volatile AtomicBoolean isError;
-    /**网络正常情况下，下载失败，尝试次数*/
-    private static int RE_TRY = 3;
     public ScheduleHandler(ScheduleRunable scheduleRunable){
         schedule = scheduleRunable;
         mContext = schedule.mContext;
