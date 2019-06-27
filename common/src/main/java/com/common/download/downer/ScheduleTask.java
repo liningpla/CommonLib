@@ -111,6 +111,7 @@ public class ScheduleTask implements Runnable {
             } while (true);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.i(Downer.TAG, "ScheduleTask:run = "+e.getMessage());
             listener.downLoadStop();
         } finally {
             if (randomAccessFile != null) {

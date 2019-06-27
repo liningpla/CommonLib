@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.common.download.Downer;
+import com.common.download.InstallThread;
 import com.common.download.model.DownerBuffer;
 import com.common.download.model.DownerOptions;
 import com.common.download.model.DownerRepository;
@@ -143,6 +144,7 @@ public class ScheduleRunable implements Runnable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Log.i(Downer.TAG, "ScheduleRunable:run = "+e.getMessage());
             listener.downLoadStop();
         }
     }

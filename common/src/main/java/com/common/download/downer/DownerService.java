@@ -17,11 +17,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.common.download.Downer;
-import com.common.download.InstallThread;
 import com.common.download.thread.Priority;
 import com.common.download.thread.ThreadManger;
 
-import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -82,30 +80,13 @@ public class DownerService extends Service {
         }
         Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url);
         DownerRequest downerRequest = downerRequests.get(url).get();
-        if(isNeedSchedule(downerRequest.scheduleRunable)){
-            ThreadManger.getInstance().execute(Priority.NORMAL, downerRequest.scheduleRunable);
-            Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
+        //连接状态下，和加载状态下载，不再重复执行任务
+        if(downerRequest.status == Downer.STATUS_DOWNLOAD_START || downerRequest.status == Downer.STATUS_DOWNLOAD_PROGRESS){
+            return START_STICKY;
         }
+        ThreadManger.getInstance().execute(Priority.NORMAL, downerRequest.scheduleRunable);
+        Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
         return START_STICKY;
-    }
-
-    /**下载请求是否需要调度*/
-    private boolean isNeedSchedule(ScheduleRunable scheduleRunable){
-        File dowed = scheduleRunable.downerRequest.options.getStorage();
-        //虽然调度过，但是下载的文件不存在，需要下载的文件没有下载完成，都需要继续调度下载
-        if(dowed == null){
-            return true;
-        }
-        if(!dowed.exists()){
-            return true;
-        }
-        if(dowed.length() < scheduleRunable.fileLength){
-            return true;
-        }
-        if(scheduleRunable.downerRequest.options.isAutomountEnabled()){//已经下载成功，自动安装
-            new InstallThread(scheduleRunable).start();
-        }
-        return false;
     }
 
     /**初始化网络监听，安装管理监听，通知栏通知*/
