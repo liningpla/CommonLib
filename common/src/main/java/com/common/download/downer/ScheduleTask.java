@@ -83,7 +83,7 @@ public class ScheduleTask implements Runnable {
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE) {
                     /*收到取消通知，执行取消操作，通知调度器*/
                     listener.downLoadPause();
-                    return;
+                    break;
                 }
                if( (len=inputStream.read(buffer)) != -1){
                    randomAccessFile.write(buffer, 0, len);
@@ -99,7 +99,7 @@ public class ScheduleTask implements Runnable {
                    * 因此分包下，读取中间大小时，读取完成总是startLength 比 endLength 大一，只有读取末尾时才正常startLength = endLength
                    * */
                    if(startLength > endLength){
-                       return;
+                       break;
                    }
                    Log.d(Downer.TAG, "ScheduleTask startLength = "+startLength+"  endLength = "+endLength);
                    listener.downLoadComplete();

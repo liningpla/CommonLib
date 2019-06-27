@@ -123,7 +123,7 @@ public class ScheduleHandler {
     /**
      * 清除通知栏
      */
-    private void clearNotify() {
+    public void clearNotify() {
         Log.i(Downer.TAG, "ScheduleHandler: clearNotify");
         notificationManager.cancel(NOTIFY_ID);
     }
@@ -188,6 +188,7 @@ public class ScheduleHandler {
                             downerCallBack.onError(new DownerException());
                         }
                         notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_ERROR);
+                        setNotify(DownerContrat.DownerString.DOWN_CONNECTING);
                     }
                 }
             });

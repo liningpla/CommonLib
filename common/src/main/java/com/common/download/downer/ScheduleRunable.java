@@ -78,10 +78,10 @@ public class ScheduleRunable implements Runnable {
                         if ((endLength = fileLength) != -1 && endLength == upgradeBuffer.getFileLength()) {
                             progress = new AtomicLong(upgradeBuffer.getBufferLength());
                             maxProgress = upgradeBuffer.getFileLength();
+                            listener.downLoadProgress(maxProgress, progress.get());
                             long expiryDate = Math.abs(System.currentTimeMillis() - upgradeBuffer.getLastModified());
                             if (expiryDate <= DownerBuffer.EXPIRY_DATE) {
                                 if (upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength()) {
-                                    listener.downLoadProgress(maxProgress, progress.get());
                                     downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
                                     listener.downLoadComplete();
                                     return;
@@ -230,6 +230,13 @@ public class ScheduleRunable implements Runnable {
             downerBuffer.getBufferParts().set(index, bufferPart);
         }
         repository.setUpgradeBuffer(downerBuffer);
+    }
+
+    /**关闭通知栏*/
+    public void closeNotify(){
+        if(mHandler != null){
+            mHandler.clearNotify();
+        }
     }
 
     /**调度类监听，用来通知栏UI更新和下载状态变化*/

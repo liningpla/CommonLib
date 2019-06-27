@@ -174,11 +174,13 @@ public class DownerService extends Service {
                     if(scheduleRunable.downerCallBack != null){
                         scheduleRunable.downerCallBack.onDisconnected();
                     }
+                    scheduleRunable.closeNotify();
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is disconnected");
                     break;
                 case SCHEDULE_STATUS_RESUME:
                     if(scheduleRunable.downerRequest != null && scheduleRunable.downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
-                        ThreadManger.getInstance().execute(Priority.NORMAL, scheduleRunable);
+                        scheduleRunable.downerRequest.reStart(this);
+                        scheduleRunable.closeNotify();
                     }
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is resume");
                     break;
