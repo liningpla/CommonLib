@@ -27,6 +27,7 @@ public class DownerRequest<T> {
     public String apkPageName;
     /**通知id，分配生成的三位数*/
     public int NOTIFY_ID;
+    public ScheduleRunable scheduleRunable;
     private T model;
     public T getModel() {
         return model;
@@ -139,6 +140,7 @@ public class DownerRequest<T> {
         this.downerCallBack = callBack;
         Log.i(Downer.TAG, "DownerRequest:  execute ");
         options = optionsBulider.build();
+        scheduleRunable = new ScheduleRunable(context, this);
         DownerService.startDownerService(context, this);
     }
 
@@ -153,6 +155,7 @@ public class DownerRequest<T> {
     public void cancle(){
         Log.i(Downer.TAG, "DownerRequest:  cancle ");
         status = Downer.STATUS_DOWNLOAD_CANCEL;
+        release();
     }
 
     /**暂停下载任务*/
@@ -161,6 +164,7 @@ public class DownerRequest<T> {
         if(status == Downer.STATUS_DOWNLOAD_COMPLETE){//完成了
             return;
         }
+        scheduleRunable.listener.downLoadPause();
         status = Downer.STATUS_DOWNLOAD_PAUSE;
     }
 

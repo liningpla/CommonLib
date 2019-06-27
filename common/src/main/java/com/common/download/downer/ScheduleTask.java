@@ -82,9 +82,10 @@ public class ScheduleTask implements Runnable {
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
                     break;
                 }
+                if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
+                    break;
+                }
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE) {
-                    /*收到取消通知，执行取消操作，通知调度器*/
-                    listener.downLoadPause();
                     break;
                 }
                if( (len=inputStream.read(buffer)) != -1){

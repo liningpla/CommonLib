@@ -106,6 +106,7 @@ public class ScheduleHandler {
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else if(notyStatus.get() == Downer.STATUS_DOWNLOAD_PAUSE){
+            clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
             Log.i(Downer.TAG, "ScheduleHandler:setNotify  pause " + downerOptions.getTitle());
         }else{
@@ -145,6 +146,12 @@ public class ScheduleHandler {
             if(progress >= max){
                 return;
             }
+            if(downerRequest.status == Downer.STATUS_DOWNLOAD_ERROR){
+                return;
+            }
+            if(downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
+                return;
+            }
             if(downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE){
                 progress = max;
             }
@@ -158,11 +165,13 @@ public class ScheduleHandler {
                     if(downerCallBack != null){
                         downerCallBack.onProgress(uiMax, uiProgress);
                     }
+
                     schedule.offset = (int) (((float) uiProgress / uiMax) * 100);
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
                     if(uiProgress == uiMax){
                         return;
                     }
+//                    Log.d(Downer.TAG, "Thread：" + downerOptions.getTitle()+"  "+DownerdUtil.formatByte(uiProgress) + "/" + DownerdUtil.formatByte(uiMax));
                     setNotify(DownerdUtil.formatByte(uiProgress) + "/" + DownerdUtil.formatByte(uiMax));
                 }
             });
@@ -209,21 +218,6 @@ public class ScheduleHandler {
                     }
                     clearNotify();
                     downerRequest.release();
-                }
-            });
-        }
-        @Override
-        public void downLoadCancel() {
-            Log.i(Downer.TAG, "ScheduleHandler: downLoadCancel");
-            downerRequest.release();
-            /*通知外部调用者，取消成功*/
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(downerCallBack != null){
-                        downerCallBack.onCancel();
-                    }
-                    clearNotify();
                 }
             });
         }

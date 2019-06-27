@@ -40,8 +40,6 @@ public class DownerService extends Service {
     private NetWorkStateReceiver netWorkStateReceiver;
     /**安装包状态监听*/
     private PackagesReceiver packagesReceiver;
-    /**下载任务管理*/
-    public Map<String, SoftReference<ScheduleRunable>> scheduleRunables = new LinkedHashMap<>();
     /**下载监听管理*/
     public static Map<String, SoftReference<DownerRequest>> downerRequests = new LinkedHashMap<>();
     /**下载进度通知栏管理*/
@@ -84,21 +82,10 @@ public class DownerService extends Service {
         }
         Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url);
         DownerRequest downerRequest = downerRequests.get(url).get();
-        ScheduleRunable scheduleRunable;
-        if(scheduleRunables.containsKey(url) && scheduleRunables.get(url).get() != null){
-            scheduleRunable = scheduleRunables.get(url).get();
-            if(isNeedSchedule(scheduleRunable)){
-                ThreadManger.getInstance().execute(Priority.NORMAL, scheduleRunable);
-                Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
-            }
-        }else{
-            scheduleRunable = new ScheduleRunable(this, downerRequest);
-            SoftReference<ScheduleRunable> softSchedule = new SoftReference<>(scheduleRunable);
-            scheduleRunables.put(url, softSchedule);
-            ThreadManger.getInstance().execute(Priority.NORMAL, scheduleRunable);
+        if(isNeedSchedule(downerRequest.scheduleRunable)){
+            ThreadManger.getInstance().execute(Priority.NORMAL, downerRequest.scheduleRunable);
             Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
         }
-
         return START_STICKY;
     }
 
@@ -166,10 +153,11 @@ public class DownerService extends Service {
      * @param apkpagename 下载apk的包明
      * */
     private void iteratorSchedule(int scheduleStatus, String apkpagename){
-        Iterator<Map.Entry<String, SoftReference<ScheduleRunable>>> entries = scheduleRunables.entrySet().iterator();
+        Iterator<Map.Entry<String, SoftReference<DownerRequest>>> entries = downerRequests.entrySet().iterator();
         while (entries.hasNext()) {
-            Map.Entry<String, SoftReference<ScheduleRunable>> entry = entries.next();
-            ScheduleRunable scheduleRunable = entry.getValue().get();
+            Map.Entry<String, SoftReference<DownerRequest>> entry = entries.next();
+            DownerRequest downerRequest = entry.getValue().get();
+            ScheduleRunable scheduleRunable = downerRequest.scheduleRunable;
             switch (scheduleStatus){
                 case SCHEDULE_STATUS_DISCONNECTED:
                     if(scheduleRunable.downerCallBack != null){
@@ -179,15 +167,19 @@ public class DownerService extends Service {
                     break;
                 case SCHEDULE_STATUS_RESUME:
                     if(scheduleRunable.downerRequest != null){
-                        scheduleRunable.downerRequest.reStart(this);
+                        if(downerRequest.status == Downer.STATUS_DOWNLOAD_ERROR || downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
+                            scheduleRunable.downerRequest.reStart(this);
+                            Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is resume");
+                        }
                     }
-                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is resume");
                     break;
                 case SCHEDULE_STATUS_PAUSE:
                     if(scheduleRunable.downerRequest != null){
-                        scheduleRunable.downerRequest.pause();
+                        if(downerRequest.status == Downer.STATUS_DOWNLOAD_PROGRESS || downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
+                            scheduleRunable.downerRequest.pause();
+                            Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is pause");
+                        }
                     }
-                    Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is pause");
                     break;
                 case Downer.STATUS_INSTALL_COMPLETE:
                     if(scheduleRunable.downerCallBack != null){
