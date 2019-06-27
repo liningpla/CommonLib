@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onProgress(long max, long progress) {
             }
             @Override
-            public void onError(DownerException e) {
+            public void onStop(DownerException e) {
             }
             @Override
             public void onComplete() {
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
             @Override
-            public void onError(DownerException e) {
+            public void onStop(DownerException e) {
             }
             @Override
             public void onComplete() {

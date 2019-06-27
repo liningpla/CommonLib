@@ -20,10 +20,8 @@ public abstract class DownerCallBack implements Parcelable {
     public abstract void onProgress(long max, long progress);
     /*下载暂停*/
     public void onPause() {}
-    /*下载取消*/
-    public void onCancel() {}
-    /*下载开始*/
-    public abstract void onError(DownerException e);
+    /*下载中断*/
+    public abstract void onStop(DownerException e);
     /*下载完成*/
     public abstract void onComplete();
     /*检查安装*/
@@ -45,7 +43,7 @@ public abstract class DownerCallBack implements Parcelable {
             return new DownerCallBack(in) {
                 public void onConnected(DownerRequest request) {}
                 public void onProgress(long max, long progress) {}
-                 public void onError(DownerException e) {}
+                 public void onStop(DownerException e) {}
                  public void onComplete() {}
             };
         }

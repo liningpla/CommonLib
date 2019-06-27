@@ -105,13 +105,13 @@ public class ScheduleRunable implements Runnable {
                 parentFileExists = parentFile.mkdirs();
             }
             if (!parentFileExists) {
-                downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
-                listener.downLoadError();
+                downerRequest.status = Downer.STATUS_DOWNLOAD_STOP;
+                listener.downLoadStop();
                 return;
             }
             if ((endLength = fileLength) == -1) {
-                downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
-                listener.downLoadError();
+                downerRequest.status = Downer.STATUS_DOWNLOAD_STOP;
+                listener.downLoadStop();
                 return;
             }
             progress = new AtomicLong(startLength);
@@ -143,7 +143,7 @@ public class ScheduleRunable implements Runnable {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            listener.downLoadError();
+            listener.downLoadStop();
         }
     }
     /**
@@ -236,7 +236,7 @@ public class ScheduleRunable implements Runnable {
     public interface ScheduleListener{
         void downLoadStart();
         void downLoadProgress(long max, long progress);
-        void downLoadError();
+        void downLoadStop();
         void downLoadComplete();
         void downLoadPause();
     }

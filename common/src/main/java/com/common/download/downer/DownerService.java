@@ -32,8 +32,8 @@ public class DownerService extends Service {
     public static final String DOWN_REQUEST = "down_request";
     /**调度任务状态-断开-下载服务*/
     private static final int SCHEDULE_STATUS_DISCONNECTED = 0x5121;
-    /**调度任务状态-暂停-下载服务*/
-    private static final int SCHEDULE_STATUS_PAUSE = 0x5122;
+    /**调度任务状态-中断-下载服务*/
+    private static final int SCHEDULE_STATUS_STOP = 0x5122;
     /**调度任务状态-恢复-下载服务*/
     private static final int SCHEDULE_STATUS_RESUME = 0x5123;
     /**网络状态监听*/
@@ -167,17 +167,17 @@ public class DownerService extends Service {
                     break;
                 case SCHEDULE_STATUS_RESUME:
                     if(scheduleRunable.downerRequest != null){
-                        if(downerRequest.status == Downer.STATUS_DOWNLOAD_ERROR || downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
+                        if(downerRequest.status == Downer.STATUS_DOWNLOAD_STOP || downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
                             scheduleRunable.downerRequest.reStart(this);
                             Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is resume");
                         }
                     }
                     break;
-                case SCHEDULE_STATUS_PAUSE:
+                case SCHEDULE_STATUS_STOP:
                     if(scheduleRunable.downerRequest != null){
                         if(downerRequest.status == Downer.STATUS_DOWNLOAD_PROGRESS || downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
-                            scheduleRunable.downerRequest.pause();
-                            Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is pause");
+                            scheduleRunable.listener.downLoadStop();
+                            Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is stop");
                         }
                     }
                     break;
@@ -222,8 +222,8 @@ public class DownerService extends Service {
                 iteratorSchedule(SCHEDULE_STATUS_RESUME,"");
                 return;
             }
-            // WIFI已断开，移动数据已断开，执行暂停操作
-            iteratorSchedule(SCHEDULE_STATUS_PAUSE,"");
+            // WIFI已断开，移动数据已断开，执行中断操作
+            iteratorSchedule(SCHEDULE_STATUS_STOP,"");
         }
 
         public void registerReceiver(Context context) {

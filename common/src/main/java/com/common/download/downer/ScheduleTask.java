@@ -64,7 +64,7 @@ public class ScheduleTask implements Runnable {
                 connection.setRequestProperty("Range", "bytes=" + startLength + "-" + endLength);
                 connection.connect();
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_PARTIAL) {
-                    listener.downLoadError();
+                    listener.downLoadStop();
                     return;
                 }
             }
@@ -76,7 +76,7 @@ public class ScheduleTask implements Runnable {
             int len = -1;
             int tempOffset = 0;
             do {
-                if (downerRequest.status == Downer.STATUS_DOWNLOAD_ERROR) {
+                if (downerRequest.status == Downer.STATUS_DOWNLOAD_STOP) {
                     break;
                 }
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
@@ -111,7 +111,7 @@ public class ScheduleTask implements Runnable {
             } while (true);
         } catch (Exception e) {
             e.printStackTrace();
-            listener.downLoadError();
+            listener.downLoadStop();
         } finally {
             if (randomAccessFile != null) {
                 try {

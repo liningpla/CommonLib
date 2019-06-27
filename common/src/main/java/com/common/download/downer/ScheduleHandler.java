@@ -45,6 +45,8 @@ public class ScheduleHandler {
     private volatile AtomicInteger notyStatus;
     /**并发时控制失败派发*/
     private volatile AtomicBoolean isError;
+    /**网络正常情况下，下载失败，尝试次数*/
+    private static int RE_TRY = 3;
     public ScheduleHandler(ScheduleRunable scheduleRunable){
         schedule = scheduleRunable;
         mContext = schedule.mContext;
@@ -90,8 +92,9 @@ public class ScheduleHandler {
     }
     /**通知栏意图*/
     private PendingIntent getDefalutIntent(int flags) {
-        Log.i(Downer.TAG, "ScheduleHandler:  PendingIntent ");
         Intent intent = new Intent(mContext, DownerService.class);
+        intent.setAction("android.intent.action.RESPOND_VIA_MESSAGE");
+        intent.putExtra(DownerService.DOWN_REQUEST, downerRequest.options.getUrl());
         return PendingIntent.getService(mContext, 0, intent, flags);
     }
     /**
@@ -105,7 +108,7 @@ public class ScheduleHandler {
             int offset = (this != null)?schedule.offset:0;
             builder.setProgress(100, offset, false);
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
-        } else if(notyStatus.get() == Downer.STATUS_DOWNLOAD_PAUSE){
+        } else if(notyStatus.get() == Downer.STATUS_DOWNLOAD_STOP){
             clearNotify();
             builder.setSmallIcon(android.R.drawable.stat_sys_download_done);
             Log.i(Downer.TAG, "ScheduleHandler:setNotify  pause " + downerOptions.getTitle());
@@ -131,7 +134,8 @@ public class ScheduleHandler {
                 @Override
                 public void run() {
                     downerRequest.status = Downer.STATUS_DOWNLOAD_START;
-                    isPause = new AtomicBoolean(false);
+                    isPause.getAndSet(false);
+                    isError.getAndSet(false);
                     if(downerCallBack != null){
                         downerCallBack.onStart();
                     }
@@ -146,7 +150,7 @@ public class ScheduleHandler {
             if(progress >= max){
                 return;
             }
-            if(downerRequest.status == Downer.STATUS_DOWNLOAD_ERROR){
+            if(downerRequest.status == Downer.STATUS_DOWNLOAD_STOP){
                 return;
             }
             if(downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
@@ -178,25 +182,30 @@ public class ScheduleHandler {
 
         }
         @Override
-        public void downLoadError() {
+        public void downLoadStop() {
             /*通知外部调用者，下载异常*/
-            mHandler.post(new Runnable() {
+            mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (!isError.get()){
-                        downerRequest.status = Downer.STATUS_DOWNLOAD_ERROR;
+                        downerRequest.status = Downer.STATUS_DOWNLOAD_STOP;
                         isError.getAndSet(true);
                         if(downerCallBack != null){
-                            downerCallBack.onError(new DownerException());
+                            downerCallBack.onStop(new DownerException());
                         }
-                        Log.i(Downer.TAG, "ScheduleHandler: downLoadError");
-
-                        //如果是失败，文案显示安装暂停状态
-                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PAUSE);
-                        setNotify(DownerContrat.DownerString.DOWN_PAUSE);
+                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_STOP);
+                        if(DownerdUtil.isNetworkConnected(mContext)){
+                            //网络正常
+                            setNotify(DownerContrat.DownerString.DONW_STOP);
+                            Log.i(Downer.TAG, "ScheduleHandler: downLoadStop   2");
+                        }else{
+                            //无网络
+                            setNotify(DownerContrat.DownerString.DONW_NET_STOP);
+                            Log.i(Downer.TAG, "ScheduleHandler: downLoadStop   3");
+                        }
                     }
                 }
-            });
+            }, 500);
 
         }
         @Override

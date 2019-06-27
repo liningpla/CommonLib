@@ -25,8 +25,8 @@ public class Downer<T> {
     public static final int STATUS_DOWNLOAD_PAUSE = 0x1003;
     /**下载取消*/
     public static final int STATUS_DOWNLOAD_CANCEL = 0x1004;
-    /**下载错误*/
-    public static final int STATUS_DOWNLOAD_ERROR = 0x1005;
+    /**下载中断*/
+    public static final int STATUS_DOWNLOAD_STOP = 0x1005;
     /**下载完成*/
     public static final int STATUS_DOWNLOAD_COMPLETE = 0x1006;
     /**安装完成*/
