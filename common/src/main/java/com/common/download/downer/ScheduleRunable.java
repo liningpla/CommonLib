@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.common.download.Downer;
-import com.common.download.InstallThread;
 import com.common.download.model.DownerBuffer;
 import com.common.download.model.DownerOptions;
 import com.common.download.model.DownerRepository;
@@ -46,6 +45,8 @@ public class ScheduleRunable implements Runnable {
     private volatile DownerBuffer downerBuffer;
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleListener listener;
+    /**分包下载数*/
+    public volatile int pools;
 
     public ScheduleRunable(Context context, DownerRequest downerRequest){
         mContext = context;
@@ -122,7 +123,7 @@ public class ScheduleRunable implements Runnable {
                 return;
             }
             int part = 5 * 1024 * 1024;
-            int pools = 1;
+            pools = 1;
             if (endLength >= part) {
                 pools = (int) (endLength / part);
             }

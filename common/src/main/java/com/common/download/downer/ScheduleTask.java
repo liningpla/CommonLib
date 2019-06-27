@@ -102,9 +102,10 @@ public class ScheduleTask implements Runnable {
                    * 因此分包下，读取中间大小时，读取完成总是startLength 比 endLength 大一，只有读取末尾时才正常startLength = endLength
                    * */
                    Log.d(Downer.TAG, "ScheduleTask startLength = "+startLength+"  endLength = "+endLength);
-                   if(startLength == endLength){
-                       listener.downLoadComplete();
+                   if(startLength > endLength){
+                       break;
                    }
+                   listener.downLoadComplete();
                    break;
                }
             } while (true);

@@ -146,6 +146,7 @@ public class ScheduleHandler {
         }
         @Override
         public void downLoadProgress(long max, long progress) {
+            Log.i(Downer.TAG, "ScheduleHandler:downLoadProgress progress = "+progress+"  max = "+max);
             fileLengeh = max;
             if(progress >= max){
                 return;
@@ -155,9 +156,6 @@ public class ScheduleHandler {
             }
             if(downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
                 return;
-            }
-            if(downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE){
-                progress = max;
             }
             final long uiMax = max;
             final long uiProgress = progress;
@@ -169,12 +167,8 @@ public class ScheduleHandler {
                     if(downerCallBack != null){
                         downerCallBack.onProgress(uiMax, uiProgress);
                     }
-
                     schedule.offset = (int) (((float) uiProgress / uiMax) * 100);
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
-                    if(uiProgress == uiMax){
-                        return;
-                    }
                     setNotify(DownerdUtil.formatByte(uiProgress) + "/" + DownerdUtil.formatByte(uiMax));
                 }
             });
@@ -209,26 +203,29 @@ public class ScheduleHandler {
         }
         @Override
         public void downLoadComplete() {
-            Log.i(Downer.TAG, "ScheduleHandler: downLoadComplete");
-            /*通知外部调用者，完成下载*/
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
-                    if(downerCallBack != null){
-                        downerCallBack.onProgress(fileLengeh, fileLengeh);
-                        downerCallBack.onComplete(downerRequest.getModel());
+//            if(schedule.pools == 0){//分包全部下载完成
+                Log.i(Downer.TAG, "ScheduleHandler: downLoadComplete："+schedule.pools);
+                /*通知外部调用者，完成下载*/
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
+                        if(downerCallBack != null){
+                            downerCallBack.onProgress(fileLengeh, fileLengeh);
+                            downerCallBack.onComplete(downerRequest.getModel());
+                        }
+                        notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
+                        setNotify(DownerContrat.DownerString.DOWN_COMPLETE);
+                        if(downerOptions.isAutomountEnabled()){//自动安装
+                            Log.i(Downer.TAG, "ScheduleHandler:  downLoadComplete is Auto Install");
+                            new InstallThread(schedule).start();
+                        }
+                        clearNotify();
+                        downerRequest.release();
                     }
-                    notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_COMPLETE);
-                    setNotify(DownerContrat.DownerString.DOWN_COMPLETE);
-                    if(downerOptions.isAutomountEnabled()){//自动安装
-                        Log.i(Downer.TAG, "ScheduleHandler:  downLoadComplete is Auto Install");
-                        new InstallThread(schedule).start();
-                    }
-                    clearNotify();
-                    downerRequest.release();
-                }
-            });
+                });
+//            }
+            schedule.pools--;
         }
         @Override
         public void downLoadPause() {
