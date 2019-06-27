@@ -186,11 +186,12 @@ public class ScheduleHandler {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!isError.get()){
                         downerRequest.status = Downer.STATUS_DOWNLOAD_STOP;
-                        isError.getAndSet(true);
-                        if(downerCallBack != null){
-                            downerCallBack.onStop(downerRequest.getModel(), new DownerException());
+                        if (!isError.get()){
+                            isError.getAndSet(true);
+                            if(downerCallBack != null){
+                                downerCallBack.onStop(downerRequest.getModel(), new DownerException());
+                            }
                         }
                         notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_STOP);
                         if(DownerdUtil.isNetworkConnected(mContext)){
@@ -202,7 +203,6 @@ public class ScheduleHandler {
                             setNotify(DownerContrat.DownerString.DONW_NET_STOP);
                             Log.i(Downer.TAG, "ScheduleHandler: downLoadStop   3");
                         }
-                    }
                 }
             }, 500);
 
