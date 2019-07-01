@@ -71,6 +71,8 @@ public final class DownerOptions implements Parcelable {
      * 是否自动清除安装包
      */
     private final boolean isSupportRange;
+    /**是否支持覆盖下载*/
+    private final boolean isOverride;
 
     private DownerOptions(Params params) {
         icon = params.icon;
@@ -84,6 +86,7 @@ public final class DownerOptions implements Parcelable {
         automountEnabled = params.autocleanEnabled;
         autocleanEnabled = params.autocleanEnabled;
         isSupportRange = params.isSupportRange;
+        isOverride = params.isOverride;
     }
 
     protected DownerOptions(Parcel in) {
@@ -98,6 +101,7 @@ public final class DownerOptions implements Parcelable {
         automountEnabled = in.readByte() != 0;
         autocleanEnabled = in.readByte() != 0;
         isSupportRange = in.readByte() != 0;
+        isOverride = in.readByte() != 0;
     }
 
     @Override
@@ -112,6 +116,8 @@ public final class DownerOptions implements Parcelable {
         dest.writeInt(multithreadPools);
         dest.writeInt((byte) (automountEnabled ? 1 : 0));
         dest.writeInt((byte) (autocleanEnabled ? 1 : 0));
+        dest.writeInt((byte) (isSupportRange ? 1 : 0));
+        dest.writeInt((byte) (isOverride ? 1 : 0));
     }
 
     @Override
@@ -169,6 +175,10 @@ public final class DownerOptions implements Parcelable {
 
     public boolean isSupportRange() {
         return isSupportRange;
+    }
+
+    public boolean isOverride() {
+        return isOverride;
     }
 
     public static class Builder implements Parcelable {
@@ -248,6 +258,11 @@ public final class DownerOptions implements Parcelable {
             return this;
         }
 
+        public Builder setOverride(boolean isOverride){
+            params.isOverride = isOverride;
+            return this;
+        }
+
         public DownerOptions build() {
             return new DownerOptions(params);
         }
@@ -270,6 +285,7 @@ public final class DownerOptions implements Parcelable {
             dest.writeInt((byte) (params.automountEnabled ? 1 : 0));
             dest.writeInt((byte) (params.autocleanEnabled ? 1 : 0));
             dest.writeInt((byte) (params.isSupportRange ? 1 : 0));
+            dest.writeInt((byte) (params.isOverride ? 1 : 0));
         }
     }
 
@@ -285,6 +301,7 @@ public final class DownerOptions implements Parcelable {
         boolean automountEnabled;
         boolean autocleanEnabled;
         boolean isSupportRange;
+        boolean isOverride;
     }
 
 }

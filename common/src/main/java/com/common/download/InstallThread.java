@@ -8,6 +8,7 @@ import com.common.download.downer.DownerCallBack;
 import com.common.download.downer.DownerRequest;
 import com.common.download.downer.ScheduleRunable;
 import com.common.download.model.DownerOptions;
+import com.common.download.thread.PauseTimer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +28,22 @@ public class InstallThread extends Thread {
     /**下载请求状态返回，用来通知外部调用者，有可能为空，需要非空判断*/
     private DownerCallBack downerCallBack;
     private long maxLength;
+    /**等待安装结果标记，有安装结果后才能释放此线程*/
+    public volatile boolean isInstalled;
+    /**安装等待时间-5分钟*/
+    private final long INSTALL_DELAY_TIME =  5*60*1000;
+    /**安装等待间隔上报时间-每隔3秒钟*/
+    private final long INATALL_DELAY_SPACE = 3*1000;
+    /**安装监听倒计时*/
+    private PauseTimer pauseTimer = new PauseTimer(INSTALL_DELAY_TIME, INATALL_DELAY_SPACE, false) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+        }
+        @Override
+        public void onFinish() {
+            isInstalled = true;
+        }
+    };
     public InstallThread(ScheduleRunable scheduleRunable){
         this.downerOptions = scheduleRunable.downerOptions;
         this.mContext = scheduleRunable.mContext;
@@ -38,6 +55,7 @@ public class InstallThread extends Thread {
     public void run() {
         super.run();
         try {
+            pauseTimer.start();
             if(downerCallBack!=null){
                 downerCallBack.onStartInstall(downerRequest.getModel());
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install start ");
@@ -46,11 +64,17 @@ public class InstallThread extends Thread {
                 downerRequest.apkPageName = (String) DownerdUtil.getApkInfo(mContext, downerOptions.getStorage().getPath()).get("packageName");
                 DownerdUtil.installApk(mContext, downerOptions.getStorage().getPath());
             }
+            while (!isInstalled){
+                Log.i(Downer.TAG, "InstallThread:run:Waiting install status ");
+                Thread.sleep(INATALL_DELAY_SPACE);
+            }
         } catch (IOException e) {
             if(downerCallBack!=null){
                 downerCallBack.onErrorInstall(downerRequest.getModel(), new DownerException(ERROR_CODE_PACKAGE_INVALID));
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install  md5 check error");
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

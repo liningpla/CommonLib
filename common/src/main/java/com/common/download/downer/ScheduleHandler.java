@@ -45,6 +45,7 @@ public class ScheduleHandler {
     private volatile AtomicInteger notyStatus;
     /**并发时控制失败派发*/
     private volatile AtomicBoolean isError;
+    /**文件长度*/
     private long fileLengeh;
     public ScheduleHandler(ScheduleRunable scheduleRunable){
         schedule = scheduleRunable;
@@ -146,7 +147,7 @@ public class ScheduleHandler {
         }
         @Override
         public void downLoadProgress(long max, long progress) {
-            Log.i(Downer.TAG, "ScheduleHandler:downLoadProgress progress = "+progress+"  max = "+max);
+//            Log.i(Downer.TAG, "ScheduleHandler:downLoadProgress progress = "+progress+"  max = "+max);
             fileLengeh = max;
             if(progress >= max){
                 return;
@@ -218,10 +219,13 @@ public class ScheduleHandler {
                         setNotify(DownerContrat.DownerString.DOWN_COMPLETE);
                         if(downerOptions.isAutomountEnabled()){//自动安装
                             Log.i(Downer.TAG, "ScheduleHandler:  downLoadComplete is Auto Install");
-                            new InstallThread(schedule).start();
+                            schedule.installThread = new InstallThread(schedule);
+                            schedule.installThread.start();
+                            downerRequest.release();
+                        }else{
+                            downerRequest.release();
                         }
                         clearNotify();
-                        downerRequest.release();
                     }
                 });
 //            }

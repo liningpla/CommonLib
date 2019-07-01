@@ -1,9 +1,11 @@
 package com.common.download.downer;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.common.download.Downer;
+import com.common.download.InstallThread;
 import com.common.download.model.DownerBuffer;
 import com.common.download.model.DownerOptions;
 import com.common.download.model.DownerRepository;
@@ -47,6 +49,8 @@ public class ScheduleRunable implements Runnable {
     public ScheduleListener listener;
     /**分包下载数*/
     public volatile int pools;
+    /**安装线程*/
+    public InstallThread installThread;
 
     public ScheduleRunable(Context context, DownerRequest downerRequest){
         mContext = context;
@@ -73,29 +77,33 @@ public class ScheduleRunable implements Runnable {
             if(!downerOptions.isSupportRange() && targetFile.exists()){//不支持断点续传
                 targetFile.delete();
             }
-            if (targetFile.exists()) {
-                DownerBuffer upgradeBuffer = repository.getUpgradeBuffer(downerOptions.getUrl());
-                if (upgradeBuffer != null) {
-                    if (upgradeBuffer.getBufferLength() <= targetFile.length()) {
-                        if ((endLength = fileLength) != -1 && endLength == upgradeBuffer.getFileLength()) {
-                            progress = new AtomicLong(upgradeBuffer.getBufferLength());
-                            maxProgress = upgradeBuffer.getFileLength();
-                            listener.downLoadProgress(maxProgress, progress.get());
-                            long expiryDate = Math.abs(System.currentTimeMillis() - upgradeBuffer.getLastModified());
-                            if (expiryDate <= DownerBuffer.EXPIRY_DATE) {
-                                if (upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength()) {
-                                    downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
-                                    listener.downLoadComplete();
-                                    return;
-                                }
-                                List<DownerBuffer.BufferPart> bufferParts = upgradeBuffer.getBufferParts();
-                                for (int id = 0; id < bufferParts.size(); id++) {
-                                    startLength = bufferParts.get(id).getStartLength();
-                                    endLength = bufferParts.get(id).getEndLength();
-                                    submit(this, id, startLength, endLength);
-                                }
-                                return;
+            DownerBuffer upgradeBuffer = repository.getUpgradeBuffer(downerOptions.getUrl());
+            //下载完成时，如果是覆盖下载，删除原有文件，重新下载。没有设置覆盖下载，直接安装
+            if (upgradeBuffer != null && upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength() && downerOptions.getStorage().exists()) {
+                if(downerOptions.isOverride()){
+                    downerOptions.getStorage().delete();
+                }else{
+                    downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
+                    listener.downLoadComplete();
+                    return;
+                }
+            }
+            if (targetFile.exists() && upgradeBuffer != null) {
+                if (upgradeBuffer.getBufferLength() <= targetFile.length()) {
+                    if ((endLength = fileLength) != -1 && endLength == upgradeBuffer.getFileLength()) {
+                        progress = new AtomicLong(upgradeBuffer.getBufferLength());
+                        maxProgress = upgradeBuffer.getFileLength();
+                        listener.downLoadProgress(maxProgress, progress.get());
+                        long expiryDate = Math.abs(System.currentTimeMillis() - upgradeBuffer.getLastModified());
+                        if (expiryDate <= DownerBuffer.EXPIRY_DATE) {
+
+                            List<DownerBuffer.BufferPart> bufferParts = upgradeBuffer.getBufferParts();
+                            for (int id = 0; id < bufferParts.size(); id++) {
+                                startLength = bufferParts.get(id).getStartLength();
+                                endLength = bufferParts.get(id).getEndLength();
+                                submit(this, id, startLength, endLength);
                             }
+                            return;
                         }
                     }
                 }
@@ -185,7 +193,7 @@ public class ScheduleRunable implements Runnable {
                     connectHttp(tureUrl);
                 }
             }
-            fileLength = readConnection.getContentLength();
+            fileLength = getContentSize(readConnection);
             downerOptions.setTrueUrl(tureUrl);
             Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  fileLength:"+fileLength+" tureUrl:"+tureUrl);
         } catch (ProtocolException e) {
@@ -200,7 +208,22 @@ public class ScheduleRunable implements Runnable {
             }
         }
     }
-
+    private long getContentSize(HttpURLConnection conn){
+        long contentSize = 0;
+        for(int i = 0; ; i++){
+            String mine = conn.getHeaderFieldKey(i);
+            if(mine == null)
+            {
+                break;
+            }
+            else if(mine.equals("Content-Length"))
+            {
+                contentSize = Long.parseLong(conn.getHeaderField(i));
+                break;
+            }
+        }
+        return contentSize;
+    }
     /**
      * 标记下载位置
      */
@@ -239,6 +262,24 @@ public class ScheduleRunable implements Runnable {
             Log.i(Downer.TAG, "ScheduleRunable:mark = "+e.getMessage());
         }
 
+    }
+
+    /**安装完成处理*/
+    public void completeInstall(String apkpagename){
+        if(downerCallBack != null){
+            String requesPageName = downerRequest.apkPageName;
+            if(TextUtils.equals(requesPageName, apkpagename)){
+                downerRequest.release();
+                if(installThread != null){
+                    installThread.isInstalled = true;
+                }
+                if(downerOptions.isAutocleanEnabled() &&  downerOptions.getStorage().exists()){
+                    downerOptions.getStorage().delete();
+                }
+                downerCallBack.onCompleteInstall(downerRequest.getModel());
+                Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install completed");
+            }
+        }
     }
 
     /**调度类监听，用来通知栏UI更新和下载状态变化*/

@@ -13,7 +13,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.IBinder;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.common.download.Downer;
@@ -172,13 +171,7 @@ public class DownerService extends Service {
                     }
                     break;
                 case Downer.STATUS_INSTALL_COMPLETE:
-                    if(scheduleRunable.downerCallBack != null){
-                        String requesPageName = scheduleRunable.downerRequest.apkPageName;
-                        if(TextUtils.equals(requesPageName, apkpagename)){
-                            scheduleRunable.downerCallBack.onCompleteInstall(downerRequest.getModel());
-                            Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install completed");
-                        }
-                    }
+                    scheduleRunable.completeInstall(apkpagename);
                     break;
             }
         }
@@ -237,6 +230,7 @@ public class DownerService extends Service {
             if (intent.getData() != null) {
                 packageName = intent.getData().getSchemeSpecificPart();
             }
+            Log.i(Downer.TAG, "onReceive：packageName " + packageName);
             String action = intent.getAction();
             if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {//安装完成
                 iteratorSchedule(Downer.STATUS_INSTALL_COMPLETE, packageName);

@@ -33,16 +33,18 @@ public class Downer<T> {
     public static final int STATUS_INSTALL_COMPLETE = 0x2005;
 
     private static Downer downer;
-
+    /**是否支持分包下载*/
     public boolean isMuliti;
-
+    /**指定分包线程数*/
     public int pools;
-
+    /**指定是否自动安装*/
     public boolean isInstall;
-
+    /**安装完成是否自动删除*/
     public boolean isClean;
-
+    /**是否支持断点续传*/
     public boolean isSupportRange;
+    /**是否支持覆盖下载*/
+    public boolean isOverride;
 
     /**开始下载*/
     public static <T> DownerRequest downLoad(T model){
@@ -93,8 +95,16 @@ public class Downer<T> {
     /**
      * 是否使用断点续传
      */
-    public Downer setSupportRange(boolean isSupportRange) {
+    public Downer setOverride(boolean isSupportRange) {
         this.isSupportRange = isSupportRange;
+        return downer;
+    }
+
+    /**
+     * 是否支持覆盖下载
+     */
+    public Downer setSupportRange(boolean isOverride) {
+        this.isOverride = isOverride;
         return downer;
     }
 

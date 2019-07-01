@@ -12,10 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.captureinfo.R;
 import com.common.download.Downer;
-import com.common.download.downer.DownerCallBack;
-import com.common.download.downer.DownerRequest;
 import com.common.download.DownerException;
 import com.common.download.DownerdUtil;
+import com.common.download.downer.DownerCallBack;
+import com.common.download.downer.DownerRequest;
 
 import java.io.File;
 
@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                       .setSupportRange(true)
                       // 文件MD5（可选）
                       .setAutoInstallEnabled(true)
+                      //覆盖安装
+                      .setOverride(true)
                       // 是否自动删除安装包（可选）
                       .setAutocleanEnabled(true);
     }
@@ -91,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onComplete(Object model) {
 
+            }
+            @Override
+            public void onCompleteInstall(Object model) {
+                Log.i(Downer.TAG, "MainActivity:  onCompleteInstall is Complete Install");
             }
         });
     }

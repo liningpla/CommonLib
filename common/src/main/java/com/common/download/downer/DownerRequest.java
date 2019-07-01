@@ -40,6 +40,7 @@ public class DownerRequest<T> {
         optionsBulider.setAutomountEnabled(Downer.init().isInstall);
         optionsBulider.setMultithreadEnabled(Downer.init().isMuliti);
         optionsBulider.setMultithreadPools(Downer.init().pools);
+        optionsBulider.setOverride(Downer.init().isOverride);
         NOTIFY_ID = (int) (Math.random()*900 + 100);
     }
 
