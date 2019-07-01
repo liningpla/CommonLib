@@ -69,6 +69,7 @@ public class ScheduleTask implements Runnable {
                 connection.connect();
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_PARTIAL) {
                     listener.downLoadStop();
+                    Log.i(Downer.TAG, "ScheduleTask:ResponseCode ！= 206:Schedule is stop");
                     return;
                 }
             }
@@ -113,6 +114,7 @@ public class ScheduleTask implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(Downer.TAG, "ScheduleTask:run = "+e.getMessage());
+            Log.i(Downer.TAG, "ScheduleTask:Exception:Schedule is stop");
             listener.downLoadStop();
         } finally {
             Log.d(Downer.TAG, "ScheduleTask finally startLength = "+startLength+"  endLength = "+endLength);

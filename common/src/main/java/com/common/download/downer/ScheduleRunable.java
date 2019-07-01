@@ -115,11 +115,13 @@ public class ScheduleRunable implements Runnable {
             }
             if (!parentFileExists) {
                 downerRequest.status = Downer.STATUS_DOWNLOAD_STOP;
+                Log.i(Downer.TAG, "ScheduleRunable:parentFileExists:Schedule is stop");
                 listener.downLoadStop();
                 return;
             }
             if ((endLength = fileLength) == -1) {
                 downerRequest.status = Downer.STATUS_DOWNLOAD_STOP;
+                Log.i(Downer.TAG, "ScheduleRunable:(endLength = fileLength) == -1:Schedule is stop");
                 listener.downLoadStop();
                 return;
             }
@@ -153,6 +155,7 @@ public class ScheduleRunable implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(Downer.TAG, "ScheduleRunable:run = "+e.getMessage());
+            Log.i(Downer.TAG, "ScheduleRunable:Exception:Schedule is stop");
             listener.downLoadStop();
         }
     }

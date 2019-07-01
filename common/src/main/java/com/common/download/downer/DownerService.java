@@ -141,7 +141,7 @@ public class DownerService extends Service {
      * @param scheduleStatus 任务状态
      * @param apkpagename 下载apk的包明
      * */
-    private void iteratorSchedule(int scheduleStatus, String apkpagename){
+    private synchronized void iteratorSchedule(int scheduleStatus, String apkpagename){
         Iterator<Map.Entry<String, SoftReference<DownerRequest>>> entries = downerRequests.entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry<String, SoftReference<DownerRequest>> entry = entries.next();
