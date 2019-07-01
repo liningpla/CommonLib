@@ -221,7 +221,6 @@ public class ScheduleHandler {
                             Log.i(Downer.TAG, "ScheduleHandler:  downLoadComplete is Auto Install");
                             schedule.installThread = new InstallThread(schedule);
                             schedule.installThread.start();
-//                            downerRequest.release();
                         }else{
                             downerRequest.release();
                         }

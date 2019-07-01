@@ -102,8 +102,7 @@ public class ScheduleTask implements Runnable {
                    tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
                    if (tempOffset > scheduleRunable.offset) {
                        listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
-//                       scheduleRunable.mark(startLength, endLength);
-                      mark(startLength, endLength);
+//                      mark(startLength, endLength);
                    }
                }else{
                    /*如果 b 的长度为 0，则不读取任何字节并返回 0；否则，尝试读取至少一个字节。如果因为流位于文件末尾而没有可用的字节，则返回值 -1
@@ -122,6 +121,10 @@ public class ScheduleTask implements Runnable {
             Log.i(Downer.TAG, "ScheduleTask:run = "+e.getMessage());
             listener.downLoadStop();
         } finally {
+            if(startLength < endLength){
+                Log.d(Downer.TAG, "ScheduleTask finally startLength = "+startLength+"  endLength = "+endLength);
+                mark(startLength, endLength);
+            }
             if (randomAccessFile != null) {
                 try {
                     randomAccessFile.close();
@@ -141,14 +144,14 @@ public class ScheduleTask implements Runnable {
             if (connection != null) {
                 connection.disconnect();
             }
-            Log.d(Downer.TAG, "ScheduleTask finally startLength = "+startLength+"  endLength = "+endLength);
+
         }
     }
 
     /**
      * 标记下载位置
      */
-    public void mark(long startLength, long endLength) {
+    public synchronized void mark(long startLength, long endLength) {
         try {
             if(!downerOptions.isSupportRange()){//不支持断点续传
                 return;

@@ -197,10 +197,13 @@ public class ScheduleRunable implements Runnable {
             Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  fileLength:"+fileLength+" tureUrl:"+tureUrl);
         } catch (ProtocolException e) {
             e.printStackTrace();
+            Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  error1:" + downerOptions.getTitle());
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  error2:" + downerOptions.getTitle());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  error3:" + downerOptions.getTitle());
         } finally {
             if (readConnection != null) {
                 readConnection.disconnect();
@@ -223,45 +226,6 @@ public class ScheduleRunable implements Runnable {
         }
         return contentSize;
     }
-//    /**
-//     * 标记下载位置
-//     */
-//    public void mark(long startLength, long endLength) {
-//        try {
-//            if(!downerOptions.isSupportRange()){//不支持断点续传
-//                return;
-//            }
-//            if (downerBuffer == null) {
-//                downerBuffer = new DownerBuffer();
-//                downerBuffer.setDownloadUrl(downerOptions.getUrl());
-//                downerBuffer.setFileMd5(downerOptions.getMd5());
-//                downerBuffer.setBufferLength(progress.get());
-//                downerBuffer.setFileLength(maxProgress);
-//                downerBuffer.setBufferParts(new CopyOnWriteArrayList<DownerBuffer.BufferPart>());
-//                downerBuffer.setLastModified(System.currentTimeMillis());
-//            }
-//            downerBuffer.setBufferLength(progress.get());
-//            downerBuffer.setLastModified(System.currentTimeMillis());
-//            int index = -1;
-//            for (int i = 0; i < downerBuffer.getBufferParts().size(); i++) {
-//                if (downerBuffer.getBufferParts().get(i).getEndLength() == endLength) {
-//                    index = i;
-//                    break;
-//                }
-//            }
-//            DownerBuffer.BufferPart bufferPart = new DownerBuffer.BufferPart(startLength, endLength);
-//            if (index == -1) {
-//                downerBuffer.getBufferParts().add(bufferPart);
-//            } else {
-//                downerBuffer.getBufferParts().set(index, bufferPart);
-//            }
-//            repository.setUpgradeBuffer(downerBuffer);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            Log.i(Downer.TAG, "ScheduleRunable:mark = "+e.getMessage());
-//        }
-//
-//    }
 
     /**安装完成处理*/
     public void completeInstall(String apkpagename){
