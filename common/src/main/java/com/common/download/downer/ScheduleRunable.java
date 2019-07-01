@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**调度线程类*/
@@ -44,7 +43,7 @@ public class ScheduleRunable implements Runnable {
     /**通知栏以及UI的对外调度器*/
     public ScheduleHandler mHandler;
     /**该分包下载缓存*/
-    private volatile DownerBuffer downerBuffer;
+    public volatile DownerBuffer downerBuffer;
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleListener listener;
     /**分包下载数*/
@@ -224,45 +223,45 @@ public class ScheduleRunable implements Runnable {
         }
         return contentSize;
     }
-    /**
-     * 标记下载位置
-     */
-    public void mark(long startLength, long endLength) {
-        try {
-            if(!downerOptions.isSupportRange()){//不支持断点续传
-                return;
-            }
-            if (downerBuffer == null) {
-                downerBuffer = new DownerBuffer();
-                downerBuffer.setDownloadUrl(downerOptions.getUrl());
-                downerBuffer.setFileMd5(downerOptions.getMd5());
-                downerBuffer.setBufferLength(progress.get());
-                downerBuffer.setFileLength(maxProgress);
-                downerBuffer.setBufferParts(new CopyOnWriteArrayList<DownerBuffer.BufferPart>());
-                downerBuffer.setLastModified(System.currentTimeMillis());
-            }
-            downerBuffer.setBufferLength(progress.get());
-            downerBuffer.setLastModified(System.currentTimeMillis());
-            int index = -1;
-            for (int i = 0; i < downerBuffer.getBufferParts().size(); i++) {
-                if (downerBuffer.getBufferParts().get(i).getEndLength() == endLength) {
-                    index = i;
-                    break;
-                }
-            }
-            DownerBuffer.BufferPart bufferPart = new DownerBuffer.BufferPart(startLength, endLength);
-            if (index == -1) {
-                downerBuffer.getBufferParts().add(bufferPart);
-            } else {
-                downerBuffer.getBufferParts().set(index, bufferPart);
-            }
-            repository.setUpgradeBuffer(downerBuffer);
-        }catch (Exception e){
-            e.printStackTrace();
-            Log.i(Downer.TAG, "ScheduleRunable:mark = "+e.getMessage());
-        }
-
-    }
+//    /**
+//     * 标记下载位置
+//     */
+//    public void mark(long startLength, long endLength) {
+//        try {
+//            if(!downerOptions.isSupportRange()){//不支持断点续传
+//                return;
+//            }
+//            if (downerBuffer == null) {
+//                downerBuffer = new DownerBuffer();
+//                downerBuffer.setDownloadUrl(downerOptions.getUrl());
+//                downerBuffer.setFileMd5(downerOptions.getMd5());
+//                downerBuffer.setBufferLength(progress.get());
+//                downerBuffer.setFileLength(maxProgress);
+//                downerBuffer.setBufferParts(new CopyOnWriteArrayList<DownerBuffer.BufferPart>());
+//                downerBuffer.setLastModified(System.currentTimeMillis());
+//            }
+//            downerBuffer.setBufferLength(progress.get());
+//            downerBuffer.setLastModified(System.currentTimeMillis());
+//            int index = -1;
+//            for (int i = 0; i < downerBuffer.getBufferParts().size(); i++) {
+//                if (downerBuffer.getBufferParts().get(i).getEndLength() == endLength) {
+//                    index = i;
+//                    break;
+//                }
+//            }
+//            DownerBuffer.BufferPart bufferPart = new DownerBuffer.BufferPart(startLength, endLength);
+//            if (index == -1) {
+//                downerBuffer.getBufferParts().add(bufferPart);
+//            } else {
+//                downerBuffer.getBufferParts().set(index, bufferPart);
+//            }
+//            repository.setUpgradeBuffer(downerBuffer);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            Log.i(Downer.TAG, "ScheduleRunable:mark = "+e.getMessage());
+//        }
+//
+//    }
 
     /**安装完成处理*/
     public void completeInstall(String apkpagename){
@@ -270,9 +269,6 @@ public class ScheduleRunable implements Runnable {
             String requesPageName = downerRequest.apkPageName;
             if(TextUtils.equals(requesPageName, apkpagename)){
                 downerRequest.release();
-                if(installThread != null){
-                    installThread.isInstalled = true;
-                }
                 if(downerOptions.isAutocleanEnabled() &&  downerOptions.getStorage().exists()){
                     downerOptions.getStorage().delete();
                 }

@@ -28,8 +28,6 @@ public class InstallThread extends Thread {
     /**下载请求状态返回，用来通知外部调用者，有可能为空，需要非空判断*/
     private DownerCallBack downerCallBack;
     private long maxLength;
-    /**等待安装结果标记，有安装结果后才能释放此线程*/
-    public volatile boolean isInstalled;
     /**安装等待时间-5分钟*/
     private final long INSTALL_DELAY_TIME =  5*60*1000;
     /**安装等待间隔上报时间-每隔3秒钟*/
@@ -41,7 +39,7 @@ public class InstallThread extends Thread {
         }
         @Override
         public void onFinish() {
-            isInstalled = true;
+            downerRequest.release();
         }
     };
     public InstallThread(ScheduleRunable scheduleRunable){
@@ -64,17 +62,11 @@ public class InstallThread extends Thread {
                 downerRequest.apkPageName = (String) DownerdUtil.getApkInfo(mContext, downerOptions.getStorage().getPath()).get("packageName");
                 DownerdUtil.installApk(mContext, downerOptions.getStorage().getPath());
             }
-            while (!isInstalled){
-                Log.i(Downer.TAG, "InstallThread:run:Waiting install status ");
-                Thread.sleep(INATALL_DELAY_SPACE);
-            }
         } catch (IOException e) {
             if(downerCallBack!=null){
                 downerCallBack.onErrorInstall(downerRequest.getModel(), new DownerException(ERROR_CODE_PACKAGE_INVALID));
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install  md5 check error");
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 

@@ -3,6 +3,7 @@ package com.common.download.downer;
 import android.util.Log;
 
 import com.common.download.Downer;
+import com.common.download.model.DownerBuffer;
 import com.common.download.model.DownerOptions;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**分包线程类*/
 public class ScheduleTask implements Runnable {
@@ -78,15 +80,19 @@ public class ScheduleTask implements Runnable {
             int tempOffset = 0;
             do {
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_STOP) {
+                    Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_STOP");
                     break;
                 }
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_CANCEL) {
+                    Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_CANCEL");
                     break;
                 }
-                if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
-                    break;
-                }
+//                if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
+//                    Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_COMPLETE");
+//                    break;
+//                }
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE) {
+                    Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_PAUSE");
                     break;
                 }
                if( (len=inputStream.read(buffer)) != -1){
@@ -96,7 +102,8 @@ public class ScheduleTask implements Runnable {
                    tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
                    if (tempOffset > scheduleRunable.offset) {
                        listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
-                       scheduleRunable.mark(startLength, endLength);
+//                       scheduleRunable.mark(startLength, endLength);
+                      mark(startLength, endLength);
                    }
                }else{
                    /*如果 b 的长度为 0，则不读取任何字节并返回 0；否则，尝试读取至少一个字节。如果因为流位于文件末尾而没有可用的字节，则返回值 -1
@@ -136,6 +143,46 @@ public class ScheduleTask implements Runnable {
             }
             Log.d(Downer.TAG, "ScheduleTask finally startLength = "+startLength+"  endLength = "+endLength);
         }
+    }
+
+    /**
+     * 标记下载位置
+     */
+    public void mark(long startLength, long endLength) {
+        try {
+            if(!downerOptions.isSupportRange()){//不支持断点续传
+                return;
+            }
+            if (scheduleRunable.downerBuffer == null) {
+                scheduleRunable.downerBuffer = new DownerBuffer();
+                scheduleRunable.downerBuffer.setDownloadUrl(downerOptions.getUrl());
+                scheduleRunable.downerBuffer.setFileMd5(downerOptions.getMd5());
+                scheduleRunable.downerBuffer.setBufferLength(scheduleRunable.progress.get());
+                scheduleRunable.downerBuffer.setFileLength(scheduleRunable.maxProgress);
+                scheduleRunable.downerBuffer.setBufferParts(new CopyOnWriteArrayList<DownerBuffer.BufferPart>());
+                scheduleRunable.downerBuffer.setLastModified(System.currentTimeMillis());
+            }
+            scheduleRunable.downerBuffer.setBufferLength(scheduleRunable.progress.get());
+            scheduleRunable.downerBuffer.setLastModified(System.currentTimeMillis());
+            int index = -1;
+            for (int i = 0; i < scheduleRunable.downerBuffer.getBufferParts().size(); i++) {
+                if (scheduleRunable.downerBuffer.getBufferParts().get(i).getEndLength() == endLength) {
+                    index = i;
+                    break;
+                }
+            }
+            DownerBuffer.BufferPart bufferPart = new DownerBuffer.BufferPart(startLength, endLength);
+            if (index == -1) {
+                scheduleRunable.downerBuffer.getBufferParts().add(bufferPart);
+            } else {
+                scheduleRunable.downerBuffer.getBufferParts().set(index, bufferPart);
+            }
+            scheduleRunable.repository.setUpgradeBuffer(scheduleRunable.downerBuffer);
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.i(Downer.TAG, "ScheduleRunable:mark = "+e.getMessage());
+        }
+
     }
 
 
