@@ -56,6 +56,8 @@ public class ScheduleTask implements Runnable {
             URL url = new URL(downerOptions.getTrueUrl());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
+            connection.setConnectTimeout(Downer.CONNECT_TIMEOUT);
+            connection.setReadTimeout(Downer.READ_TIMEOUT);
             connection.setDoInput(true);
             connection.setDoOutput(false);
             File file = downerOptions.getStorage();
@@ -75,7 +77,7 @@ public class ScheduleTask implements Runnable {
             long length = inputStream.available();
             randomAccessFile = new RandomAccessFile(file, "rwd");
             randomAccessFile.seek(startLength);
-            byte[] buffer = new byte[1 * 1024 * 1024];
+            byte[] buffer = new byte[512 * 1024];
             int len = -1;
             int tempOffset = 0;
             do {
@@ -87,10 +89,6 @@ public class ScheduleTask implements Runnable {
                     Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_CANCEL");
                     break;
                 }
-//                if (downerRequest.status == Downer.STATUS_DOWNLOAD_COMPLETE) {
-//                    Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_COMPLETE");
-//                    break;
-//                }
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE) {
                     Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_PAUSE");
                     break;
@@ -101,17 +99,13 @@ public class ScheduleTask implements Runnable {
                    scheduleRunable.progress.addAndGet(len);
                    tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
                    if (tempOffset > scheduleRunable.offset) {
-                       listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
-//                      mark(startLength, endLength);
+                        listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
+                        mark(startLength, endLength);
                    }
                }else{
                    /*如果 b 的长度为 0，则不读取任何字节并返回 0；否则，尝试读取至少一个字节。如果因为流位于文件末尾而没有可用的字节，则返回值 -1
                    * 因此分包下，读取中间大小时，读取完成总是startLength 比 endLength 大一，只有读取末尾时才正常startLength = endLength
                    * */
-                   Log.d(Downer.TAG, "ScheduleTask startLength = "+startLength+"  endLength = "+endLength);
-                   if(startLength > endLength){
-                       break;
-                   }
                    listener.downLoadComplete();
                    break;
                }
@@ -121,10 +115,7 @@ public class ScheduleTask implements Runnable {
             Log.i(Downer.TAG, "ScheduleTask:run = "+e.getMessage());
             listener.downLoadStop();
         } finally {
-            if(startLength < endLength){
-                Log.d(Downer.TAG, "ScheduleTask finally startLength = "+startLength+"  endLength = "+endLength);
-                mark(startLength, endLength);
-            }
+            Log.d(Downer.TAG, "ScheduleTask finally startLength = "+startLength+"  endLength = "+endLength);
             if (randomAccessFile != null) {
                 try {
                     randomAccessFile.close();
@@ -151,7 +142,7 @@ public class ScheduleTask implements Runnable {
     /**
      * 标记下载位置
      */
-    public synchronized void mark(long startLength, long endLength) {
+    public void mark(long startLength, long endLength) {
         try {
             if(!downerOptions.isSupportRange()){//不支持断点续传
                 return;

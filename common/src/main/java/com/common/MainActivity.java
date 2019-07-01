@@ -130,6 +130,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onComplete(Object model) {
+            }
+            @Override
+            public void onCompleteInstall(Object model) {
                 Log.i(Downer.TAG, "MainActivity:  onCompleteInstall is Complete Install");
             }
         });
