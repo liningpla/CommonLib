@@ -228,16 +228,16 @@ public class ScheduleRunable implements Runnable {
 
     /**安装完成处理*/
     public void completeInstall(String apkpagename){
-        if(downerCallBack != null){
-            String requesPageName = downerRequest.apkPageName;
-            if(TextUtils.equals(requesPageName, apkpagename)){
-                downerRequest.release();
-                if(downerOptions.isAutocleanEnabled() &&  downerOptions.getStorage().exists()){
-                    downerOptions.getStorage().delete();
-                }
-                downerCallBack.onCompleteInstall(downerRequest.getModel());
-                Log.i(Downer.TAG, "ScheduleRunable:completeInstall:Schedule install completed");
+        downerRequest.release();
+        String requesPageName = downerRequest.apkPageName;
+        if(TextUtils.equals(requesPageName, apkpagename)){
+            if(downerOptions.isAutocleanEnabled() &&  downerOptions.getStorage().exists()){
+                downerOptions.getStorage().delete();
             }
+        }
+        if(downerCallBack != null){
+            downerCallBack.onCompleteInstall(downerRequest.getModel());
+            Log.i(Downer.TAG, "ScheduleRunable:completeInstall:Schedule install completed");
         }
     }
 
