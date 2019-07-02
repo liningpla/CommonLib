@@ -3,7 +3,7 @@ package com.common.download;
 import com.common.download.downer.DownerRequest;
 
 /**下载师傅*/
-public class Downer<T> {
+public class Downer {
 
     public static final String TAG = "HiDower";
     /**连接超时时长*/
