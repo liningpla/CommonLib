@@ -135,6 +135,14 @@ public class DownerRequest<T> {
     }
 
     /**
+     * 是否支持覆盖下载
+     */
+    public DownerRequest setOverride(boolean isOverride) {
+        optionsBulider.setOverride(isOverride);
+        return this;
+    }
+
+    /**
      * 执行下载
      */
     public void execute(Context context, DownerCallBack callBack) {
