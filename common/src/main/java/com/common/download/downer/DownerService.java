@@ -151,6 +151,7 @@ public class DownerService extends Service {
                 case SCHEDULE_STATUS_DISCONNECTED:
                     if(scheduleRunable.downerCallBack != null){
                         scheduleRunable.downerCallBack.onDisconnected(downerRequest.getModel());
+                        downerRequest.release();
                     }
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is disconnected");
                     break;

@@ -21,6 +21,8 @@ import static com.common.download.DownerException.ERROR_CODE_PACKAGE_INVALID;
 
 public class InstallThread extends Thread {
     private Context mContext;
+    /**下载调度类*/
+    private ScheduleRunable scheduleRunable;
     /**下载请求信息类*/
     private DownerRequest downerRequest;
     /**下载参数类*/
@@ -33,16 +35,19 @@ public class InstallThread extends Thread {
     /**安装等待间隔上报时间-每隔3秒钟*/
     private final long INATALL_DELAY_SPACE = 3*1000;
     /**安装监听倒计时*/
-    private PauseTimer pauseTimer = new PauseTimer(INSTALL_DELAY_TIME, INATALL_DELAY_SPACE, false) {
+    private PauseTimer pauseTimer = new PauseTimer(INSTALL_DELAY_TIME, INATALL_DELAY_SPACE, true) {
         @Override
         public void onTick(long millisUntilFinished) {
         }
         @Override
         public void onFinish() {
-            downerRequest.release();
+            if(scheduleRunable != null){
+                scheduleRunable.completeInstall(downerRequest.apkPageName);
+            }
         }
     };
     public InstallThread(ScheduleRunable scheduleRunable){
+        this.scheduleRunable = scheduleRunable;
         this.downerOptions = scheduleRunable.downerOptions;
         this.mContext = scheduleRunable.mContext;
         this.downerRequest = scheduleRunable.downerRequest;
