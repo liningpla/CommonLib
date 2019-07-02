@@ -31,12 +31,12 @@ public class InstallThread extends Thread {
     private DownerCallBack downerCallBack;
     private long maxLength;
     /**安装等待时间-5分钟*/
-    private final long INSTALL_DELAY_TIME =  5*60*1000;
+    private final long INSTALL_DELAY_TIME =  2*60*1000;
     /**安装等待间隔上报时间-每隔3秒钟*/
     private final long INATALL_DELAY_SPACE = 3*1000;
     /**安装监听倒计时
      * Service里监听安装状态，但是service放置后台会被系统回收，因此这里另起线程监听下载状态。
-     * 目前设置监听时限为5分钟，因此可能导致DownRequest无法及时释放，只能时限到达才能释放，
+     * 设置监听时限可能导致DownRequest无法及时释放，只能时限到达才能释放，
      * 尽管对DownRequest做了软引用处理，但是仍有一定内存占用风险
     * */
     private PauseTimer pauseTimer = new PauseTimer(INSTALL_DELAY_TIME, INATALL_DELAY_SPACE, true) {
