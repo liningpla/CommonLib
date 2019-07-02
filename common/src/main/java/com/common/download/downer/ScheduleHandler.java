@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.common.download.Downer;
 import com.common.download.DownerException;
-import com.common.download.DownerdUtil;
+import com.common.download.DownerUtil;
 import com.common.download.InstallThread;
 import com.common.download.model.DownerContrat;
 import com.common.download.model.DownerOptions;
@@ -170,7 +170,7 @@ public class ScheduleHandler {
                     }
                     schedule.offset = (int) (((float) uiProgress / uiMax) * 100);
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
-                    setNotify(DownerdUtil.formatByte(uiProgress) + "/" + DownerdUtil.formatByte(uiMax));
+                    setNotify(DownerUtil.formatByte(uiProgress) + "/" + DownerUtil.formatByte(uiMax));
                 }
             });
 
@@ -189,7 +189,7 @@ public class ScheduleHandler {
                             }
                         }
                         notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_STOP);
-                        if(DownerdUtil.isNetworkConnected(mContext)){
+                        if(DownerUtil.isNetworkConnected(mContext)){
                             //网络正常
                             setNotify(DownerContrat.DownerString.DONW_STOP);
                             Log.i(Downer.TAG, "ScheduleHandler: downLoadStop   2");

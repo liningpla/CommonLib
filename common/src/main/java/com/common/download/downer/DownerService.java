@@ -21,8 +21,8 @@ import com.common.download.thread.ThreadManger;
 
 import java.lang.ref.SoftReference;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DownerService extends Service {
 
@@ -38,7 +38,7 @@ public class DownerService extends Service {
     /**安装包状态监听*/
     private PackagesReceiver packagesReceiver;
     /**下载监听管理*/
-    public static Map<String, SoftReference<DownerRequest>> downerRequests = new LinkedHashMap<>();
+    public static Map<String, SoftReference<DownerRequest>> downerRequests = new ConcurrentHashMap<>();
     /**下载进度通知栏管理*/
     private NotificationManager notificationManager;
     /**通知栏ID*/

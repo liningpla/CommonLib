@@ -236,7 +236,7 @@ public class ScheduleRunable implements Runnable {
                     downerOptions.getStorage().delete();
                 }
                 downerCallBack.onCompleteInstall(downerRequest.getModel());
-                Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule install completed");
+                Log.i(Downer.TAG, "ScheduleRunable:completeInstall:Schedule install completed");
             }
         }
     }

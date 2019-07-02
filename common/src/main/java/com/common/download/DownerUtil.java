@@ -36,7 +36,7 @@ import java.util.List;
 /**
  */
 
-public class DownerdUtil {
+public class DownerUtil {
     private static final String TAG = Downer.TAG;
 
     /**
@@ -64,6 +64,27 @@ public class DownerdUtil {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_WRITE_EXTERNAL_STORAGE);
         }
         return false;
+    }
+
+    /*
+     * check the app is installed
+     */
+    public static boolean isAppInstalled(Context context,String packagename)
+    {
+        PackageInfo packageInfo;
+        try {
+            packageInfo = context.getPackageManager().getPackageInfo(packagename, 0);
+        }catch (PackageManager.NameNotFoundException e) {
+            packageInfo = null;
+            e.printStackTrace();
+        }
+        if(packageInfo ==null){
+            Log.i(Downer.TAG, "DownerUtil:isAppInstalled:packagename is not installed");
+            return false;
+        }else{
+            Log.i(Downer.TAG, "DownerUtil:isAppInstalled:packagename is installed");
+            return true;
+        }
     }
 
     /**
@@ -218,17 +239,17 @@ public class DownerdUtil {
      * @param path
      */
     public static void installApk(Context context, String path) {
-        Log.i(Downer.TAG, "DownerdUtil:installApk:path："+path);
+        Log.i(Downer.TAG, "DownerUtil:installApk:path："+path);
         File file = new File(path);
         if (!file.exists()) {
-            Log.i(Downer.TAG, "DownerdUtil:installApk：file is not exists");
+            Log.i(Downer.TAG, "DownerUtil:installApk：file is not exists");
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Log.i(Downer.TAG, "DownerdUtil:installApk：context:"+context+" srt:"+String.format(DownerFileProvider.AUTHORITY, context.getPackageName()));
+            Log.i(Downer.TAG, "DownerUtil:installApk：context:"+context+" srt:"+String.format(DownerFileProvider.AUTHORITY, context.getPackageName()));
             Uri uri = DownerFileProvider.getUriForFile(context,
                     String.format(DownerFileProvider.AUTHORITY, context.getPackageName()), file);
             intent.setDataAndType(uri, "application/vnd.android.package-archive");

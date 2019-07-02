@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.captureinfo.R;
 import com.common.download.Downer;
 import com.common.download.DownerException;
-import com.common.download.DownerdUtil;
+import com.common.download.DownerUtil;
 import com.common.download.downer.DownerCallBack;
 import com.common.download.downer.DownerRequest;
 
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == DownerdUtil.REQUEST_CODE_WRITE_EXTERNAL_STORAGE ||
+        if (requestCode == DownerUtil.REQUEST_CODE_WRITE_EXTERNAL_STORAGE ||
                 grantResults.length == 1 &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             customerDownloadUpdates();
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             customerCheckUpdates();
         }
         if (v.getId() == R.id.button_check_updates_custom_download) {
-            if (DownerdUtil.mayRequestExternalStorage(this, true)) {
+            if (DownerUtil.mayRequestExternalStorage(this, true)) {
                 customerDownloadUpdates();
             }
         }

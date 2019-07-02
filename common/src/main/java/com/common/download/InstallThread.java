@@ -41,7 +41,7 @@ public class InstallThread extends Thread {
         }
         @Override
         public void onFinish() {
-            if(scheduleRunable != null){
+            if(scheduleRunable != null && DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName)){
                 scheduleRunable.completeInstall(downerRequest.apkPageName);
             }
         }
@@ -64,8 +64,8 @@ public class InstallThread extends Thread {
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install start ");
             }
             if(check()){
-                downerRequest.apkPageName = (String) DownerdUtil.getApkInfo(mContext, downerOptions.getStorage().getPath()).get("packageName");
-                DownerdUtil.installApk(mContext, downerOptions.getStorage().getPath());
+                downerRequest.apkPageName = (String) DownerUtil.getApkInfo(mContext, downerOptions.getStorage().getPath()).get("packageName");
+                DownerUtil.installApk(mContext, downerOptions.getStorage().getPath());
             }
         } catch (IOException e) {
             if(downerCallBack!=null){
