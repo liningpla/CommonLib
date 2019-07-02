@@ -67,7 +67,6 @@ public class ScheduleRunable implements Runnable {
     @Override
     public void run() {
         try {
-            downerRequest.status = Downer.STATUS_DOWNLOAD_START;
             listener.downLoadStart();
             connectHttp(downerOptions.getUrl());
             long startLength = 0;
