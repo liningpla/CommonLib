@@ -47,7 +47,7 @@ public class ScheduleRunable implements Runnable {
     /**调度类监听，用来通知栏UI更新和下载状态变化*/
     public ScheduleListener listener;
     /**分包下载数*/
-    public volatile int pools;
+    public volatile int pools = 1;
     /**安装线程*/
     public InstallThread installThread;
 
