@@ -205,7 +205,7 @@ public class ScheduleHandler {
         @Override
         public void downLoadComplete() {
             schedule.pools--;
-            if(schedule.pools == 0){//分包全部下载完成
+            if(schedule.pools <= 0){//分包全部下载完成
                 Log.i(Downer.TAG, "ScheduleHandler: downLoadComplete："+schedule.pools);
                 /*通知外部调用者，完成下载*/
                 mHandler.post(new Runnable() {

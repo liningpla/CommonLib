@@ -51,7 +51,7 @@ public class DownerService extends Service {
         if(downerRequests.containsKey(downerRequest.options.getUrl())){//已经添加到任务中
             isSchedule = false;
             //连接状态下，和加载状态下载，不再重复执行任务
-            if(downerRequest.status == Downer.STATUS_DOWNLOAD_STOP|| downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
+            if(downerRequest.status != Downer.STATUS_DOWNLOAD_START || downerRequest.status != Downer.STATUS_DOWNLOAD_PROGRESS){
                 isSchedule = true;
             }
         }

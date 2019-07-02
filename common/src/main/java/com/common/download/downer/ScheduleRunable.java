@@ -78,6 +78,7 @@ public class ScheduleRunable implements Runnable {
             DownerBuffer upgradeBuffer = repository.getUpgradeBuffer(downerOptions.getUrl());
             //下载完成时，如果是覆盖下载，删除原有文件，重新下载。没有设置覆盖下载，直接安装
             if (upgradeBuffer != null && upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength() && downerOptions.getStorage().exists()) {
+                maxProgress = upgradeBuffer.getFileLength();
                 if(downerOptions.isOverride()){
                     downerOptions.getStorage().delete();
                 }else{

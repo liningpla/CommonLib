@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                       // 文件MD5（可选）
                       .setAutoInstallEnabled(true)
                       //覆盖安装
-                      .setOverride(true)
+                      .setOverride(false)
                       // 是否自动删除安装包（可选）
                       .setAutocleanEnabled(true);
     }
