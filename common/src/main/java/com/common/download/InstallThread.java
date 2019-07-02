@@ -49,7 +49,7 @@ public class InstallThread extends Thread {
         }
         @Override
         public void onFinish() {
-            Log.i(Downer.TAG, "DownerUtil:isAppInstalled:packagename install status "+DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName));
+            Log.i(Downer.TAG, "InstallThread:PauseTimer:"+downerRequest.apkPageName+" install status "+DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName));
             pauseTimer.cancel();
         }
     };
