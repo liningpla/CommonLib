@@ -79,10 +79,10 @@ public class DownerUtil {
             e.printStackTrace();
         }
         if(packageInfo ==null){
-            Log.i(Downer.TAG, "DownerUtil:isAppInstalled:packagename is not installed");
+//            Log.i(Downer.TAG, "DownerUtil:isAppInstalled:packagename is not installed");
             return false;
         }else{
-            Log.i(Downer.TAG, "DownerUtil:isAppInstalled:packagename is installed");
+//            Log.i(Downer.TAG, "DownerUtil:isAppInstalled:packagename is installed");
             return true;
         }
     }
