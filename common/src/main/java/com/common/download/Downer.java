@@ -95,7 +95,7 @@ public class Downer {
     /**
      * 是否使用断点续传
      */
-    public Downer setOverride(boolean isSupportRange) {
+    public Downer setSupportRange(boolean isSupportRange) {
         this.isSupportRange = isSupportRange;
         return downer;
     }
@@ -103,7 +103,7 @@ public class Downer {
     /**
      * 是否支持覆盖下载
      */
-    public Downer setSupportRange(boolean isOverride) {
+    public Downer setOverride(boolean isOverride) {
         this.isOverride = isOverride;
         return downer;
     }
