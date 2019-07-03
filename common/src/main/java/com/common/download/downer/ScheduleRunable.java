@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.common.download.Downer;
+import com.common.download.DownerUtil;
 import com.common.download.InstallThread;
 import com.common.download.model.DownerBuffer;
 import com.common.download.model.DownerOptions;
@@ -22,39 +23,67 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**调度线程类*/
+/**
+ * 调度线程类
+ */
 public class ScheduleRunable implements Runnable {
 
     public Context mContext;
-    /**下载请求信息类*/
+    /**
+     * 下载请求信息类
+     */
     public DownerRequest downerRequest;
-    /**下载参数类*/
+    /**
+     * 下载参数类
+     */
     public DownerOptions downerOptions;
-    /**下载请求状态返回，用来通知外部调用者，有可能为空，需要非空判断*/
+    /**
+     * 下载请求状态返回，用来通知外部调用者，有可能为空，需要非空判断
+     */
     public DownerCallBack downerCallBack;
-    /**下载文件总长度*/
+    /**
+     * 下载文件总长度
+     */
     public volatile long fileLength;
-    /**下载最大进度*/
+    /**
+     * 下载最大进度
+     */
     public volatile long maxProgress;
-    /**下载进度*/
+    /**
+     * 下载进度
+     */
     public volatile AtomicLong progress;
-    /**下载偏移量*/
+    /**
+     * 下载偏移量
+     */
     public volatile int offset;
     public DownerRepository repository;
-    /**通知栏以及UI的对外调度器*/
+    /**
+     * 通知栏以及UI的对外调度器
+     */
     public ScheduleHandler mHandler;
-    /**该分包下载缓存*/
+    /**
+     * 该分包下载缓存
+     */
     public volatile DownerBuffer downerBuffer;
-    /**调度类监听，用来通知栏UI更新和下载状态变化*/
+    /**
+     * 调度类监听，用来通知栏UI更新和下载状态变化
+     */
     public ScheduleListener listener;
-    /**分包下载数*/
+    /**
+     * 分包下载数
+     */
     public volatile int pools = 1;
-    /**安装线程*/
+    /**
+     * 安装线程
+     */
     public InstallThread installThread;
-    /**并发时完整完成派发*/
+    /**
+     * 并发时完整完成派发
+     */
     private volatile AtomicBoolean isInstalled;
 
-    public ScheduleRunable(Context context, DownerRequest downerRequest){
+    public ScheduleRunable(Context context, DownerRequest downerRequest) {
         mContext = context;
         this.downerRequest = downerRequest;
         this.downerOptions = downerRequest.options;
@@ -76,16 +105,16 @@ public class ScheduleRunable implements Runnable {
             long startLength = 0;
             long endLength = -1;
             File targetFile = downerOptions.getStorage();
-            if(!downerOptions.isSupportRange() && targetFile.exists()){//不支持断点续传
+            if (!downerOptions.isSupportRange() && targetFile.exists()) {//不支持断点续传
                 targetFile.delete();
             }
             DownerBuffer upgradeBuffer = repository.getUpgradeBuffer(downerOptions.getUrl());
             //下载完成时，如果是覆盖下载，删除原有文件，重新下载。没有设置覆盖下载，直接安装
             if (upgradeBuffer != null && upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength() && downerOptions.getStorage().exists()) {
                 maxProgress = upgradeBuffer.getFileLength();
-                if(downerOptions.isOverride()){
+                if (downerOptions.isOverride()) {
                     downerOptions.getStorage().delete();
-                }else{
+                } else {
                     listener.downLoadComplete();
                     return;
                 }
@@ -142,11 +171,11 @@ public class ScheduleRunable implements Runnable {
                 pools = downerOptions.getMultithreadPools();
                 part = (int) (endLength / pools);
             }
-            if(!downerOptions.isSupportRange()){//不支持断点续传
+            if (!downerOptions.isSupportRange()) {//不支持断点续传
                 pools = 1;
                 part = (int) (endLength / pools);
             }
-            Log.i(Downer.TAG, "ScheduleRunable:  run pools = "+pools+"  part = "+part+" getMultithreadPools = "+ downerOptions.getMultithreadPools());
+            Log.i(Downer.TAG, "ScheduleRunable:  run pools = " + pools + "  part = " + part + " getMultithreadPools = " + downerOptions.getMultithreadPools());
             long tempStartLength = 0;
             long tempEndLength = 0;
             for (int id = 1; id <= pools; id++) {
@@ -159,11 +188,12 @@ public class ScheduleRunable implements Runnable {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.i(Downer.TAG, "ScheduleRunable:run = "+e.getMessage());
+            Log.i(Downer.TAG, "ScheduleRunable:run = " + e.getMessage());
             Log.i(Downer.TAG, "ScheduleRunable:Exception:Schedule is stop");
             listener.downLoadStop();
         }
     }
+
     /**
      * 提交下载任务
      *
@@ -173,9 +203,9 @@ public class ScheduleRunable implements Runnable {
      */
     private void submit(ScheduleRunable scheduleThread, int id, long startLength, long entLength) {
         if (!downerOptions.isMultithreadEnabled()) {
-            ThreadManger.getInstance().execute(Priority.NORMAL,  new ScheduleTask(scheduleThread, id));
+            ThreadManger.getInstance().execute(Priority.NORMAL, new ScheduleTask(scheduleThread, id));
         } else {
-            ThreadManger.getInstance().execute(Priority.NORMAL,  new ScheduleTask(scheduleThread, id, startLength, entLength));
+            ThreadManger.getInstance().execute(Priority.NORMAL, new ScheduleTask(scheduleThread, id, startLength, entLength));
         }
     }
 
@@ -202,7 +232,7 @@ public class ScheduleRunable implements Runnable {
             }
             fileLength = getContentSize(readConnection);
             downerOptions.setTrueUrl(tureUrl);
-            Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  fileLength:"+fileLength+" tureUrl:"+tureUrl);
+            Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  fileLength:" + fileLength + " tureUrl:" + tureUrl);
         } catch (ProtocolException e) {
             e.printStackTrace();
             Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  error1:" + downerOptions.getTitle());
@@ -218,16 +248,14 @@ public class ScheduleRunable implements Runnable {
             }
         }
     }
-    private long getContentSize(HttpURLConnection conn){
+
+    private long getContentSize(HttpURLConnection conn) {
         long contentSize = 0;
-        for(int i = 0; ; i++){
+        for (int i = 0; ; i++) {
             String mine = conn.getHeaderFieldKey(i);
-            if(mine == null)
-            {
+            if (mine == null) {
                 break;
-            }
-            else if(mine.equals("Content-Length"))
-            {
+            } else if (mine.equals("Content-Length")) {
                 contentSize = Long.parseLong(conn.getHeaderField(i));
                 break;
             }
@@ -235,30 +263,39 @@ public class ScheduleRunable implements Runnable {
         return contentSize;
     }
 
-    /**安装完成处理*/
-    public void completeInstall(String apkpagename){
-        if(!isInstalled.get()){
-            isInstalled.getAndSet(true);
+    /**
+     * 安装完成处理
+     */
+    public void completeInstall(String apkpagename) {
+        if(downerRequest != null){
             downerRequest.release();
             String requesPageName = downerRequest.apkPageName;
-            if(TextUtils.equals(requesPageName, apkpagename)){
-                if(downerOptions.isAutocleanEnabled() &&  downerOptions.getStorage().exists()){
+            if (TextUtils.equals(requesPageName, apkpagename)) {
+                if (downerOptions.isAutocleanEnabled() && downerOptions.getStorage().exists()) {
                     downerOptions.getStorage().delete();
                 }
             }
-            if(downerCallBack != null){
-                downerCallBack.onCompleteInstall(downerRequest.getModel());
-                Log.i(Downer.TAG, "ScheduleRunable:completeInstall:Schedule install completed");
+            if (downerCallBack != null && DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName) && !isInstalled.get()) {
+                isInstalled.getAndSet(true);
+                if (!isInstalled.get()) {
+                    isInstalled.getAndSet(true);
+                }
             }
         }
     }
 
-    /**调度类监听，用来通知栏UI更新和下载状态变化*/
-    public interface ScheduleListener{
+    /**
+     * 调度类监听，用来通知栏UI更新和下载状态变化
+     */
+    public interface ScheduleListener {
         void downLoadStart();
+
         void downLoadProgress(long max, long progress);
+
         void downLoadStop();
+
         void downLoadComplete();
+
         void downLoadPause();
     }
 

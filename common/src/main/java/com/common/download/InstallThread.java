@@ -45,9 +45,7 @@ public class InstallThread extends Thread {
         }
         @Override
         public void onFinish() {
-            if(DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName)){
-                scheduleRunable.completeInstall(downerRequest.apkPageName);
-            }
+            scheduleRunable.completeInstall(downerRequest.apkPageName);
             Log.i(Downer.TAG, "InstallThread:PauseTimer:"+downerRequest.apkPageName+" install status "+DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName));
             pauseTimer.cancel();
         }
