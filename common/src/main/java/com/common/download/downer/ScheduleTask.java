@@ -73,7 +73,7 @@ public class ScheduleTask implements Runnable {
             inputStream = connection.getInputStream();
             randomAccessFile = new RandomAccessFile(file, "rwd");
             randomAccessFile.seek(startLength);
-            byte[] buffer = new byte[256 * 1024];
+            byte[] buffer = new byte[1024 * 1024];
             int len = -1;
             int tempOffset = 0;
             do {
