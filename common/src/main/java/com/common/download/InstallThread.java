@@ -31,7 +31,7 @@ public class InstallThread extends Thread {
     private DownerCallBack downerCallBack;
     private long maxLength;
     /**安装等待时间-5分钟*/
-    private final long INSTALL_DELAY_TIME =  2*60*1000;
+    private final long INSTALL_DELAY_TIME =  3*60*1000;
     /**安装等待间隔上报时间-每隔3秒钟*/
     private final long INATALL_DELAY_SPACE = 3*1000;
     /**安装监听倒计时
@@ -42,13 +42,12 @@ public class InstallThread extends Thread {
     private PauseTimer pauseTimer = new PauseTimer(INSTALL_DELAY_TIME, INATALL_DELAY_SPACE, true) {
         @Override
         public void onTick(long millisUntilFinished) {
-            if(DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName)){
-                scheduleRunable.completeInstall(downerRequest.apkPageName);
-                pauseTimer.cancel();
-            }
         }
         @Override
         public void onFinish() {
+            if(DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName)){
+                scheduleRunable.completeInstall(downerRequest.apkPageName);
+            }
             Log.i(Downer.TAG, "InstallThread:PauseTimer:"+downerRequest.apkPageName+" install status "+DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName));
             pauseTimer.cancel();
         }
@@ -65,7 +64,6 @@ public class InstallThread extends Thread {
     public void run() {
         super.run();
         try {
-            pauseTimer.start();
             if(downerCallBack!=null){
                 downerCallBack.onStartInstall(downerRequest.getModel());
                 Log.i(Downer.TAG, "InstallThread:run:Schedule install start ");
@@ -73,6 +71,7 @@ public class InstallThread extends Thread {
             if(check()){
                 downerRequest.apkPageName = (String) DownerUtil.getApkInfo(mContext, downerOptions.getStorage().getPath()).get("packageName");
                 DownerUtil.installApk(mContext, downerOptions.getStorage().getPath());
+                pauseTimer.start();
             }
         } catch (IOException e) {
             if(downerCallBack!=null){

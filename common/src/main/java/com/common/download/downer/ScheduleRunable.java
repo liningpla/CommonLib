@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**调度线程类*/
@@ -50,6 +51,8 @@ public class ScheduleRunable implements Runnable {
     public volatile int pools = 1;
     /**安装线程*/
     public InstallThread installThread;
+    /**并发时完整完成派发*/
+    private volatile AtomicBoolean isInstalled;
 
     public ScheduleRunable(Context context, DownerRequest downerRequest){
         mContext = context;
@@ -62,6 +65,7 @@ public class ScheduleRunable implements Runnable {
         }
         this.mHandler = new ScheduleHandler(this);
         this.listener = mHandler.listener;
+        isInstalled = new AtomicBoolean();
     }
 
     @Override
@@ -233,16 +237,19 @@ public class ScheduleRunable implements Runnable {
 
     /**安装完成处理*/
     public void completeInstall(String apkpagename){
-        downerRequest.release();
-        String requesPageName = downerRequest.apkPageName;
-        if(TextUtils.equals(requesPageName, apkpagename)){
-            if(downerOptions.isAutocleanEnabled() &&  downerOptions.getStorage().exists()){
-                downerOptions.getStorage().delete();
+        if(!isInstalled.get()){
+            isInstalled.getAndSet(true);
+            downerRequest.release();
+            String requesPageName = downerRequest.apkPageName;
+            if(TextUtils.equals(requesPageName, apkpagename)){
+                if(downerOptions.isAutocleanEnabled() &&  downerOptions.getStorage().exists()){
+                    downerOptions.getStorage().delete();
+                }
             }
-        }
-        if(downerCallBack != null){
-            downerCallBack.onCompleteInstall(downerRequest.getModel());
-            Log.i(Downer.TAG, "ScheduleRunable:completeInstall:Schedule install completed");
+            if(downerCallBack != null){
+                downerCallBack.onCompleteInstall(downerRequest.getModel());
+                Log.i(Downer.TAG, "ScheduleRunable:completeInstall:Schedule install completed");
+            }
         }
     }
 
