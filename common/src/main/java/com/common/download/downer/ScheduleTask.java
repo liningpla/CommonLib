@@ -65,15 +65,11 @@ public class ScheduleTask implements Runnable {
             if (endLength == 0) {
                 connection.connect();
             } else {
-                connection.setRequestProperty("Range", "bytes=" + startLength + "-" + endLength);
-                connection.connect();
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_PARTIAL) {
-                    listener.downLoadStop();
-                    Log.i(Downer.TAG, "ScheduleTask:ResponseCode ！= 206:Schedule is stop");
-                    return;
+                if(downerOptions.isSupportRange()){//不支持断点续传
+                    connection.setRequestProperty("Range", "bytes=" + startLength + "-" + endLength);
                 }
+                connection.connect();
             }
-
             inputStream = connection.getInputStream();
             randomAccessFile = new RandomAccessFile(file, "rwd");
             randomAccessFile.seek(startLength);

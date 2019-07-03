@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 下载链接或更新文档链接
                 .setUrl("http://gdown.baidu.com/data/wisegame/2965a5c112549eb8/QQ_996.apk")
                 // 下载文件存储路径（可选）
-                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.upgrade.apk"))
+                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/qq.apk"))
                 // 文件MD5（可选）
                 .setMd5(null).execute(MainActivity.this, new DownerCallBack() {
             @Override
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 下载链接或更新文档链接
                 .setUrl(url)
                 // 下载文件存储路径（可选）
-                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/com.365.apk"))
+                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/douyin.apk"))
                 // 文件MD5（可选）
                 .setMd5(null).execute(MainActivity.this, new DownerCallBack() {
             @Override
@@ -139,6 +139,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void customerCheckUpdates() {
+        Downer.downLoad(new Object()).setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+                // 通知栏标题（可选）
+                .setTitle("微信")
+                // 通知栏描述（可选）
+                .setDescription("更新通知栏")
+                .setMultithreadPools(1)
+                .setSupportRange(false)
+                // 下载链接或更新文档链接
+                .setUrl("http://dldir1.qq.com/weixin/android/weixin704android1420.apk")
+                // 下载文件存储路径（可选）
+                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/weixin.apk"))
+                // 文件MD5（可选）
+                .setMd5(null).execute(MainActivity.this, new DownerCallBack() {
+            @Override
+            public void onConnected(DownerRequest request) {
+                downerRequest = request;
+            }
+            @Override
+            public void onProgress(long max, long progress) {
+            }
+            @Override
+            public void onStop(Object model, DownerException e) {
+            }
+            @Override
+            public void onComplete(Object model) {
+
+            }
+            @Override
+            public void onCompleteInstall(Object model) {
+                Log.i(Downer.TAG, "MainActivity:  onCompleteInstall is Complete Install");
+            }
+        });
     }
 
     private void customerDownloadUpdates() {

@@ -138,6 +138,10 @@ public class ScheduleRunable implements Runnable {
                 pools = downerOptions.getMultithreadPools();
                 part = (int) (endLength / pools);
             }
+            if(!downerOptions.isSupportRange()){//不支持断点续传
+                pools = 1;
+                part = (int) (endLength / pools);
+            }
             Log.i(Downer.TAG, "ScheduleRunable:  run pools = "+pools+"  part = "+part+" getMultithreadPools = "+ downerOptions.getMultithreadPools());
             long tempStartLength = 0;
             long tempEndLength = 0;
