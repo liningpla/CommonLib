@@ -1,5 +1,8 @@
 package com.example.notificationtest.httplib;
 
+import com.lenove.httplibrary.HttpCallBack;
+import com.lzy.okgo.OkGo;
+
 import java.io.File;
 
 public enum TestManager {
@@ -8,8 +11,8 @@ public enum TestManager {
     String url = "http://vb.lenovo.com/mobile_cache.xhtml";
 
     public String testPostHttp() {
-        testPost();
-//        testFormUplaod();
+//        testPost();
+        testFormUplaod();
         try{
             return "1";
         }catch (Exception e){
@@ -44,24 +47,62 @@ public enum TestManager {
     }
 
     private void testFormUplaod(){
-        //表单上传
-        HiHttp.<String>post("").params("","").multipart("",new File("")).execute(
-                new HiCallBack<String>(String.class) {
-            @Override
-            void onSuccess(Response response) {
-                super.onSuccess(response);
-            }
+//        //表单上传
+//        HiHttp.<String>post("").params("","").multipart("",new File("")).execute(
+//                new HiCallBack<String>(String.class) {
+//            @Override
+//            void onSuccess(Response response) {
+//                super.onSuccess(response);
+//            }
+//
+//            @Override
+//            void onError(Response response) {
+//                super.onError(response);
+//            }
+//
+//            @Override
+//            void uploadProgress(long progress, long totalLength) {
+//                super.uploadProgress(progress, totalLength);
+//            }
+//        });
 
-            @Override
-            void onError(Response response) {
-                super.onError(response);
-            }
+        String value ="LenovoAuth LPSUST=“ZAgAAAAAAAGE9MTAwMTc0NjE2ODMmYj0yJmM9NCZkPTEwMTQxJmU9MDI3ODdDNzdCOTc2M0I5ODNFODc3OTZCNTZGMzkxMjMxJmg9MTU2MjMxMzQxMzI0OSZpPTYwNDgwMCZvPTg2NTI3MjA0MDA1MTMxOSZwPWltZWkmcT0wJnVzZXJuYW1lPTE4OTExNzc1Mjc3JmlsPWNuYXUCQLLscIwHiFglwtC5Bg”";
+//        HiHttp.<String>post("http://test.uc.zui.lenovomm.com/calapi/v3/synchecksum?ys=false")
+//                .headers("Authorization", value)
+//                .headers("X-Lenovows-Authorization",value)
+//               .paramsJson("{\"data\":[]}").execute(new HiCallBack<String>(String.class) {
+//            @Override
+//            void onSuccess(Response response) {
+//                super.onSuccess(response);
+//                HiLog.i(HiHttp.TAG, (String) response.body());
+//            }
+//
+//            @Override
+//            void onError(Response response) {
+//                super.onError(response);
+//            }
+//        });
 
-            @Override
-            void uploadProgress(long progress, long totalLength) {
-                super.uploadProgress(progress, totalLength);
-            }
-        });
+
+//        OkGo.<String>post("http://test.uc.zui.lenovomm.com/calapi/v3/synchecksum?ys=false")
+//                .headers("Authorization", value)
+//                .headers("X-Lenovows-Authorization", value)
+//                .upJson("{\"data\":[]}")
+//                .execute(new HttpCallBack<String>(String.class){
+//            @Override
+//            public void onSuccess(com.lzy.okgo.model.Response<String> response) {
+//                super.onSuccess(response);
+//                HiLog.i(HiHttp.TAG, (String) response.body());
+//            }
+//            @Override
+//            public void onError(com.lzy.okgo.model.Response<String> response) {
+//                super.onError(response);
+//            }
+//        });
+
+
     }
+
+
 
 }

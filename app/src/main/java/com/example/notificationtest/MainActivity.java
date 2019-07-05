@@ -21,7 +21,11 @@ import androidx.core.app.NotificationCompat;
 
 import com.common.BaseAcivity;
 import com.common.log.SDLog;
+import com.example.notificationtest.httplib.HiHttp;
+import com.example.notificationtest.httplib.HiLog;
+import com.example.notificationtest.httplib.TestManager;
 import com.example.notificationtest.manager.StudyLifecycle;
+import com.lenove.httplibrary.OkGoManager;
 
 
 public class MainActivity extends BaseAcivity {
@@ -72,6 +76,7 @@ public class MainActivity extends BaseAcivity {
 //
 //        countDownTimer.start();
 
+        OkGoManager.getInstance().initOkGo(getApplication(), null, null);
     }
 
 
@@ -143,8 +148,8 @@ public class MainActivity extends BaseAcivity {
 
 //        JobManager.INSTANCE.testScreen(this, view);
 
-//        HiHttp.init(getApplication());
-//        HiLog.i(" test : "+TestManager.instance.testPostHttp());
+        HiHttp.init(getApplication());
+        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
 //        HiViewModel.init(getApplication()).observe(this, new Observer() {
 //            @Override
 //            public void onChanged(Object o) {
