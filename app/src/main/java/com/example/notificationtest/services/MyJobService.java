@@ -9,7 +9,7 @@ import android.os.Message;
 
 import androidx.annotation.RequiresApi;
 
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

@@ -6,7 +6,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.common.BaseAcivity;
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 import com.example.notificationtest.R;
 
 

@@ -16,7 +16,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.captureinfo.R;
 import com.common.admob.AdMobActivity;
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 import com.common.threadPool.PauseTimer;
 
 public class CommonActivity extends AppCompatActivity {

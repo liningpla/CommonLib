@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 import com.common.utils.ScreenUtil;
 import com.floatingwindow.R;
 

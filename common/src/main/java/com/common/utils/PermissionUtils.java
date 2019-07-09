@@ -1,4 +1,4 @@
-package com.common.permission;
+package com.common.utils;
 
 import android.Manifest;
 import android.app.Activity;

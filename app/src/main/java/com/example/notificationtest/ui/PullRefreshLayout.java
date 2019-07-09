@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import androidx.core.view.MotionEventCompat;
 import androidx.core.view.ViewCompat;
 
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 import com.example.notificationtest.R;
 
 import java.security.InvalidParameterException;

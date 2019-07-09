@@ -20,7 +20,7 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 
 import com.common.BaseAcivity;
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 import com.example.notificationtest.httplib.HiHttp;
 import com.example.notificationtest.httplib.HiLog;
 import com.example.notificationtest.httplib.TestManager;

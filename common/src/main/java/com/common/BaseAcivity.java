@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.common.permission.PermissionUtils;
+import com.common.utils.PermissionUtils;
 
 
 public class BaseAcivity extends AppCompatActivity {

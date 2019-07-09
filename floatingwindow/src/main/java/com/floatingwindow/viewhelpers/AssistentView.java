@@ -3,12 +3,11 @@ package com.floatingwindow.viewhelpers;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.provider.Settings;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 import com.common.utils.ScreenUtil;
 
 /**游戏助手悬浮视图辅助类*/

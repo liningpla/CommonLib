@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 
 /**封装公用跳转逻辑*/
 public class ContextManager {

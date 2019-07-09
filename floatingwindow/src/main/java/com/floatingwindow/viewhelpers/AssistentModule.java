@@ -2,7 +2,7 @@ package com.floatingwindow.viewhelpers;
 
 import android.content.Context;
 
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 import com.common.utils.ScreenUtil;
 import com.floatingwindow.R;
 

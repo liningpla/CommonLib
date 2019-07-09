@@ -12,7 +12,7 @@ import android.view.WindowInsets;
 
 import androidx.annotation.RequiresApi;
 
-import com.common.log.SDLog;
+import com.common.utils.SDLog;
 import com.example.notificationtest.services.MyJobService;
 
 import java.util.List;
