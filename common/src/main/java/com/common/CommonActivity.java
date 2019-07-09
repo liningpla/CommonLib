@@ -16,8 +16,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.captureinfo.R;
 import com.common.admob.AdMobActivity;
+import com.common.download.thread.PauseTimer;
 import com.common.utils.SDLog;
-import com.common.threadPool.PauseTimer;
 
 public class CommonActivity extends AppCompatActivity {
     private Button btn_sendTest, btn_close, btn_down, btn_ad;

@@ -1,9 +1,7 @@
 package com.common.admob;
 
 import android.content.Context;
-import android.text.TextUtils;
-
-import com.google.android.gms.ads.MobileAds;
+import android.view.ViewGroup;
 
 /**广告商
  * 负责广告的调度
@@ -11,24 +9,39 @@ import com.google.android.gms.ads.MobileAds;
 public class Advertiser {
 
     public static final String TAG = "AdLog";
-    /**Manifest中配置AdMob的Key*/
-    public static final String ADMOB_KEY = "com.google.android.gms.ads.APPLICATION_ID";
-    /**AdMob的分配的ID*/
-    public static final String ADMOB_ID = "ca-app-pub-6725710354938817~4696680990";
-
-    /**初始化广告*/
-    public static void init(Context context){
-        //初始化谷歌广告
-        if(!TextUtils.isEmpty(AdvertiserUtil.getMetaData(context, ADMOB_KEY))){
-            MobileAds.initialize(context, ADMOB_ID);
+    private static Advertiser advertiser;
+    public static AdModel.AdCP adCP;
+    /**
+     * 初始化谷歌AdMob广告
+     * */
+    public static Advertiser initAdMob(Context context){
+        if(advertiser == null){
+            advertiser = new Advertiser();
         }
+        adCP = AdModel.AdCP.AD_MOB;
+        AdMobHelper.initAdMob(context);
+        return advertiser;
     }
 
-    /**添加横幅广告*/
-    public static void addBannerAd(Context context, AdvertiserListener listener){
-
+    /**
+     * 初始化小米广告平台业务
+     * TODO::未来可以扩展功能，这里先占位
+     * */
+    public static Advertiser initXiaoMi(Context context){
+        if(advertiser == null){
+            advertiser = new Advertiser();
+        }
+        adCP = AdModel.AdCP.XIO_MI;
+        return advertiser;
     }
 
+
+    /**加载广告
+     * @param container 广告父容器
+     * */
+    public static AdverRequest load(Context context, ViewGroup container){
+        return new AdverRequest(context, container);
+    }
 
 
 

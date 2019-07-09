@@ -1,7 +1,7 @@
 package com.common.admob;
 
 /**广告监听器*/
-public interface AdvertiserListener {
+public interface AdvertiserCallBack {
 
     /**广告加载完成*/
     void onAdLoaded();
