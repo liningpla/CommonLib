@@ -13,8 +13,13 @@ public class AdModel {
     public enum AdMold {
         BANNER,
         INTERSTITIAL,
-        SPLASH,
+        REWARDEDAD,
         NEWSFEED
     }
 
+    /**原生广告类型*/
+    public enum NewsFeedType {
+        LAYOUT,
+        VIDEO,
+    }
 }

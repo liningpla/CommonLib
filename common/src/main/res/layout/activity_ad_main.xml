@@ -18,10 +18,16 @@
         android:text="插页广告(interstitial)"
         />
     <Button
-        android:id="@+id/btn_splash"
+        android:id="@+id/btn_rewardedad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开屏广告(splash)"
+        android:text="激励广告(RewardedAd)"
+        />
+    <Button
+        android:id="@+id/btn_nativead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="激励广告(RewardedAd)"
         />
     <TextView
         android:layout_width="wrap_content"

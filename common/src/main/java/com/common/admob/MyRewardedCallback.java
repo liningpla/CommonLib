@@ -31,7 +31,7 @@ public class MyRewardedCallback extends RewardedAdLoadCallback {
                 if (adCallBack != null) {
                     adCallBack.onAdOpened();
                 }
-                Log.e(Advertiser.TAG, "AdMobHelper:addRewardedAd: onRewardedAdOpened");
+                Log.i(Advertiser.TAG, "AdMobHelper:addRewardedAd: onRewardedAdOpened");
             }
             public void onRewardedAdClosed() {
                 if (adCallBack != null) {

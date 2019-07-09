@@ -4,11 +4,14 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.formats.NativeAdOptions;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 
 /**
@@ -74,12 +77,12 @@ public class AdMobHelper extends BuilderParmas {
     /**
      * 添加横幅广告
      */
-    public void addBanner(final AdvertiserCallBack adCallBack) {
+    public void addBanner(AdvertiserCallBack adCallBack) {
         AdView adView = new AdView(context);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.setAdSize(adSize == null ? AdSize.SMART_BANNER : adSize);
         adView.setAdUnitId(adUnitId);
-        adView.setAdListener(new MyAdListener(adCallBack,null));
+        adView.setAdListener(new MyAdListener(adCallBack));
         adView.loadAd(adRequest);
         container.removeAllViews();
         container.addView(adView);
@@ -88,7 +91,7 @@ public class AdMobHelper extends BuilderParmas {
     /**
      * 添加插页式广告-全屏-图文
      */
-    public void addInterstitial(final AdvertiserCallBack adCallBack) {
+    public void addInterstitial(AdvertiserCallBack adCallBack) {
         InterstitialAd mInterstitialAd = new InterstitialAd(context);
         AdRequest adRequest = new AdRequest.Builder().build();
         mInterstitialAd.setAdUnitId(adUnitId);
@@ -99,7 +102,7 @@ public class AdMobHelper extends BuilderParmas {
     /**
      * 添加激励广告-全屏-视频
      */
-    public void addRewardedAd(final AdvertiserCallBack adCallBack) {
+    public void addRewardedAd(AdvertiserCallBack adCallBack) {
         final RewardedAd rewardedAd = new RewardedAd(context, adUnitId);
         rewardedAd.loadAd(new AdRequest.Builder().build(), new MyRewardedCallback(context,rewardedAd,adCallBack));
     }
@@ -107,26 +110,27 @@ public class AdMobHelper extends BuilderParmas {
     /**
      * 添加信息流广告-原生
      */
-    public void addNewsFeed(final ViewGroup container, final AdvertiserCallBack adCallBack) {
-//        AdLoader.Builder builder = new AdLoader.Builder(context, "<your ad unit ID>")
-//                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-//                    @Override
-//                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-//                        // Assumes you have a placeholder FrameLayout in your View layout
-//                        // (with id fl_adplaceholder) where the ad is to be placed.
-//                        FrameLayout frameLayout =
-//                                findViewById(R.id.fl_adplaceholder);
-//                        // Assumes that your ad layout is in a file call ad_unified.xml
-//                        // in the res/layout folder
-//                        UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater()
-//                                .inflate(R.layout.ad_unified, null);
-//                        // This method sets the text, images and the native ad, etc into the ad
-//                        // view.
-//                        populateUnifiedNativeAdView(unifiedNativeAd, adView);
-//                        container.removeAllViews();
-//                        container.addView(adView);
-//                    }
-//                });
+    public void addNativeAd(AdModel.NewsFeedType feedType, AdvertiserCallBack adCallBack) {
+
+    }
+    /**
+     * 添加信息流广告-原生
+     */
+    public void addNativeAd(AdvertiserCallBack adCallBack) {
+        AdLoader adLoader = new AdLoader.Builder(context, adUnitId)
+                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                        // Show the ad.
+                    }
+                })
+                .withAdListener(new MyAdListener(adCallBack))
+                .withNativeAdOptions(new NativeAdOptions.Builder()
+                        // Methods in the NativeAdOptions.Builder class can be
+                        // used here to specify individual options settings.
+                        .build())
+                .build();
+        adLoader.loadAd(new AdRequest.Builder().build());
     }
 
 }

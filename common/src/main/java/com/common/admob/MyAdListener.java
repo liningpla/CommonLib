@@ -14,6 +14,9 @@ public class MyAdListener extends AdListener {
         this.adCallBack = adCallBack;
         this.mInterstitialAd = mInterstitialAd;
     }
+    public MyAdListener(AdvertiserCallBack adCallBack) {
+        this.adCallBack = adCallBack;
+    }
     @Override
     public void onAdLoaded() {
         if (adCallBack != null) {

@@ -34,7 +34,7 @@ public abstract class BuilderParmas {
         this.adUnitId = adUnitId;
         return this;
     }
-
+    /**配置广告父类容器*/
     public BuilderParmas container(ViewGroup container){
         this.container = container;
         return this;

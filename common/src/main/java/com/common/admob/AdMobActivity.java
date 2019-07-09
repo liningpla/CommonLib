@@ -13,7 +13,7 @@ import com.captureinfo.R;
 public class AdMobActivity extends AppCompatActivity {
 
 
-    private Button btn_banner, btn_interstitial, btn_splash;
+    private Button btn_banner, btn_interstitial, btn_rewardedAd, btn_nativead;
     private FrameLayout fl_parent;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,13 +43,23 @@ public class AdMobActivity extends AppCompatActivity {
             }
         });
 
-        btn_splash = findViewById(R.id.btn_splash);
-        btn_splash.setOnClickListener(new View.OnClickListener() {
+        btn_rewardedAd = findViewById(R.id.btn_rewardedad);
+        btn_rewardedAd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Advertiser.load(AdMobActivity.this)
                         .adUnitId("ca-app-pub-3940256099942544/5224354917")
-                        .splash();
+                        .rewarded();
+            }
+        });
+
+        btn_nativead = findViewById(R.id.btn_nativead);
+        btn_nativead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Advertiser.load(AdMobActivity.this)
+                        .adUnitId("ca-app-pub-3940256099942544/2247696110")
+                        .nativeAd();
             }
         });
     }

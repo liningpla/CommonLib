@@ -73,8 +73,8 @@ public class AdverRequest extends BuilderParmas {
 
     /**添加开屏广告广告
      * */
-    public void splash(AdvertiserCallBack adListener){
-        adMold = AdModel.AdMold.SPLASH;
+    public void rewarded(AdvertiserCallBack adListener){
+        adMold = AdModel.AdMold.REWARDEDAD;
         if(adCallBack == null){
             loadAd(null);
             return;
@@ -85,13 +85,13 @@ public class AdverRequest extends BuilderParmas {
 
     /**添加开屏广告广告
      * */
-    public void splash(){
-        splash(null);
+    public void rewarded(){
+        rewarded(null);
     }
 
     /**添加信息流广告-原生广告
      * */
-    public void newsFeed(AdvertiserCallBack adListener){
+    public void nativeAd(AdvertiserCallBack adListener){
         adMold = AdModel.AdMold.NEWSFEED;
         if(adCallBack == null){
             loadAd(null);
@@ -102,8 +102,8 @@ public class AdverRequest extends BuilderParmas {
     }
     /**添加信息流广告-原生广告
      * */
-    public void newsFeed(){
-        newsFeed(null);
+    public void nativeAd(){
+        nativeAd(null);
     }
 
     /**加载广告*/
@@ -112,14 +112,14 @@ public class AdverRequest extends BuilderParmas {
             case BANNER:
                 laodBanner(adCallBack);
                 break;
-            case SPLASH:
+            case REWARDEDAD:
                 laodRewardedAd(adCallBack);
                 break;
             case INTERSTITIAL:
                 laodInterstitial(adCallBack);
                 break;
             case NEWSFEED:
-                laodNewsfeed(adCallBack);
+                laodNativead(adCallBack);
                 break;
         }
     }
@@ -169,9 +169,13 @@ public class AdverRequest extends BuilderParmas {
     }
 
     /**加载原生-信息流广告*/
-    private void laodNewsfeed(AdvertiserCallBack adCallBack){
+    private void laodNativead(AdvertiserCallBack adCallBack){
         switch (Advertiser.adCP){
             case AD_MOB:
+                new AdMobHelper(softContext.get())
+                        .adUnitId(this.adUnitId)
+                        .widthAndHeight(this.width, this.height)
+                        .addNativeAd(adCallBack);
                 break;
             case XIO_MI:
                 break;

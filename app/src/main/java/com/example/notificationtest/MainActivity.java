@@ -159,7 +159,7 @@ public class MainActivity extends BaseAcivity {
 //        });
 
 //        Intent intent = new Intent(Intent.ACTION_MAIN);
-//        ComponentName componentName = new ComponentName("com.lenovo.blockchain", "com.lenovo.blockchain.ui.splash.SplashActivity");
+//        ComponentName componentName = new ComponentName("com.lenovo.blockchain", "com.lenovo.blockchain.ui.rewarded.SplashActivity");
 //        intent.setComponent(componentName);
 //        startActivity(intent);
     }
