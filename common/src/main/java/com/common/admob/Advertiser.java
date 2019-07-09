@@ -1,7 +1,6 @@
 package com.common.admob;
 
 import android.content.Context;
-import android.view.ViewGroup;
 
 /**广告商
  * 负责广告的调度
@@ -37,10 +36,9 @@ public class Advertiser {
 
 
     /**加载广告
-     * @param container 广告父容器
      * */
-    public static AdverRequest load(Context context, ViewGroup container){
-        return new AdverRequest(context, container);
+    public static AdverRequest load(Context context){
+        return new AdverRequest(context);
     }
 
 

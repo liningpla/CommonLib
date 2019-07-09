@@ -17,11 +17,14 @@ public class AdverRequest extends BuilderParmas {
     /**广告父类容器*/
     private ViewGroup container;
     /**构造广告请求
-     * @param container 广告父类容器
      * */
-    public AdverRequest(Context context, ViewGroup container) {
+    public AdverRequest(Context context) {
         softContext = new SoftReference<>(context);
+    }
+
+    public AdverRequest container(ViewGroup container){
         this.container = container;
+        return this;
     }
 
     @Override
@@ -85,7 +88,7 @@ public class AdverRequest extends BuilderParmas {
     /**添加开屏广告广告
      * */
     public void splash(){
-        loadAd(null);
+        splash(null);
     }
 
     /**添加信息流广告-原生广告
@@ -102,7 +105,7 @@ public class AdverRequest extends BuilderParmas {
     /**添加信息流广告-原生广告
      * */
     public void newsFeed(){
-        loadAd(null);
+        newsFeed(null);
     }
 
     /**加载广告*/
@@ -142,6 +145,10 @@ public class AdverRequest extends BuilderParmas {
     private void laodSplash(AdvertiserCallBack adCallBack){
         switch (Advertiser.adCP){
             case AD_MOB:
+                new AdMobHelper(softContext.get())
+                        .adUnitId(this.adUnitId)
+                        .widthAndHeight(this.width, this.height)
+                        .addSplash(adCallBack);
                 break;
             case XIO_MI:
                 break;
@@ -152,6 +159,10 @@ public class AdverRequest extends BuilderParmas {
     private void laodInterstitial(AdvertiserCallBack adCallBack){
         switch (Advertiser.adCP){
             case AD_MOB:
+                new AdMobHelper(softContext.get())
+                        .adUnitId(this.adUnitId)
+                        .widthAndHeight(this.width, this.height)
+                        .addInterstitial(adCallBack);
                 break;
             case XIO_MI:
                 break;
