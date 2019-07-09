@@ -34,4 +34,12 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_close"
         android:text="跳转下载"
         />
+
+    <Button
+        android:id="@+id/btn_ad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/btn_down"
+        android:text="跳转广告"
+        />
 </android.support.constraint.ConstraintLayout>

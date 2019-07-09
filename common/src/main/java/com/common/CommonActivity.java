@@ -15,11 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import com.captureinfo.R;
+import com.common.admob.AdMobActivity;
 import com.common.log.SDLog;
 import com.common.threadPool.PauseTimer;
 
 public class CommonActivity extends AppCompatActivity {
-    private Button btn_sendTest, btn_close, btn_down;
+    private Button btn_sendTest, btn_close, btn_down, btn_ad;
     private int count;
     NotificationManager notificationManager;
 
@@ -53,8 +54,13 @@ public class CommonActivity extends AppCompatActivity {
             }
         });
         SDLog.i("CommonActivity","--onCreate--");
-
-
+        btn_ad = findViewById(R.id.btn_ad);
+        btn_ad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CommonActivity.this, AdMobActivity.class));
+            }
+        });
 
     }
     /**10*1000毫秒倒计时，  每隔1000毫秒执行onTick*/
