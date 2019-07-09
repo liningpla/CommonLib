@@ -14,8 +14,6 @@ public class AdverRequest extends BuilderParmas {
     private AdvertiserCallBack adCallBack = null;
     /**广告模型*/
     private AdModel.AdMold adMold;
-    /**广告父类容器*/
-    private ViewGroup container;
     /**构造广告请求
      * */
     public AdverRequest(Context context) {
@@ -23,7 +21,7 @@ public class AdverRequest extends BuilderParmas {
     }
 
     public AdverRequest container(ViewGroup container){
-        this.container = container;
+        super.container(container);
         return this;
     }
 
@@ -115,7 +113,7 @@ public class AdverRequest extends BuilderParmas {
                 laodBanner(adCallBack);
                 break;
             case SPLASH:
-                laodSplash(adCallBack);
+                laodRewardedAd(adCallBack);
                 break;
             case INTERSTITIAL:
                 laodInterstitial(adCallBack);
@@ -133,7 +131,8 @@ public class AdverRequest extends BuilderParmas {
                 new AdMobHelper(softContext.get())
                         .adUnitId(this.adUnitId)
                         .widthAndHeight(this.width, this.height)
-                        .addBanner(container, adCallBack);
+                        .container(container)
+                        .addBanner(adCallBack);
                 break;
             case XIO_MI:
                 break;
@@ -141,21 +140,21 @@ public class AdverRequest extends BuilderParmas {
 
     }
 
-    /**加载开屏广告*/
-    private void laodSplash(AdvertiserCallBack adCallBack){
+    /**加载激励广告-全屏-视频*/
+    private void laodRewardedAd(AdvertiserCallBack adCallBack){
         switch (Advertiser.adCP){
             case AD_MOB:
                 new AdMobHelper(softContext.get())
                         .adUnitId(this.adUnitId)
                         .widthAndHeight(this.width, this.height)
-                        .addSplash(adCallBack);
+                        .addRewardedAd(adCallBack);
                 break;
             case XIO_MI:
                 break;
         }
     }
 
-    /**加载插入广告*/
+    /**加载插入广告-全屏-图文*/
     private void laodInterstitial(AdvertiserCallBack adCallBack){
         switch (Advertiser.adCP){
             case AD_MOB:

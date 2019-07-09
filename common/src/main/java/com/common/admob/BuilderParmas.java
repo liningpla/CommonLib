@@ -1,5 +1,7 @@
 package com.common.admob;
 
+import android.view.ViewGroup;
+
 /**
  * 构造参数类
  * */
@@ -10,6 +12,8 @@ public abstract class BuilderParmas {
     public int height = 100;
     /**广告的id*/
     public String adUnitId;
+    /**广告父类容器*/
+    public ViewGroup container;
 
     /**
      * 配置广告宽高
@@ -28,6 +32,11 @@ public abstract class BuilderParmas {
      * */
     public BuilderParmas adUnitId(String adUnitId){
         this.adUnitId = adUnitId;
+        return this;
+    }
+
+    public BuilderParmas container(ViewGroup container){
+        this.container = container;
         return this;
     }
 }
