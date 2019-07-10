@@ -147,7 +147,6 @@ public class ScheduleHandler {
         }
         @Override
         public void downLoadProgress(long max, long progress) {
-//            Log.i(Downer.TAG, "ScheduleHandler:downLoadProgress progress = "+progress+"  max = "+max);
             fileLengeh = max;
             if(progress >= max){
                 return;
@@ -230,6 +229,20 @@ public class ScheduleHandler {
                 });
             }
         }
+
+        @Override
+        public void downLoadedInstall() {
+            downerRequest.status = Downer.STATUS_DOWNLOAD_COMPLETE;
+            if(downerOptions.isAutomountEnabled()){//自动安装
+                Log.i(Downer.TAG, "ScheduleHandler:  downLoadComplete is Auto Install");
+                schedule.installThread = new InstallThread(schedule);
+                schedule.installThread.start();
+            }else{
+                downerRequest.release();
+            }
+            clearNotify();
+        }
+
         @Override
         public void downLoadPause() {
             /*通知外部调用者，暂停成功*/

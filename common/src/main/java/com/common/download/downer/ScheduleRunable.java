@@ -109,22 +109,28 @@ public class ScheduleRunable implements Runnable {
                 targetFile.delete();
             }
             DownerBuffer upgradeBuffer = repository.getUpgradeBuffer(downerOptions.getUrl());
-            //下载完成时，如果是覆盖下载，删除原有文件，重新下载。没有设置覆盖下载，直接安装
-            if (upgradeBuffer != null && upgradeBuffer.getBufferLength() == upgradeBuffer.getFileLength() && downerOptions.getStorage().exists()) {
-                maxProgress = upgradeBuffer.getFileLength();
-                if (downerOptions.isOverride()) {
-                    downerOptions.getStorage().delete();
-                } else {
-                    listener.downLoadComplete();
-                    return;
-                }
+            //覆盖下载，删除文件，重新下载
+            if (downerOptions.isOverride() && targetFile.exists()) {
+                Log.i(Downer.TAG, "覆盖下载，删除文件，重新下载");
+                targetFile.delete();
+            }
+            //下载实际长度和上次记录长度不同，删除文件，重新下载
+            if(upgradeBuffer != null && fileLength != upgradeBuffer.getFileLength() && targetFile.exists()){
+                Log.i(Downer.TAG, "下载实际长度和上次记录长度不同，删除文件，重新下载");
+                targetFile.delete();
+            }
+            //下载完成，直接安装
+            if(upgradeBuffer != null && fileLength == upgradeBuffer.getFileLength() && targetFile.exists()){
+                Log.i(Downer.TAG, "下载完成，直接安装");
+                listener.downLoadedInstall();
+                return;
             }
             if (targetFile.exists() && upgradeBuffer != null) {
                 if (upgradeBuffer.getBufferLength() <= targetFile.length()) {
                     if ((endLength = fileLength) != -1 && endLength == upgradeBuffer.getFileLength()) {
                         progress = new AtomicLong(upgradeBuffer.getBufferLength());
-                        maxProgress = upgradeBuffer.getFileLength();
                         listener.downLoadProgress(maxProgress, progress.get());
+                        Log.i(Downer.TAG, "progress :"+progress+"  maxProgress:"+maxProgress);
                         long expiryDate = Math.abs(System.currentTimeMillis() - upgradeBuffer.getLastModified());
                         if (expiryDate <= DownerBuffer.EXPIRY_DATE) {
 
@@ -175,7 +181,7 @@ public class ScheduleRunable implements Runnable {
                 pools = 1;
                 part = (int) (endLength / pools);
             }
-            Log.i(Downer.TAG, "ScheduleRunable:  run pools = " + pools + "  part = " + part + " getMultithreadPools = " + downerOptions.getMultithreadPools());
+            Log.i(Downer.TAG, "ScheduleRunable:  run pools = " + pools + "  part = " + part + " getMultithreadPools = " + downerOptions.getMultithreadPools()+" progress :"+progress);
             long tempStartLength = 0;
             long tempEndLength = 0;
             for (int id = 1; id <= pools; id++) {
@@ -231,6 +237,7 @@ public class ScheduleRunable implements Runnable {
                 }
             }
             fileLength = getContentSize(readConnection);
+            maxProgress = fileLength;
             downerOptions.setTrueUrl(tureUrl);
             Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  fileLength:" + fileLength + " tureUrl:" + tureUrl);
         } catch (ProtocolException e) {
@@ -295,6 +302,8 @@ public class ScheduleRunable implements Runnable {
         void downLoadStop();
 
         void downLoadComplete();
+
+        void downLoadedInstall();
 
         void downLoadPause();
     }
