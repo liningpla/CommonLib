@@ -107,7 +107,6 @@ public class ScheduleTask implements Runnable {
                }
             } while (true);
         } catch (Exception e) {
-            e.printStackTrace();
             Log.i(Downer.TAG, "ScheduleTask:run = "+e.getMessage());
             Log.i(Downer.TAG, "ScheduleTask:Exception:Schedule is stop");
             listener.downLoadStop();
