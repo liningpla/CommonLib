@@ -27,7 +27,7 @@
         android:id="@+id/btn_nativead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="激励广告(RewardedAd)"
+        android:text="原生广告(RewardedAd)"
         />
     <TextView
         android:layout_width="wrap_content"

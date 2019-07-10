@@ -59,6 +59,7 @@ public class AdMobActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Advertiser.load(AdMobActivity.this)
                         .adUnitId("ca-app-pub-3940256099942544/2247696110")
+                        .container(fl_parent)
                         .nativeAd();
             }
         });

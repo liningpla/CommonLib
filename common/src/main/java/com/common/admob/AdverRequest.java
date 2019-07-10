@@ -175,6 +175,7 @@ public class AdverRequest extends BuilderParmas {
                 new AdMobHelper(softContext.get())
                         .adUnitId(this.adUnitId)
                         .widthAndHeight(this.width, this.height)
+                        .container(container)
                         .addNativeAd(adCallBack);
                 break;
             case XIO_MI:
