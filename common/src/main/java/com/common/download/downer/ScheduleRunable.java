@@ -275,7 +275,6 @@ public class ScheduleRunable implements Runnable {
      */
     public void completeInstall(String apkpagename) {
         if(downerRequest != null){
-            downerRequest.release();
             String requesPageName = downerRequest.apkPageName;
             if (TextUtils.equals(requesPageName, apkpagename)) {
                 if (downerOptions.isAutocleanEnabled() && downerOptions.getStorage().exists()) {
@@ -288,6 +287,7 @@ public class ScheduleRunable implements Runnable {
                     isInstalled.getAndSet(true);
                 }
             }
+            downerRequest.release();
         }
     }
 
