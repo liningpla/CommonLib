@@ -94,8 +94,10 @@ public class ScheduleTask implements Runnable {
                    startLength += len;
                    scheduleRunable.progress.addAndGet(len);
                    tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
-                   listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
+                   Log.d(Downer.TAG, "tempOffset = "+tempOffset+"  scheduleRunable.offset = "+scheduleRunable.offset);
                    if (tempOffset > scheduleRunable.offset) {
+                       scheduleRunable.offset = tempOffset;
+                       listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
                         mark(startLength, endLength);
                    }
                }else{

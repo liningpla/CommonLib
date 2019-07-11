@@ -166,7 +166,6 @@ public class ScheduleHandler {
                     if(downerCallBack != null){
                         downerCallBack.onProgress(uiMax, uiProgress);
                     }
-                    schedule.offset = (int) (((float) uiProgress / uiMax) * 100);
                     notyStatus.getAndSet(Downer.STATUS_DOWNLOAD_PROGRESS);
                     setNotify(DownerUtil.formatByte(uiProgress) + "/" + DownerUtil.formatByte(uiMax));
                 }

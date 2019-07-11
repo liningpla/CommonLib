@@ -124,6 +124,7 @@ public class ScheduleRunable implements Runnable {
                 if (upgradeBuffer.getBufferLength() <= targetFile.length()) {
                     if ((endLength = fileLength) != -1 && endLength == upgradeBuffer.getFileLength()) {
                         progress = new AtomicLong(upgradeBuffer.getBufferLength());
+                        offset = (int) (((float) progress.get() / maxProgress) * 100);
                         listener.downLoadProgress(maxProgress, progress.get());
                         Log.i(Downer.TAG, "progress :"+progress+"  maxProgress:"+maxProgress);
                         long expiryDate = Math.abs(System.currentTimeMillis() - upgradeBuffer.getLastModified());
@@ -158,6 +159,7 @@ public class ScheduleRunable implements Runnable {
             }
             progress = new AtomicLong(startLength);
             maxProgress = endLength;
+            offset = (int) (((float) progress.get() / maxProgress) * 100);
             if (!downerOptions.isMultithreadEnabled()) {
                 submit(this, 0, startLength, endLength);
                 return;
