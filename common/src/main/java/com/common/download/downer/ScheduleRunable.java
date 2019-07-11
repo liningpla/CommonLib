@@ -114,13 +114,8 @@ public class ScheduleRunable implements Runnable {
                 Log.i(Downer.TAG, "覆盖下载，删除文件，重新下载");
                 targetFile.delete();
             }
-            //下载实际长度和上次记录长度不同，删除文件，重新下载
-            if(upgradeBuffer != null && fileLength != upgradeBuffer.getFileLength() && targetFile.exists()){
-                Log.i(Downer.TAG, "下载实际长度和上次记录长度不同，删除文件，重新下载");
-                targetFile.delete();
-            }
             //下载完成，直接安装
-            if(upgradeBuffer != null && fileLength == upgradeBuffer.getFileLength() && targetFile.exists()){
+            if(targetFile.exists() && fileLength == targetFile.length()){
                 Log.i(Downer.TAG, "下载完成，直接安装");
                 listener.downLoadedInstall();
                 return;
