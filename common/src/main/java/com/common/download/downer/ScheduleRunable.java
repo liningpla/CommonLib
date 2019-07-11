@@ -131,6 +131,7 @@ public class ScheduleRunable implements Runnable {
                         if (expiryDate <= DownerBuffer.EXPIRY_DATE) {
 
                             List<DownerBuffer.BufferPart> bufferParts = upgradeBuffer.getBufferParts();
+                            pools = bufferParts.size();
                             for (int id = 0; id < bufferParts.size(); id++) {
                                 startLength = bufferParts.get(id).getStartLength();
                                 endLength = bufferParts.get(id).getEndLength();
@@ -273,12 +274,12 @@ public class ScheduleRunable implements Runnable {
     public void completeInstall(String apkpagename) {
         if(downerRequest != null){
             String requesPageName = downerRequest.apkPageName;
-            if (TextUtils.equals(requesPageName, apkpagename)) {
-                if (downerOptions.isAutocleanEnabled() && downerOptions.getStorage().exists()) {
-                    downerOptions.getStorage().delete();
-                }
-            }
             if (downerCallBack != null && DownerUtil.isAppInstalled(mContext, downerRequest.apkPageName) && !isInstalled.get()) {
+                if (TextUtils.equals(requesPageName, apkpagename)) {
+                    if (downerOptions.isAutocleanEnabled() && downerOptions.getStorage().exists()) {
+                        downerOptions.getStorage().delete();
+                    }
+                }
                 isInstalled.getAndSet(true);
                 if (!isInstalled.get()) {
                     isInstalled.getAndSet(true);

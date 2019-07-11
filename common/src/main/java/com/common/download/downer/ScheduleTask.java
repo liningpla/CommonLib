@@ -61,7 +61,7 @@ public class ScheduleTask implements Runnable {
             connection.setDoInput(true);
             connection.setDoOutput(false);
             File file = downerOptions.getStorage();
-
+            Log.d(Downer.TAG, "ScheduleTask run connect before ");
             if (endLength == 0) {
                 connection.connect();
             } else {
@@ -70,12 +70,14 @@ public class ScheduleTask implements Runnable {
                 }
                 connection.connect();
             }
+            Log.d(Downer.TAG, "ScheduleTask run connect after ");
             inputStream = connection.getInputStream();
             randomAccessFile = new RandomAccessFile(file, "rwd");
             randomAccessFile.seek(startLength);
             byte[] buffer = new byte[1024 * 1024];
             int len = -1;
             int tempOffset = 0;
+            Log.d(Downer.TAG, "ScheduleTask run connect getInputStream ");
             do {
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_STOP) {
                     Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_STOP");
@@ -94,7 +96,6 @@ public class ScheduleTask implements Runnable {
                    startLength += len;
                    scheduleRunable.progress.addAndGet(len);
                    tempOffset = (int) (((float) scheduleRunable.progress.get() / scheduleRunable.maxProgress) * 100);
-                   Log.d(Downer.TAG, "tempOffset = "+tempOffset+"  scheduleRunable.offset = "+scheduleRunable.offset);
                    if (tempOffset > scheduleRunable.offset) {
                        scheduleRunable.offset = tempOffset;
                        listener.downLoadProgress(scheduleRunable.maxProgress, scheduleRunable.progress.get());
@@ -109,7 +110,7 @@ public class ScheduleTask implements Runnable {
                }
             } while (true);
         } catch (Exception e) {
-            Log.i(Downer.TAG, "ScheduleTask:run = "+e.getMessage());
+            Log.i(Downer.TAG, "ScheduleTask:run = "+e.getMessage()+"   "+e.getStackTrace().toString()+"   "+e.getLocalizedMessage());
             Log.i(Downer.TAG, "ScheduleTask:Exception:Schedule is stop");
             listener.downLoadStop();
         } finally {
