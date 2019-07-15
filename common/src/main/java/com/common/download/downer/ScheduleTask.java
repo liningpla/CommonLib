@@ -72,12 +72,13 @@ public class ScheduleTask implements Runnable {
             }
             Log.d(Downer.TAG, "ScheduleTask run connect after ");
             inputStream = connection.getInputStream();
+            Log.d(Downer.TAG, "ScheduleTask run connect getInputStream ");
             randomAccessFile = new RandomAccessFile(file, "rwd");
             randomAccessFile.seek(startLength);
+            Log.d(Downer.TAG, "ScheduleTask run RandomAccessFile seek ");
             byte[] buffer = new byte[1024 * 1024];
             int len = -1;
             int tempOffset = 0;
-            Log.d(Downer.TAG, "ScheduleTask run connect getInputStream ");
             do {
                 if (downerRequest.status == Downer.STATUS_DOWNLOAD_STOP) {
                     Log.d(Downer.TAG, "ScheduleTask run STATUS_DOWNLOAD_STOP");
