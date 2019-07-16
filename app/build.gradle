@@ -16,6 +16,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
@@ -26,10 +30,16 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    /*google 下载核心库*/
+    implementation 'com.google.android.play:core:+'
+    implementation 'com.google.android.material:material:1.0.0'
+
     implementation project(':common')
     implementation project(':floatingwindow')
     implementation project(':kotlin')
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation project(path: ':httplibrary')
+
 
 }

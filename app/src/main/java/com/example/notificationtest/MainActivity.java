@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -21,11 +22,14 @@ import androidx.core.app.NotificationCompat;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
+import com.example.notificationtest.biz.GooglePlayBiz;
 import com.example.notificationtest.httplib.HiHttp;
 import com.example.notificationtest.httplib.HiLog;
 import com.example.notificationtest.httplib.TestManager;
 import com.example.notificationtest.manager.StudyLifecycle;
 import com.lenove.httplibrary.OkGoManager;
+
+import static com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED;
 
 
 public class MainActivity extends BaseAcivity {
@@ -127,9 +131,9 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-        Uri uri= Uri.parse("common://common.com/commonactivity");
-        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-        startActivity(intent);
+//        Uri uri= Uri.parse("common://common.com/commonactivity");
+//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+//        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);
@@ -148,8 +152,8 @@ public class MainActivity extends BaseAcivity {
 
 //        JobManager.INSTANCE.testScreen(this, view);
 
-        HiHttp.init(getApplication());
-        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
+//        HiHttp.init(getApplication());
+//        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
 //        HiViewModel.init(getApplication()).observe(this, new Observer() {
 //            @Override
 //            public void onChanged(Object o) {
@@ -162,6 +166,31 @@ public class MainActivity extends BaseAcivity {
 //        ComponentName componentName = new ComponentName("com.lenovo.blockchain", "com.lenovo.blockchain.ui.rewarded.SplashActivity");
 //        intent.setComponent(componentName);
 //        startActivity(intent);
+
+        GooglePlayBiz.instance.updateGooglePlay(this);
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GooglePlayBiz.MY_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                Log.i(GooglePlayBiz.TAG, "Update flow failed! Result code: " + resultCode);
+                // 如果更新被取消或失败，
+                // 您可以请求重新启动更新。
+                return;
+            }
+            if (resultCode != RESULT_CANCELED) {
+                //用户已拒绝或取消更新。
+                Log.i(GooglePlayBiz.TAG, "The user has denied or cancelled the update! Result code: " + resultCode);
+                return;
+            }
+            if (resultCode != RESULT_IN_APP_UPDATE_FAILED) {
+                //其他一些错误阻止用户提供同意或继续更新。
+                Log.i(GooglePlayBiz.TAG, " Some other error prevented either the user from providing consent or the update to proceed! Result code: " + resultCode);
+                return;
+            }
+            Log.i(GooglePlayBiz.TAG, "Update flow successed! Result code: " + resultCode);
+        }
+    }
 }
