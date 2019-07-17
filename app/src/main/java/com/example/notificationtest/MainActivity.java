@@ -131,9 +131,9 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-//        Uri uri= Uri.parse("common://common.com/commonactivity");
-//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-//        startActivity(intent);
+        Uri uri= Uri.parse("common://common.com/commonactivity");
+        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);
@@ -167,7 +167,7 @@ public class MainActivity extends BaseAcivity {
 //        intent.setComponent(componentName);
 //        startActivity(intent);
 
-        GooglePlayBiz.instance.updateGooglePlay(this);
+//        GooglePlayBiz.instance.updateGooglePlay(this);
     }
 
 

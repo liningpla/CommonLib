@@ -70,7 +70,9 @@ public class ScheduleTask implements Runnable {
                 }
                 connection.connect();
             }
-            Log.d(Downer.TAG, "ScheduleTask run connect after ");
+
+            int code = connection.getResponseCode();
+            Log.d(Downer.TAG, "ScheduleTask run connect after code = "+code);
             inputStream = connection.getInputStream();
             Log.d(Downer.TAG, "ScheduleTask run connect getInputStream ");
             randomAccessFile = new RandomAccessFile(file, "rwd");

@@ -30,7 +30,7 @@ public enum  GooglePlayBiz {
 
     /**访问更新*/
     public void updateGooglePlay(Activity activity){
-
+        Log.i(GooglePlayBiz.TAG,"  ---updateGooglePlay----");
         // 创建管理器的实例
         appUpdateManager = AppUpdateManagerFactory.create(activity);
         listener = new MyInstallStateUpdatedListener(activity);
