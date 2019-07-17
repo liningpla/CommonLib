@@ -255,16 +255,7 @@ public class ScheduleRunable implements Runnable {
     }
 
     private long getContentSize(HttpURLConnection conn) {
-        long contentSize = 0;
-        for (int i = 0; ; i++) {
-            String mine = conn.getHeaderFieldKey(i);
-            if (mine == null) {
-                break;
-            } else if (mine.equals("Content-Length")) {
-                contentSize = Long.parseLong(conn.getHeaderField(i));
-                break;
-            }
-        }
+        long contentSize = conn.getContentLength();
         return contentSize;
     }
 
