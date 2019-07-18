@@ -73,6 +73,8 @@ public final class DownerOptions implements Parcelable {
     private final boolean isSupportRange;
     /**是否支持覆盖下载*/
     private final boolean isOverride;
+    /**是否需要通知栏*/
+    private final boolean isNeedNotify;
 
     private DownerOptions(Params params) {
         icon = params.icon;
@@ -87,6 +89,7 @@ public final class DownerOptions implements Parcelable {
         autocleanEnabled = params.autocleanEnabled;
         isSupportRange = params.isSupportRange;
         isOverride = params.isOverride;
+        isNeedNotify = params.isNeedNotify;
     }
 
     protected DownerOptions(Parcel in) {
@@ -102,6 +105,7 @@ public final class DownerOptions implements Parcelable {
         autocleanEnabled = in.readByte() != 0;
         isSupportRange = in.readByte() != 0;
         isOverride = in.readByte() != 0;
+        isNeedNotify = in.readByte() != 0;
     }
 
     @Override
@@ -118,6 +122,8 @@ public final class DownerOptions implements Parcelable {
         dest.writeInt((byte) (autocleanEnabled ? 1 : 0));
         dest.writeInt((byte) (isSupportRange ? 1 : 0));
         dest.writeInt((byte) (isOverride ? 1 : 0));
+        dest.writeInt((byte) (isNeedNotify ? 1 : 0));
+
     }
 
     @Override
@@ -179,6 +185,10 @@ public final class DownerOptions implements Parcelable {
 
     public boolean isOverride() {
         return isOverride;
+    }
+
+    public boolean isNeedNotify(){
+        return isNeedNotify;
     }
 
     public static class Builder implements Parcelable {
@@ -262,6 +272,11 @@ public final class DownerOptions implements Parcelable {
             params.isOverride = isOverride;
             return this;
         }
+        public Builder needNotify(boolean isNeedNotify){
+            params.isNeedNotify = isNeedNotify;
+            return this;
+        }
+
 
         public DownerOptions build() {
             return new DownerOptions(params);
@@ -302,6 +317,7 @@ public final class DownerOptions implements Parcelable {
         boolean autocleanEnabled;
         boolean isSupportRange;
         boolean isOverride;
+        boolean isNeedNotify;
     }
 
 }

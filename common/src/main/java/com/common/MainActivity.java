@@ -45,15 +45,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.button_check_updates_custom_download).setOnClickListener(this);
         findViewById(R.id.button_cancle).setOnClickListener(this);
 
-        Downer.init() .setMultithreadEnabled(true)// 是否支持多线程下载（可选）
-                      // 线程池大小（可选）
+        Downer.init() .setMultithreadEnabled(true)// 是否支持多线程下载
+                      // 线程池大小
                       .setMultithreadPools(4)
                       .setSupportRange(true)
                       // 文件MD5（可选）
                       .setAutoInstallEnabled(true)
-                      //覆盖安装
+                      //覆盖下载
                       .setOverride(false)
-                      // 是否自动删除安装包（可选）
+                      .needNotify(true)
+                      // 是否自动删除安装包
                       .setAutocleanEnabled(true);
     }
 

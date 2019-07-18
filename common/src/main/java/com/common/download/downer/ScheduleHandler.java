@@ -62,6 +62,9 @@ public class ScheduleHandler {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void initNotify() {
+        if(!downerOptions.isNeedNotify()){
+            return;
+        }
         Log.i(Downer.TAG, "ScheduleHandler:  initNotify icon: "+ downerOptions.getIcon()+"  Title:"+ downerOptions.getTitle());
         notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -102,6 +105,9 @@ public class ScheduleHandler {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void setNotify(String description) {
+        if(!downerOptions.isNeedNotify()){
+            return;
+        }
         if (notyStatus.get() == Downer.STATUS_DOWNLOAD_START) {
             builder.setSmallIcon(android.R.drawable.stat_sys_download);
         } else if (notyStatus.get() == Downer.STATUS_DOWNLOAD_PROGRESS) {
@@ -122,6 +128,9 @@ public class ScheduleHandler {
      * 清除通知栏
      */
     private void clearNotify() {
+        if(!downerOptions.isNeedNotify()){
+            return;
+        }
         Log.i(Downer.TAG, "ScheduleHandler: clearNotify");
         notificationManager.cancel(downerRequest.NOTIFY_ID);
     }

@@ -41,6 +41,7 @@ public class DownerRequest<T> {
         optionsBulider.setMultithreadEnabled(Downer.init().isMuliti);
         optionsBulider.setMultithreadPools(Downer.init().pools);
         optionsBulider.setOverride(Downer.init().isOverride);
+        optionsBulider.needNotify(Downer.init().isNeedNotify);
         NOTIFY_ID = (int) (Math.random()*900 + 100);
     }
 
@@ -139,6 +140,14 @@ public class DownerRequest<T> {
      */
     public DownerRequest setOverride(boolean isOverride) {
         optionsBulider.setOverride(isOverride);
+        return this;
+    }
+
+    /**
+     * 是否支持覆盖下载
+     */
+    public DownerRequest needNotify(boolean isNeedNotify) {
+        optionsBulider.needNotify(isNeedNotify);
         return this;
     }
 

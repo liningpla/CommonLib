@@ -45,6 +45,8 @@ public class Downer {
     public boolean isSupportRange;
     /**是否支持覆盖下载*/
     public boolean isOverride;
+    /**是否需要通知栏*/
+    public boolean isNeedNotify;
 
     /**开始下载*/
     public static <T> DownerRequest downLoad(T model){
@@ -105,6 +107,12 @@ public class Downer {
      */
     public Downer setOverride(boolean isOverride) {
         this.isOverride = isOverride;
+        return downer;
+    }
+
+    /**是否需要通知栏*/
+    public  Downer needNotify(boolean isNeedNotify){
+        this.isNeedNotify = isNeedNotify;
         return downer;
     }
 
