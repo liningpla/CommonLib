@@ -80,16 +80,16 @@ public class DownerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String url = intent.getStringExtra(DOWN_REQUEST);
         if(!downerRequests.containsKey(url)){
-            return START_STICKY;
+            return START_REDELIVER_INTENT ;
         }
         if(downerRequests.get(url).get() == null){
-            return START_STICKY;
+            return START_REDELIVER_INTENT ;
         }
         Log.i(Downer.TAG, "DownerService:  onStartCommand url :"+url);
         DownerRequest downerRequest = downerRequests.get(url).get();
         ThreadManger.getInstance().execute(Priority.NORMAL, downerRequest.scheduleRunable);
         Log.i(Downer.TAG, "DownerService:  onStartCommand  execute");
-        return START_STICKY;
+        return START_REDELIVER_INTENT ;
     }
 
     /**初始化网络监听，安装管理监听，通知栏通知*/

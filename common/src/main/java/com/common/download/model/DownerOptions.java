@@ -85,7 +85,7 @@ public final class DownerOptions implements Parcelable {
         md5 = params.md5;
         multithreadEnabled = params.multithreadEnabled;
         multithreadPools = params.multithreadPools;
-        automountEnabled = params.autocleanEnabled;
+        automountEnabled = params.automountEnabled;
         autocleanEnabled = params.autocleanEnabled;
         isSupportRange = params.isSupportRange;
         isOverride = params.isOverride;

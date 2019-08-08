@@ -228,7 +228,8 @@ public class ScheduleRunable implements Runnable {
             readConnection.setReadTimeout(Downer.READ_TIMEOUT);
             readConnection.connect();
             int statusCode = readConnection.getResponseCode();
-            if (statusCode == HttpURLConnection.HTTP_OK) {
+            Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  statusCode:" + statusCode);
+            if (statusCode != HttpURLConnection.HTTP_OK) {
                 while ((statusCode == Downer.SC_MOVED_TEMPORARILY) || (statusCode == Downer.SC_MOVED_PERMANENTLY)) {
                     tureUrl = readConnection.getHeaderField(Downer.REDIRECT_LOCATION_KEY);
                     connectHttp(tureUrl);

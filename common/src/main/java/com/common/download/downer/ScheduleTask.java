@@ -63,9 +63,11 @@ public class ScheduleTask implements Runnable {
             File file = downerOptions.getStorage();
             Log.d(Downer.TAG, "ScheduleTask run connect before ");
             if (endLength == 0) {
+                Log.d(Downer.TAG, "ScheduleTask run connect connected ");
                 connection.connect();
             } else {
                 if(downerOptions.isSupportRange()){//不支持断点续传
+                    Log.d(Downer.TAG, "ScheduleTask run connect connected  Range ");
                     connection.setRequestProperty("Range", "bytes=" + startLength + "-" + endLength);
                 }
                 connection.connect();

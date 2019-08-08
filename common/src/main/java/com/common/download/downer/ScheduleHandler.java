@@ -69,8 +69,8 @@ public class ScheduleHandler {
         notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder = new Notification.Builder(mContext, DownerService.NOTIFY_CHANNEL_ID)
-                    .setGroup(DownerService.NOTIFY_CHANNEL_ID)
-                    .setGroupSummary(false)
+//                    .setGroup(DownerService.NOTIFY_CHANNEL_ID)
+//                    .setGroupSummary(false)
                     .setSmallIcon(android.R.drawable.stat_sys_download)
                     .setLargeIcon(downerOptions.getIcon())
                     .setContentIntent(getDefalutIntent(PendingIntent.FLAG_UPDATE_CURRENT))
