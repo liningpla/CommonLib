@@ -100,6 +100,7 @@ public class ScheduleRunable implements Runnable {
     @Override
     public void run() {
         try {
+            Log.i(Downer.TAG, "llllllllllllllllllllll-------------"+downerOptions.isAllow4G());
             listener.downLoadStart();
             connectHttp(downerOptions.getUrl());
             long startLength = 0;

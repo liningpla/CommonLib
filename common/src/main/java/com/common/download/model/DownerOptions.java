@@ -75,6 +75,9 @@ public final class DownerOptions implements Parcelable {
     private final boolean isOverride;
     /**是否需要通知栏*/
     private final boolean isNeedNotify;
+    /**是否允许移动网络下载，用来控制网络切换，重启下载*/
+    private final boolean isAllow4G;
+
 
     private DownerOptions(Params params) {
         icon = params.icon;
@@ -90,6 +93,7 @@ public final class DownerOptions implements Parcelable {
         isSupportRange = params.isSupportRange;
         isOverride = params.isOverride;
         isNeedNotify = params.isNeedNotify;
+        isAllow4G = params.isAllow4G;
     }
 
     protected DownerOptions(Parcel in) {
@@ -106,6 +110,7 @@ public final class DownerOptions implements Parcelable {
         isSupportRange = in.readByte() != 0;
         isOverride = in.readByte() != 0;
         isNeedNotify = in.readByte() != 0;
+        isAllow4G = in.readByte() != 0;
     }
 
     @Override
@@ -123,6 +128,7 @@ public final class DownerOptions implements Parcelable {
         dest.writeInt((byte) (isSupportRange ? 1 : 0));
         dest.writeInt((byte) (isOverride ? 1 : 0));
         dest.writeInt((byte) (isNeedNotify ? 1 : 0));
+        dest.writeInt((byte) (isAllow4G ? 1 : 0));
 
     }
 
@@ -189,6 +195,10 @@ public final class DownerOptions implements Parcelable {
 
     public boolean isNeedNotify(){
         return isNeedNotify;
+    }
+
+    public boolean isAllow4G(){
+        return isAllow4G;
     }
 
     public static class Builder implements Parcelable {
@@ -277,6 +287,12 @@ public final class DownerOptions implements Parcelable {
             return this;
         }
 
+        public Builder allow4G(boolean isAllow4G){
+            params.isAllow4G = isAllow4G;
+            return this;
+        }
+
+
 
         public DownerOptions build() {
             return new DownerOptions(params);
@@ -318,6 +334,7 @@ public final class DownerOptions implements Parcelable {
         boolean isSupportRange;
         boolean isOverride;
         boolean isNeedNotify;
+        boolean isAllow4G;
     }
 
 }

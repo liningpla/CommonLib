@@ -151,7 +151,10 @@ public class DownerService extends Service {
                     Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is disconnected");
                     break;
                 case SCHEDULE_STATUS_RESUME:
-                    if(scheduleRunable.downerRequest != null){
+                    if(downerRequest!= null && downerRequest.options != null){
+                        if(!downerRequest.options.isAllow4G()){
+                            break;
+                        }
                         if(downerRequest.status == Downer.STATUS_DOWNLOAD_STOP || downerRequest.status == Downer.STATUS_DOWNLOAD_PAUSE){
                             scheduleRunable.downerRequest.reStart(this);
                             Log.i(Downer.TAG, "DownerService:iteratorSchedule:Schedule is resume");

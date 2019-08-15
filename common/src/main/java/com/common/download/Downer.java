@@ -47,7 +47,8 @@ public class Downer {
     public boolean isOverride;
     /**是否需要通知栏*/
     public boolean isNeedNotify;
-
+    /**是否允许移动网络下载，用来控制网络切换，重启下载*/
+    public boolean isAllow4G;
     /**开始下载*/
     public static <T> DownerRequest downLoad(T model){
         return new DownerRequest(model);
@@ -113,6 +114,12 @@ public class Downer {
     /**是否需要通知栏*/
     public  Downer needNotify(boolean isNeedNotify){
         this.isNeedNotify = isNeedNotify;
+        return downer;
+    }
+
+    /**是否需要通知栏*/
+    public  Downer allow4G (boolean isAllow4G){
+        this.isAllow4G = isAllow4G;
         return downer;
     }
 

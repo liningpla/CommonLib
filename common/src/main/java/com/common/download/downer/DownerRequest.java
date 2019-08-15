@@ -42,6 +42,7 @@ public class DownerRequest<T> {
         optionsBulider.setMultithreadPools(Downer.init().pools);
         optionsBulider.setOverride(Downer.init().isOverride);
         optionsBulider.needNotify(Downer.init().isNeedNotify);
+        optionsBulider.allow4G(Downer.init().isAllow4G);
         NOTIFY_ID = (int) (Math.random()*900 + 100);
     }
 
@@ -148,6 +149,14 @@ public class DownerRequest<T> {
      */
     public DownerRequest needNotify(boolean isNeedNotify) {
         optionsBulider.needNotify(isNeedNotify);
+        return this;
+    }
+
+    /**
+     **是否允许移动网络下载，用来控制网络切换，重启下载
+     */
+    public DownerRequest allow4G(boolean isAllow4G) {
+        optionsBulider.allow4G(isAllow4G);
         return this;
     }
 
