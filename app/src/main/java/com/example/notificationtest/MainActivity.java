@@ -8,13 +8,13 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +22,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
+import com.example.notificationtest.activity.LeAboradHomePanelView;
 import com.example.notificationtest.biz.GooglePlayBiz;
 import com.example.notificationtest.httplib.HiHttp;
 import com.example.notificationtest.httplib.HiLog;
@@ -34,10 +35,13 @@ import static com.google.android.play.core.install.model.ActivityResult.RESULT_I
 
 public class MainActivity extends BaseAcivity {
     private TextView tv_countdown;
+    private FrameLayout activity_main_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        activity_main_layout = findViewById(R.id.activity_main_layout);
+        new LeAboradHomePanelView(this, activity_main_layout).laodView();
         getLifecycle().addObserver(new StudyLifecycle());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "chat";
@@ -131,9 +135,9 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-        Uri uri= Uri.parse("common://common.com/commonactivity");
-        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-        startActivity(intent);
+//        Uri uri= Uri.parse("common://common.com/commonactivity");
+//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+//        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);
@@ -152,8 +156,8 @@ public class MainActivity extends BaseAcivity {
 
 //        JobManager.INSTANCE.testScreen(this, view);
 
-//        HiHttp.init(getApplication());
-//        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
+        HiHttp.init(getApplication());
+        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
 //        HiViewModel.init(getApplication()).observe(this, new Observer() {
 //            @Override
 //            public void onChanged(Object o) {
