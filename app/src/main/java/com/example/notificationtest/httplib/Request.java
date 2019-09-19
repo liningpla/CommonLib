@@ -1,5 +1,6 @@
 package com.example.notificationtest.httplib;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.lang.ref.SoftReference;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -44,6 +46,8 @@ public class Request<T> implements Serializable {
     private Handler mHandler;
     private String mParent;//json参数转化的父类结点名称
     private LinkedHashMap<String, File> fileParams;
+    private String fileCache, assetCache;
+    private SoftReference<Context> softContext;
 
     public String getUrl() {
         return url;
@@ -165,6 +169,17 @@ public class Request<T> implements Serializable {
         return this;
     }
 
+    /**读取文件缓存*/
+    public Request fileCache(String fileCache) {
+        this.fileCache = fileCache;
+        return this;
+    }
+    /**读取assets缓存*/
+    public Request assetCache(Context context, String assetCache) {
+        softContext = new SoftReference<>(context);
+        this.assetCache = assetCache;
+        return this;
+    }
     /**
      * 构建请求
      */
@@ -373,6 +388,18 @@ public class Request<T> implements Serializable {
 
     /**返回错误到UI线程*/
     private void backErrorToUI(){
+        String result = HiCache.readCache(fileCache);//读取文件缓存
+        if(!TextUtils.isEmpty(result)){
+            backSuccessToUI(result);
+            return;
+        }
+        if(softContext != null){//读取assets缓存
+            result = HiCache.readAsset(softContext.get(), assetCache);
+            if(!TextUtils.isEmpty(result)){
+                backSuccessToUI(result);
+                return;
+            }
+        }
         mHandler.post(new Runnable() {
             public void run() {
                 if(mResponse.getThrowable() != null){
@@ -383,7 +410,9 @@ public class Request<T> implements Serializable {
         });
     }
     /**返回错误到UI线程*/
-    private void backSuccessToUI(){
+    private void backSuccessToUI(String result){
+        mResponse.setBody((T) result);
+        mCallBack.convertResponse(mResponse);
         mHandler.post(new Runnable() {
             public void run() {
                 mCallBack.onSuccess(mResponse);
@@ -408,9 +437,10 @@ public class Request<T> implements Serializable {
                     result = connectStreamResult(params);//普通文本参数
                 }
                 if(!TextUtils.isEmpty(result)){
-                    mResponse.setBody((T) result);
-                    mCallBack.convertResponse(mResponse);
-                    backSuccessToUI();
+                    HiCache.saveCache(result, fileCache);
+                    backSuccessToUI(result);
+                }else{
+                    backErrorToUI();
                 }
             }
         });

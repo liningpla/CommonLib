@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
@@ -29,6 +31,8 @@ import com.example.notificationtest.httplib.HiLog;
 import com.example.notificationtest.httplib.TestManager;
 import com.example.notificationtest.manager.StudyLifecycle;
 import com.lenove.httplibrary.OkGoManager;
+
+import java.util.Locale;
 
 import static com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED;
 
@@ -156,8 +160,8 @@ public class MainActivity extends BaseAcivity {
 
 //        JobManager.INSTANCE.testScreen(this, view);
 
-        HiHttp.init(getApplication());
-        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
+//        HiHttp.init(getApplication());
+//        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
 //        HiViewModel.init(getApplication()).observe(this, new Observer() {
 //            @Override
 //            public void onChanged(Object o) {
@@ -172,6 +176,8 @@ public class MainActivity extends BaseAcivity {
 //        startActivity(intent);
 
 //        GooglePlayBiz.instance.updateGooglePlay(this);
+
+        testFragment();
     }
 
 
@@ -197,4 +203,14 @@ public class MainActivity extends BaseAcivity {
             Log.i(GooglePlayBiz.TAG, "Update flow successed! Result code: " + resultCode);
         }
     }
+
+    private void testFragment(){
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        TestFragment detailFragment = new TestFragment();
+        transaction.replace(R.id.activity_main_fragment, detailFragment, "TestFragment");
+        transaction.commitNowAllowingStateLoss();
+    }
+
 }
