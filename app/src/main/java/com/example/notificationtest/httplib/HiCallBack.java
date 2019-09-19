@@ -14,6 +14,9 @@ public abstract class HiCallBack<T> implements Converter<T> {
      */
     @Override
     public T convertResponse(Response response) {
+        if(clazz == String.class){
+            return null;
+        }
         response.setBody(HiJson.jsonObject(clazz, (String) response.body()));
         return (T) response.body();
     }

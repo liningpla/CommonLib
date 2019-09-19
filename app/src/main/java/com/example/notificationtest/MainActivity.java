@@ -45,7 +45,6 @@ public class MainActivity extends BaseAcivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         activity_main_layout = findViewById(R.id.activity_main_layout);
-        new LeAboradHomePanelView(this, activity_main_layout).laodView();
         getLifecycle().addObserver(new StudyLifecycle());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "chat";
@@ -160,8 +159,8 @@ public class MainActivity extends BaseAcivity {
 
 //        JobManager.INSTANCE.testScreen(this, view);
 
-//        HiHttp.init(getApplication());
-//        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
+        HiHttp.init(getApplication());
+        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
 //        HiViewModel.init(getApplication()).observe(this, new Observer() {
 //            @Override
 //            public void onChanged(Object o) {
@@ -177,7 +176,9 @@ public class MainActivity extends BaseAcivity {
 
 //        GooglePlayBiz.instance.updateGooglePlay(this);
 
-        testFragment();
+//        testFragment();
+
+//        new LeAboradHomePanelView(this, activity_main_layout).laodView();
     }
 
 
