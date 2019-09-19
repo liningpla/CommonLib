@@ -14,7 +14,8 @@ public abstract class HiCallBack<T> implements Converter<T> {
      */
     @Override
     public T convertResponse(Response response) {
-        return null;
+        response.setBody(HiJson.jsonObject(clazz, (String) response.body()));
+        return (T) response.body();
     }
 
     /**
@@ -26,19 +27,19 @@ public abstract class HiCallBack<T> implements Converter<T> {
     /**
      * 对返回数据进行操作的回调， UI线程
      */
-    void onSuccess(Response<T> response) {
+    void onSuccess(Response response) {
     }
 
     /**
      * 缓存成功的回调,UI线程
      */
-    void onCacheSuccess(Response<T> response) {
+    void onCacheSuccess(Response response) {
     }
 
     /**
      * 请求失败，响应错误，数据解析错误等，都会回调该方法， UI线程
      */
-    void onError(Response<T> response) {
+    void onError(Response response) {
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.example.notificationtest.httplib;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import java.io.BufferedReader;
@@ -12,8 +14,70 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
-/**缓存读取工具类*/
-public class HiCache {
+/**缓存操作类*/
+public enum  HiCache {
+    INIT;
+
+    private String filePath;
+    private String assetName;
+    private Handler mHandler;
+    public HiCache fileCache(String filePath){
+        this.filePath = filePath;
+        return INIT;
+    }
+
+    public HiCache assetCache(String assetName){
+        this.assetName = assetName;
+        return INIT;
+    }
+    public void loadCache(HiCallBack cllBack){
+        mHandler = HiHttp.instance.getDelivery();
+        if(mHandler == null){
+            mHandler = new Handler(Looper.getMainLooper());
+        }
+        HiThreadManger.getInstance().execute(Priority.NORMAL, new Runnable() {
+            @Override
+            public void run() {
+                Response mResponse = new Response<>();
+                String result = HiCache.readCache(filePath);//读取文件缓存
+                if(!TextUtils.isEmpty(result)){
+                    mResponse.setBody(result);
+                    cllBack.convertResponse(mResponse);
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            if(mResponse.getThrowable() != null){
+                                cllBack.onCacheSuccess(mResponse);
+                                cllBack.onFinish();
+                            }
+                        }
+                    });
+
+                    return;
+                }
+                if(HiHttp.mApplication != null){//读取assets缓存
+                    result = HiCache.readAsset(HiHttp.mApplication, assetName);
+                    if(!TextUtils.isEmpty(result)){
+                        mHandler.post(new Runnable() {
+                            public void run() {
+                                if(mResponse.getThrowable() != null){
+                                    cllBack.onCacheSuccess(mResponse);
+                                    cllBack.onFinish();
+                                }
+                            }
+                        });
+                        return;
+                    }
+                }
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        if(mResponse.getThrowable() != null){
+                            cllBack.onError(mResponse);
+                        }
+                    }
+                });
+            }
+        });
+    }
 
     /**保存缓存*/
     public static void saveCache(String result, String filePath){
