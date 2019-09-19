@@ -1,6 +1,5 @@
 package com.example.notificationtest.httplib;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -13,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.lang.ref.SoftReference;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -47,7 +45,6 @@ public class Request<T> implements Serializable {
     private String mParent;//json参数转化的父类结点名称
     private LinkedHashMap<String, File> fileParams;
     private String fileCache, assetCache;
-    private SoftReference<Context> softContext;
 
     public String getUrl() {
         return url;
@@ -175,8 +172,7 @@ public class Request<T> implements Serializable {
         return this;
     }
     /**读取assets缓存*/
-    public Request assetCache(Context context, String assetCache) {
-        softContext = new SoftReference<>(context);
+    public Request assetCache(String assetCache) {
         this.assetCache = assetCache;
         return this;
     }
@@ -393,8 +389,8 @@ public class Request<T> implements Serializable {
             backSuccessToUI(result);
             return;
         }
-        if(softContext != null){//读取assets缓存
-            result = HiCache.readAsset(softContext.get(), assetCache);
+        if(HiHttp.mApplication != null){//读取assets缓存
+            result = HiCache.readAsset(HiHttp.mApplication, assetCache);
             if(!TextUtils.isEmpty(result)){
                 backSuccessToUI(result);
                 return;
