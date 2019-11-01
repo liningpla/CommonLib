@@ -62,13 +62,13 @@ public class HiJson {
                 if (column != null) {
                     fieldName = column.value();
                 }
-                if (typeClazz.isPrimitive()) {
+                if (jsonObject != null && typeClazz.isPrimitive()) {
                     // 是否基础变量
                     setProperty(obj, field, jsonObject.opt(fieldName));
-                } else if (typeClazz == List.class) {
+                } else if (jsonObject != null && typeClazz == List.class) {
                     // 得到List的JSONArray数组
-                    JSONArray jArray = jsonObject.getJSONArray(fieldName);
-                    if (jArray.length() > 0) {
+                    JSONArray jArray = jsonObject.optJSONArray(fieldName);
+                    if (jArray != null && jArray.length() > 0) {
                         Object typeObj = new ArrayList<>();
                         Type type = field.getGenericType();
                         ParameterizedType pt = (ParameterizedType) type;
@@ -77,20 +77,27 @@ public class HiJson {
                         // 将每个元素的实例类加入到类型的实例中
                         for (int i = 0; i < jArray.length(); i++) {
                             //对于数组，递归调用解析子元素
-                            if (!jsonObject.isNull(fieldName)) {
-                                ((List<Object>) typeObj).add(parseJson2Object(dataClass, jsonObject.getJSONArray(fieldName).getJSONObject(i)));
+                            if (jsonObject != null && !jsonObject.isNull(fieldName)) {
+                                Object object = jsonObject.optJSONArray(fieldName).get(i);
+                                if (object != null) {
+                                    if (object instanceof String || object.getClass().isPrimitive()) {
+                                        ((List<Object>) typeObj).add(object);
+                                    } else {
+                                        ((List<Object>) typeObj).add(parseJson2Object(dataClass, jsonObject.optJSONArray(fieldName).optJSONObject(i)));
+                                    }
+                                }
                             }
                         }
                         setProperty(obj, field, typeObj);
                     }
-                } else if (typeClazz == String.class) {
+                } else if (jsonObject != null && typeClazz == String.class) {
                     // 是否为String
                     setProperty(obj, field, jsonObject.opt(fieldName));
                 } else {
                     // 是否为其它对象
                     //递归解析对象
-                    if (!jsonObject.isNull(fieldName)) {
-                        setProperty(obj, field, parseJson2Object(typeClazz, jsonObject.getJSONObject(fieldName)));
+                    if (jsonObject != null && !jsonObject.isNull(fieldName)) {
+                        setProperty(obj, field, parseJson2Object(typeClazz, jsonObject.optJSONObject(fieldName)));
                     }
                 }
             }

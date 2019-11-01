@@ -26,7 +26,7 @@ public class Multipart {
     private HttpURLConnection conn;
     private String jsonStr;
     private HiCallBack mCallBack;
-    private List<FormFile> formFiles = new LinkedList<>();
+    private List<HiFormFile> formFiles = new LinkedList<>();
     private long totalLength;
 
     public Multipart(HttpURLConnection conn, LinkedHashMap<String, File> files, String jsonStr, HiCallBack mCallBack) {
@@ -37,14 +37,14 @@ public class Multipart {
         Iterator<Map.Entry<String, File>> iter = entrySet.iterator();
         while (iter.hasNext()) {
             Map.Entry<String, File> entry = iter.next();
-            FormFile formfile = new FormFile(entry.getValue(), entry.getKey(), null);
+            HiFormFile formfile = new HiFormFile(entry.getValue(), entry.getKey(), null);
             totalLength += entry.getKey().length();
             formFiles.add(formfile);
         }
     }
 
-    private void addImageContent(List<FormFile> files, DataOutputStream output, HiCallBack mCallBack) {
-        for(FormFile file : files) {
+    private void addImageContent(List<HiFormFile> files, DataOutputStream output, HiCallBack mCallBack) {
+        for(HiFormFile file : files) {
             StringBuilder split = new StringBuilder();   
             split.append(twoHyphens + boundary + lineEnd);   
             split.append("Content-Disposition: form-data; name=\"" + file.getParameterName() + "\"; filename=\"" + "noname" + "\"" + lineEnd);   

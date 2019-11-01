@@ -1,6 +1,5 @@
 package com.example.notificationtest.httplib;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -13,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.lang.ref.SoftReference;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -150,13 +148,18 @@ public class Request<T> implements Serializable {
         return this;
     }
 
-    /**键值参数转化字符，全局键值参数下使用，paramsJson同时使用时，只执行paramsJson逻辑*/
+    /**键值参数转化字符，有父节点，全局键值参数下使用，paramsJson同时使用时，只执行paramsJson逻辑*/
     public Request toJson(String parent) {
         isToJson = true;
         mParent = parent;
         return this;
     }
 
+    /**键值参数转化字符，无父节点，全局键值参数下使用，paramsJson同时使用时，只执行paramsJson逻辑*/
+    public Request toJson() {
+        isToJson = true;
+        return this;
+    }
     /**上传表单文件
      * @param parameterName 文件的上传字段名
      * * */
@@ -165,17 +168,6 @@ public class Request<T> implements Serializable {
             fileParams = new LinkedHashMap<>();
         }
         fileParams.put(parameterName, file);
-        return this;
-    }
-
-    /**读取文件缓存*/
-    public Request fileCache(String fileCache) {
-        this.fileCache = fileCache;
-        return this;
-    }
-    /**读取assets缓存*/
-    public Request assetCache(String assetCache) {
-        this.assetCache = assetCache;
         return this;
     }
     /**
@@ -234,11 +226,10 @@ public class Request<T> implements Serializable {
             if(httpMethod == HttpMethod.GET){
                 bulidGetParams();
             }else{
-                //如果传入的参数是json字符
+                //如果传入的参数是json字符，有父节点
                 if (!TextUtils.isEmpty(paramsJson)) {
                     strParams = bulidParamsJson();
                 } else {
-                    //如果传入的参数是键值对
                     strParams = bulidKeyValue();
                 }
             }
@@ -259,7 +250,10 @@ public class Request<T> implements Serializable {
                 Map.Entry<String, String> entry = iter.next();
                 strParams = strParams + entry.getKey() + "=" + URLEncoder.encode(entry.getValue(), "UTF-8") + "&";
             }
-            url = url + "?"+strParams;
+            if(!TextUtils.isEmpty(strParams)){
+                url = url + "?"+strParams;
+            }
+            HiLog.e(HiHttp.TAG, url);
         }catch (Exception e){
             HiLog.e(HiHttp.TAG, e.getMessage());
         }
@@ -331,8 +325,6 @@ public class Request<T> implements Serializable {
         } catch (IOException e) {
             retryConnect(e);
             HiLog.e(HiHttp.TAG, e.getMessage());
-        }finally {
-            backErrorToUI();
         }
     }
 
@@ -378,26 +370,12 @@ public class Request<T> implements Serializable {
         } catch (Exception e) {
             mResponse.setThrowable(e);
             HiLog.e(HiHttp.TAG, e.getMessage());
-        }finally {
-            backErrorToUI();
         }
         return result;
     }
 
     /**返回错误到UI线程*/
     private void backErrorToUI(){
-        String result = HiCache.readCache(fileCache);//读取文件缓存
-        if(!TextUtils.isEmpty(result)){
-            backSuccessToUI(result);
-            return;
-        }
-        if(HiHttp.mApplication != null){//读取assets缓存
-            result = HiCache.readAsset(HiHttp.mApplication, assetCache);
-            if(!TextUtils.isEmpty(result)){
-                backSuccessToUI(result);
-                return;
-            }
-        }
         mHandler.post(new Runnable() {
             public void run() {
                 if(mResponse.getThrowable() != null){
@@ -406,10 +384,12 @@ public class Request<T> implements Serializable {
                 }
             }
         });
+
     }
     /**返回错误到UI线程*/
     private void backSuccessToUI(String result){
         mResponse.setBody((T) result);
+        mResponse.setResult(result);
         mCallBack.convertResponse(mResponse);
         mHandler.post(new Runnable() {
             public void run() {
@@ -423,6 +403,7 @@ public class Request<T> implements Serializable {
         mCallBack = cllBack;
         mCallBack.onStart(this);
         mResponse = new Response<>();
+        HiLog.i("------------execute:");
         HiThreadManger.getInstance().execute(priority, new Runnable() {
             @Override
             public void run() {
@@ -434,8 +415,9 @@ public class Request<T> implements Serializable {
                 }else{
                     result = connectStreamResult(params);//普通文本参数
                 }
+
                 if(!TextUtils.isEmpty(result)){
-                    HiCache.saveCache(result, fileCache);
+                    HiLog.i("------------result:");
                     backSuccessToUI(result);
                 }else{
                     backErrorToUI();

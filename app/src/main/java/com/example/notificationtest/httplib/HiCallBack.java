@@ -1,7 +1,7 @@
 package com.example.notificationtest.httplib;
 
 
-public abstract class HiCallBack<T> implements Converter<T> {
+public abstract class HiCallBack<T> implements HiConverter<T> {
 
     Class<T> clazz;
 
@@ -24,42 +24,42 @@ public abstract class HiCallBack<T> implements Converter<T> {
     /**
      * 请求网络开始前，UI线程
      */
-    void onStart(Request request) {
+    public void onStart(Request request) {
     }
 
     /**
      * 对返回数据进行操作的回调， UI线程
      */
-    void onSuccess(Response response) {
+    public void onSuccess(Response response) {
     }
 
     /**
      * 缓存成功的回调,UI线程
      */
-    void onCacheSuccess(Response response) {
+    public void onCacheSuccess(Response response) {
     }
 
     /**
      * 请求失败，响应错误，数据解析错误等，都会回调该方法， UI线程
      */
-    void onError(Response response) {
+    public void onError(Response response) {
     }
 
     /**
      * 请求网络结束后，UI线程
      */
-    void onFinish() {
+    public void onFinish() {
     }
 
     /**
      * 上传过程中的进度回调，get请求不回调，UI线程
      */
-    void uploadProgress(long progress, long totalLength) {
+    public void uploadProgress(long progress, long totalLength) {
     }
 
     /**
      * 下载过程中的进度回调，UI线程
      */
-    void downloadProgress(long progress) {
+    public void downloadProgress(long progress) {
     }
 }

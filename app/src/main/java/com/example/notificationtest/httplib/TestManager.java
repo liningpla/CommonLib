@@ -6,8 +6,8 @@ public enum TestManager {
     String url = "http://vb.lenovo.com/mobile_cache.xhtml";
 
     public String testPostHttp() {
-        testPost();
-//        testFormUplaod();
+//        testPost();
+        testFormUplaod();
         try{
             return "1";
         }catch (Exception e){
@@ -17,30 +17,24 @@ public enum TestManager {
     }
 
     private void testPost(){
-        HiHttp.<UserInfo>post(url).params("appID", "1410232134070.app.ln")
+        HiHttp.<String>post(url).params("appID", "1410232134070.app.ln")
                 .params("authName", "ZAgAAAAAAAGE9MTAxMDQ4MDY2NDkmYj0yJmM9NCZkPTEyMjAzJmU9OTAzODBBMzM3NkM0QjJFMzVDRUY2NUM4MzAxMzdCOUQxJmg9MTU1NTMwMDg0ODY4NyZpPTQzMjAwJmo9MCZvPTg2OTk5NDAzMDAxOTQzJnA9aW1laSZxPTAmdXNlcm5hbWU9MTgyMTAyNzUzNTYmaWw9Y26ZaxpXUlY8yRj4oH6iDDBf")
                 .params("configVer", "36")
                 .params("appConfigVer", "1")
                 .params("isNewSdkFlag", "true")
                 .params("cashierVer", "4.0")
-                .toJson("body").execute(new HiCallBack<UserInfo>(UserInfo.class) {
+                .toJson("body").execute(new HiCallBack<String>(String.class) {
             @Override
-            void onSuccess(Response response) {
+           public void onSuccess(Response response) {
                 super.onSuccess(response);
-
-                HiLog.i(HiHttp.TAG, response.body().toString());
-
-//                UserInfo userInfo = HiJson.jsonObject(UserInfo.class, (String) response.body());
-
-                UserInfo userInfo = (UserInfo) response.body();
-
+                HiLog.i(HiHttp.TAG, (String) response.body());
+                UserInfo userInfo = HiJson.jsonObject(UserInfo.class, (String) response.body());
                 HiLog.i(HiHttp.TAG, userInfo.body.channelList.get(0).getChannelName());
                 HiLog.i(HiHttp.TAG, HiJson.objectJson(userInfo));
-                HiViewModel.init(HiHttp.instance.mApplication).post(userInfo);
             }
 
             @Override
-            void onError(Response response) {
+            public void onError(Response response) {
                 super.onError(response);
             }
         });
