@@ -1,0 +1,20 @@
+package com.example.notificationtest.httplib.sign;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Constants {
+    public static final Map<String, String> PUBLIC_KEY_MAP = new HashMap<>();
+    public static final String SIGN_TYPE_RSA = "RSA";
+    /**
+     * sha256WithRsa 算法请求类型
+     */
+    public static final String SIGN_TYPE_RSA2 = "RSA2";
+
+    public static final String SIGN_SHA256RSA_ALGORITHMS = "SHA256WithRSA";
+
+    public static final String SIGN_ALGORITHMS = "SHA1WithRSA";
+
+    // 暂存私钥
+    public static final String privateKey = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCkjXQ/RIT6U6naHCbTOCJ8J1sIPdPago3DqB/89HqaLbzlPLHxEFGkvOcMwjxFn4drx2m2V6QFMxfiA8HNaD7+i7m5v8b3Cclgwx9MrmCgq4PS5uJBTvy5pR8x2uQnnLC2V/mm6bUXL4nwlbQrp5vvXgnNRYIcxynoljQPY6nbP2ChYeMyKjwurFTBkLE6UuC7OWwmj6ZzzI/e5Z0/k1wj2yBzg4cZH9r/rAGBbFAN5UMxswjcnKxzl9QBsAwlx8Da2YiwRAhecCjWtjte56zirVcX8+N3H9DwuOtG6DQ89loaSy/4V54xBapA5gtegbfWOdhaKDC+8y5vxx9o6/3TAgMBAAECggEAFLyq0KpO48kVV6JClk21stW22CQKhbf8K5MNbPBWXwWyj2UFu65ly4/uwiHcPJ3tD/0SamNDDVCyCs6UZtFjVuq+3hS3+zvlf+c3E4/KJ5VVyIdGLhrJKJARjVPbes55SpFtqcY8Bw77oDENgo7dzN2Z+J9w1TWYJ3J+Xw4dQr7XL59EIQYEReUXs8l6eb3OCsmvhJodEApjQzYFCKdmQaFBTXtL6XA8AKK579K9srgFwoULziJO/tNv1Yy4Dvi23gQXyRw4QVbuqUpUoBSTNx5oMgD/sNd8zcerB4anDXQEbaKJqNHCMAl1Vr7ePxZyDKdlF+i1+IXkgpJJDpr02QKBgQDPpW9WfEqRRAFxksEuKIRORUaJH1gBof5TrduIP9Ai227dx1Q/ZhFVEMDs+vQdOlNNruM5rPwnTCDbzHVlL4mWd+Vk30lCam++Q55ojgDEIfDrNuAIn+q3ua5dSqxj3Dj7H7LyZHkcBl9/LRypB5EuKt4qqT8dFGTAz18vCUInTwKBgQDK3wtykkkD+Ooh/Efc+8ps3+c5AOfOqPgiCv95QHhG66Jxw7FEZBqo/oyF7KTZK5vc8ejAXTgmpEYxDk+2ATj+gP2RqV2r9fLW/k9nHxmUTAPT3BTDYZno+ebKZDSqtsC46RUtomTBCKgr4HsmNTGoOpRBQYPgg8izWrOFGSVgPQKBgBUiEzjMIZKzRypV809NVFna9xjRldVktUuy8Brn07kYeCoeNVbWfoEX2WrFB79JxlyrpfiiwG8HcnisUG5h7jDgNvqTNxOJXaIRo7ekbDOJ+MkXpql6DRtxzGs2RGFNcocsbLv6udC+XU3GO5qAaKg4OLBC1WeSQcbV1CwnVxJFAoGAFhu0fanfdyVbLpT1p+lwp+jGo/mrSWQ0llEogig6c1AehdNTsCZQmXYUDkw5sskD1VIvkTcXdW6Vj6cFnMoJUgLwnz0bzi+hZTiVoqFLAlQ+XoovYRNz2GXTdt7wtmHwIraT7kMyQ68T1KREB2fon3Ky0WG4Y3E5IAKUab7RyekCgYEAx0LvsnbRqiyOimd0MHeCAG+VyrGEv9B2biArlFsbeY9ke0fS34Ms6JGY7EcXdBXfgmOOJs6EKzqfdbJXk7Z27IBoyqIq94EDDCBDLNvrZNyxTAb4c9ql7xxfPUBvKPML8LW6iPT83BfQFuIpIWHbgf04QyWaHFaTkbEpw2fwm9A=";
+}

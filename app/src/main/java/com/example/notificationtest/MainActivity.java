@@ -24,15 +24,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
-import com.example.notificationtest.activity.LeAboradHomePanelView;
 import com.example.notificationtest.biz.GooglePlayBiz;
-import com.example.notificationtest.httplib.HiHttp;
-import com.example.notificationtest.httplib.HiLog;
-import com.example.notificationtest.httplib.TestManager;
+import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
+import com.example.notificationtest.ui.PullRefreshActivity;
 import com.lenove.httplibrary.OkGoManager;
-
-import java.util.Locale;
 
 import static com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED;
 
@@ -100,14 +96,16 @@ public class MainActivity extends BaseAcivity {
         notificationManager.createNotificationChannel(channel);
     }
 
+    int i = 0;
     public void sendChatMsg(View view) {
+        i++;
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = manager.getNotificationChannel("chat");
             if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
                 Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel.getId());
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel.getId()+i);
                 startActivity(intent);
                 Toast.makeText(this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
             }
@@ -124,21 +122,23 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void sendSubscribeMsg(View view) {
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notification = new NotificationCompat.Builder(MainActivity.this, "subscribe")
-                .setContentTitle("收到一条订阅消息")
-                .setContentText("地铁沿线30万商铺抢购中！")
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.icon)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
-                .setAutoCancel(true)
-                .setNumber(2)
-                .build();
-        manager.notify(2, notification);
+//        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//        Notification notification = new NotificationCompat.Builder(MainActivity.this, "subscribe")
+//                .setContentTitle("收到一条订阅消息")
+//                .setContentText("地铁沿线30万商铺抢购中！")
+//                .setWhen(System.currentTimeMillis())
+//                .setSmallIcon(R.drawable.icon)
+//                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
+//                .setAutoCancel(true)
+//                .setNumber(2)
+//                .build();
+//        manager.notify(2, notification);
+
+        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.jd.com/");
     }
 
     public void intentCommon(View view){
-//        Uri uri= Uri.parse("common://common.com/commonactivity");
+//        Uri uri= Uri.parse("common://common.com/BrowserActivity");
 //        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 //        startActivity(intent);
 
@@ -150,7 +150,7 @@ public class MainActivity extends BaseAcivity {
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
 //        startActivity(new Intent(this, SetInfoActivity.class));
 
-//        startActivity(new Intent(this, PullRefreshActivity.class));
+        startActivity(new Intent(this, PullRefreshActivity.class));
 
 //        RxjavaBiz.INSTANCE.testRxjava();
 //        RxjavaBiz.INSTANCE.doRxJava();
@@ -159,8 +159,8 @@ public class MainActivity extends BaseAcivity {
 
 //        JobManager.INSTANCE.testScreen(this, view);
 
-        HiHttp.init(getApplication());
-        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
+//        HiHttp.init(getApplication());
+//        HiLog.i(" test : "+ TestManager.instance.testPostHttp());
 //        HiViewModel.init(getApplication()).observe(this, new Observer() {
 //            @Override
 //            public void onChanged(Object o) {
@@ -179,6 +179,13 @@ public class MainActivity extends BaseAcivity {
 //        testFragment();
 
 //        new LeAboradHomePanelView(this, activity_main_layout).laodView();
+
+//        Intent intent = new Intent(this, PluginActivity.class);
+//        startActivity(intent);
+
+//        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.qq.com/");
+//        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.baidu.com/");
+        ContextManager.intentUri(this, "push://push.com/news_detail?p_url=https://www.jd.com/");
     }
 
 

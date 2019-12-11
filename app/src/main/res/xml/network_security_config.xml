@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--Android P http 网络请求的问题适配解决方案  详见https://www.cnblogs.com/renhui/p/9921790.html-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

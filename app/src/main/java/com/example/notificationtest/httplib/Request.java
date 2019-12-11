@@ -187,6 +187,7 @@ public class Request<T> implements Serializable {
             httpConn.setReadTimeout(readTimeout);
             bulidHead();
         } catch (Exception e) {
+            e.printStackTrace();
             HiLog.e(HiHttp.TAG, e.getMessage());
         }
         return httpConn;
@@ -234,6 +235,7 @@ public class Request<T> implements Serializable {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             HiLog.e(HiHttp.TAG, e.getMessage());
         }
         HiLog.i(HiHttp.TAG, strParams);
@@ -255,6 +257,7 @@ public class Request<T> implements Serializable {
             }
             HiLog.e(HiHttp.TAG, url);
         }catch (Exception e){
+            e.printStackTrace();
             HiLog.e(HiHttp.TAG, e.getMessage());
         }
     }
@@ -288,6 +291,7 @@ public class Request<T> implements Serializable {
                 }
             }
         }catch (Exception e){
+            e.printStackTrace();
             HiLog.e(HiHttp.TAG, e.getMessage());
         }
         return strParams;
@@ -305,6 +309,7 @@ public class Request<T> implements Serializable {
             }
             strParams = jsonObject.toString();
         }catch (Exception e){
+            e.printStackTrace();
             HiLog.e(HiHttp.TAG, e.getMessage());
         }
         return strParams;
@@ -319,12 +324,15 @@ public class Request<T> implements Serializable {
         } catch (ConnectException e) {//连接失败，那可以允许用户再次提交
             HiLog.e(HiHttp.TAG, e.getMessage());
             retryConnect(e);
+            e.printStackTrace();
         } catch (SocketTimeoutException e) {
             mResponse.setThrowable(e);
             HiLog.e(HiHttp.TAG, e.getMessage());
+            e.printStackTrace();
         } catch (IOException e) {
             retryConnect(e);
             HiLog.e(HiHttp.TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -368,6 +376,7 @@ public class Request<T> implements Serializable {
             bos.close();
             result = bos.toString("utf-8");
         } catch (Exception e) {
+            e.printStackTrace();
             mResponse.setThrowable(e);
             HiLog.e(HiHttp.TAG, e.getMessage());
         }

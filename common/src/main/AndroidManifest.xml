@@ -52,7 +52,7 @@
         <!-- DownerFileProvider -->
         <provider
             android:name="com.common.download.DownerFileProvider"
-            android:authorities="com.common.download.DownerFileProvider"
+            android:authorities="com.download.DownerFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
