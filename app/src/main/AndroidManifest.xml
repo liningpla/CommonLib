@@ -21,10 +21,8 @@
         </activity>
 
         <activity android:name=".SetInfoActivity"
-            android:theme="@style/com_lenovo_lsf_theme_dialog"
             >
         </activity>
-
         <activity android:name=".ui.PullRefreshActivity"></activity>
 
         <activity android:name=".ui.PullRefreshCommonActivity"></activity>
@@ -37,6 +35,17 @@
                 android:process=":block"
                 >
         </service>
+
+
+
+        <activity android:name="com.example.notificationtest.gameSdk.ui.PayActionActivity"
+            android:theme="@style/lenovo_theme_dialog"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            >
+        </activity>
+
 
         <meta-data android:value="test_channel" android:name="ID_CHANNEL"></meta-data>
     </application>

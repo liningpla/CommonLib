@@ -7,4 +7,15 @@
         <attr name="refreshColors" format="reference"/>
         <attr name="refreshColor" format="reference"/>
     </declare-styleable>
+
+
+    <declare-styleable name="CheckView">
+        <attr name="android:checked" />
+        <attr name="ev_type" />
+        <attr name="ev_strokeColor" format="color" />
+        <attr name="ev_bgColor" format="color" />
+        <attr name="ev_checkedColor" format="color" />
+        <attr name="ev_size" format="dimension" />
+        <attr name="ev_strokeWidth" format="dimension" />
+    </declare-styleable>
 </resources>

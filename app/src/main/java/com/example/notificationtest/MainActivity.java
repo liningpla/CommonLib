@@ -1,33 +1,25 @@
 package com.example.notificationtest;
 
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.core.app.NotificationCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
 import com.example.notificationtest.biz.GooglePlayBiz;
+import com.example.notificationtest.gameSdk.ui.PayActionActivity;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
-import com.example.notificationtest.ui.PullRefreshActivity;
 import com.lenove.httplibrary.OkGoManager;
 
 import static com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED;
@@ -98,27 +90,30 @@ public class MainActivity extends BaseAcivity {
 
     int i = 0;
     public void sendChatMsg(View view) {
-        i++;
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = manager.getNotificationChannel("chat");
-            if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
-                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
-                intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel.getId()+i);
-                startActivity(intent);
-                Toast.makeText(this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
-            }
-        }
-        Notification notification = new NotificationCompat.Builder(this, "chat")
-                .setContentTitle("收到一条聊天消息")
-                .setContentText("今天中午吃什么？")
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.icon)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
-                .setAutoCancel(true)
-                .build();
-        manager.notify(1, notification);
+//        i++;
+//        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            NotificationChannel channel = manager.getNotificationChannel("chat");
+//            if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
+//                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+//                intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+//                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel.getId()+i);
+//                startActivity(intent);
+//                Toast.makeText(this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        Notification notification = new NotificationCompat.Builder(this, "chat")
+//                .setContentTitle("收到一条聊天消息")
+//                .setContentText("今天中午吃什么？")
+//                .setWhen(System.currentTimeMillis())
+//                .setSmallIcon(R.drawable.icon)
+//                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
+//                .setAutoCancel(true)
+//                .build();
+//        manager.notify(1, notification);
+//                ContextManager.intentUri(this, "push://push.com/news_details?p_url=https://www.qq.com/");
+        ContextManager.intentUri(this, "push://push.com/news_detail?p_url=http://m.uczzd.cn/webapp/webview/article/news.html?app=greentea-iflow&aid=16488175894108642468&cid=100&zzd_from=uc-iflow&uc_param_str=dndseiwifrvesvntgipf&recoid=&readId=&rd_type=reco&previewdl=1/");
+
     }
 
     public void sendSubscribeMsg(View view) {
@@ -150,7 +145,7 @@ public class MainActivity extends BaseAcivity {
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
 //        startActivity(new Intent(this, SetInfoActivity.class));
 
-        startActivity(new Intent(this, PullRefreshActivity.class));
+//        startActivity(new Intent(this, PullRefreshActivity.class));
 
 //        RxjavaBiz.INSTANCE.testRxjava();
 //        RxjavaBiz.INSTANCE.doRxJava();
@@ -180,14 +175,27 @@ public class MainActivity extends BaseAcivity {
 
 //        new LeAboradHomePanelView(this, activity_main_layout).laodView();
 
-//        Intent intent = new Intent(this, PluginActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, PayActionActivity.class);
+        startActivity(intent);
 
 //        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.qq.com/");
-//        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.baidu.com/");
-        ContextManager.intentUri(this, "push://push.com/news_detail?p_url=https://www.jd.com/");
+//        ContextManager.intentUri(this, "push://push.com/small_video?small_id=dm5AZA9xgybW");
+
     }
 
+    public void intentShort(View view){
+        ContextManager.intentUri(this, "push://push.com/short_video?channel=音乐&short_url=https://sh5.yladm.com/html/001/M8v/RJj0g4NnkM8v.html?id=RJj0g4NnkM8v&access_key=yl8zcrb9th5m&udid=6275aeeb9c5d780dc33f1d626f5a35b8&logid=3644750884&imei=6275aeeb9c5d780dc33f1d626f5a35b8&imeimd5=6275aeeb9c5d780dc33f1d626f5a35b8&pkg_name=com.zui.browser&referpage=openv2%2Fvideo%2Ffeed%3F13033&prid=9");
+    }
+    public void intentUser(View view){
+        ContextManager.intentUri(this, "push://push.com/user_center");
+    }
+    public void intentVideo(View view){
+        ContextManager.intentUri(this, "push://push.com/video_home");
+
+    }
+    public void intentHome(View view){
+        ContextManager.intentUri(this, "push://push.com/news_home");
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -210,15 +218,6 @@ public class MainActivity extends BaseAcivity {
             }
             Log.i(GooglePlayBiz.TAG, "Update flow successed! Result code: " + resultCode);
         }
-    }
-
-    private void testFragment(){
-
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        TestFragment detailFragment = new TestFragment();
-        transaction.replace(R.id.activity_main_fragment, detailFragment, "TestFragment");
-        transaction.commitNowAllowingStateLoss();
     }
 
 }

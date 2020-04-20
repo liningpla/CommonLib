@@ -5,4 +5,20 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="zui_title">#191919</color>
+
+
+    <color name="pay_center_white_bg">#FFFFFFFF</color>
+    <color name="pay_center_title">#151F33</color>
+    <color name="pay_center_black">#000000</color>
+    <color name="pay_center_dialog_bg">#40000000</color>
+    <color name="pay_center_gray">#808080</color>
+    <color name="pay_center_red">#FF0000</color>
+    <color name="pay_center_blue">#0B7CDC</color>
+    <color name="pay_center_org">#FF7200</color>
+    <color name="pay_coupon_gray">#F5F5F5</color>
+    <color name="pay_coupon_unuse">#F8F8F8</color>
+
+
+
+
 </resources>

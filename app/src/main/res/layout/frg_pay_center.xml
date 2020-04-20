@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="315dp"
+    android:layout_height="330dp"
+    android:background="@drawable/corner_white_3_bg">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/iv_pay_qrcode"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_pay_qr_code" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/com_lenovo_pay_cashier_title_icon"
+            android:text="@string/pay_center_title"
+            android:textColor="@color/pay_center_title"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/iv_pay_close"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_alignParentEnd="true"
+            android:padding="10dp"
+            android:src="@drawable/ic_pay_center_close" />
+    </RelativeLayout>
+
+    <!--ll_center_content 展示手机支付和二维码支付的父布局-->
+    <LinearLayout
+        android:id="@+id/ll_center_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="36dp"
+        android:orientation="vertical" />
+
+    <!--ll_qr_code_detais 二维码支付时，展示支付详情的父布局-->
+    <LinearLayout
+        android:id="@+id/ll_qr_code_detais"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
+
+    <!--ll_other_parent 展示优惠券列表和支付方式的父布局-->
+    <LinearLayout
+        android:id="@+id/ll_other_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" />
+
+</RelativeLayout>

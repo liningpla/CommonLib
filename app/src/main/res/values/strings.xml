@@ -12,4 +12,27 @@
     <string name="dilaog_not_present">不再提示</string>
 
 
+    <string name="pay_center_title">支付中心</string>
+    <string name="pay_order_info">订单信息</string>
+    <string name="pay_order_v">V币抵扣</string>
+    <string name="pay_order_coupon">优惠券</string>
+    <string name="pay_order_amount">应付金额</string>
+    <string name="pay_order_payment">支付方式</string>
+    <string name="pay_order_confirm">确定支付</string>
+    <string name="pay_order_v_coin">%1$sV币</string>
+    <string name="pay_type_weixin">微信支付</string>
+    <string name="pay_type_ali">支付宝支付</string>
+    <string name="pay_name_weixin">微信</string>
+    <string name="pay_name_ali">支付宝</string>
+    <string name="pay_type_phone">手机充值卡</string>
+    <string name="pay_coupon_used">%1$s个可用</string>
+    <string name="pay_detials_info">付款详情</string>
+    <string name="pay_select_coupon">选择优惠券</string>
+    <string name="pay_coupon_warning">温馨提示：使用优惠卷抵扣的金额不参入消费返利</string>
+    <string name="pay_rmb_cny">¥</string>
+    <string name="pay_coupon_details">优惠券详情</string>
+    <string name="pay_coupon_unuse">不可使用</string>
+    <string name="pay_type_warning">优先使用所选付款方式，如付款失败将尝试使用其他方式完成付款</string>
+
+
 </resources>

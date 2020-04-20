@@ -42,6 +42,30 @@
         android:text="跳转到Common库"
         android:onClick="intentCommon"
         />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳转短视频"
+        android:onClick="intentShort"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳转个人中心"
+        android:onClick="intentUser"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳转首页"
+        android:onClick="intentHome"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳转视频"
+        android:onClick="intentVideo"
+        />
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
