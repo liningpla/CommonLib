@@ -88,13 +88,11 @@ public class PayOrderPhoneView extends LeBaseView {
         }
     }
 
-
-
     /**
      * 确认支付
      */
     private void comfirmPay() {
-
+        PayPhoneCardActivity.startPhoneCardActivity(getContext());
     }
 
     /**接收到支付方式变更通知*/

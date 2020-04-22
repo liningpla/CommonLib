@@ -23,8 +23,6 @@ import java.util.List;
 
 /**
  * 手机支付-支付方式选择界面
- * 本页面两种状态：1，V币充足时，不显示支付方式逻辑
- * 2，V币不充足时，显示支付方式逻辑
  */
 public class PayTypePhoneView extends LeBaseView {
 
@@ -33,7 +31,7 @@ public class PayTypePhoneView extends LeBaseView {
     private RecyclerView rv_pay_type;
     private PayTypeAdapter payTypeAdapter;
     private List<PaySelectBean> payTypeBeans = new ArrayList<PaySelectBean>();
-    private PaySelectBean typeBeanSelect;//上次被选中的优惠券
+    public static PaySelectBean typeBeanSelect;//上次被选中的优惠券
     private PayFrgAction payFrgAction;//需要PayCenterFrg操作的事件
     public void setPayFrgAction(PayFrgAction payFrgAction) {
         this.payFrgAction = payFrgAction;
@@ -65,7 +63,11 @@ public class PayTypePhoneView extends LeBaseView {
     private void initData() {
         for (int i = 0; i < 3; i++) {
             PaySelectBean payTypeBean = new PaySelectBean();
-            if (i == 0) {
+            if(typeBeanSelect != null){
+                if(typeBeanSelect.payTypeId == (i+1)){
+                    payTypeBean.isSelected = true;
+                }
+            }else if(i == 0){
                 payTypeBean.isSelected = true;
             }
             payTypeBean.payTypeId = i + 1;
@@ -119,18 +121,21 @@ public class PayTypePhoneView extends LeBaseView {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    typeBeanSelect.isSelected = false;
-                    if (!typeBeanSelect.equals(data)) {
-                        data.isSelected = !data.isSelected;
-                    } else {
+                    if(typeBeanSelect != null){
+                        typeBeanSelect.isSelected = false;
+                        if (!typeBeanSelect.equals(data)) {
+                            data.isSelected = !data.isSelected;
+                        } else {
+                            data.isSelected = !data.isSelected;
+                        }
+                    }else {
                         data.isSelected = !data.isSelected;
                     }
                     notifyDataSetChanged();
-                    if(typeBeanSelect != null && payFrgAction != null){
-                        payFrgAction.onSelectPayType(typeBeanSelect);
-                    }
-                    if (typePhoneView != null) {
-                        typePhoneView.remove();
+                    if(payFrgAction != null && data.isSelected){
+                        typeBeanSelect = data;
+                        payFrgAction.onSelectPayType(data);
+                        remove();
                     }
                 }
             });
@@ -141,13 +146,6 @@ public class PayTypePhoneView extends LeBaseView {
             return 0;
         }
 
-        private int getColor(boolean isUnUse, int yesColor, int noColor) {
-            return ContextCompat.getColor(mContext, isUnUse ? yesColor : noColor);
-        }
-
-        /**
-         * 优惠券
-         */
         private class PayTypeHolder extends RecyclerView.ViewHolder {
             public View itemView;
             public ImageView iv_pay_type;// 支付方式图标

@@ -23,7 +23,6 @@ public class PayActionActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_plus);
-        getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         addPayCenter();
     }
 

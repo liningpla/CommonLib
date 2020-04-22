@@ -45,7 +45,13 @@
             android:screenOrientation="behind"
             >
         </activity>
-
+        <activity android:name="com.example.notificationtest.gameSdk.ui.PayPhoneCardActivity"
+            android:theme="@style/AppTheme"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            >
+        </activity>
 
         <meta-data android:value="test_channel" android:name="ID_CHANNEL"></meta-data>
     </application>

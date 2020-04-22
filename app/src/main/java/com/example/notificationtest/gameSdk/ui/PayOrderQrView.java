@@ -1,24 +1,22 @@
 package com.example.notificationtest.gameSdk.ui;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.notificationtest.R;
 import com.example.notificationtest.gameSdk.PayFrgAction;
 import com.example.notificationtest.gameSdk.PayTypeBean;
+import com.example.notificationtest.gameSdk.SpannableUtils;
 import com.example.notificationtest.gameSdk.Uitils;
 import com.example.notificationtest.gameSdk.ui.base.LeBaseView;
 import com.google.android.material.tabs.TabLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,12 +135,8 @@ public class PayOrderQrView extends LeBaseView {
         @Override
         public CharSequence getPageTitle(int position) {
             PayTypeBean payTypeBean = payTypeBeans.get(position);
-            Drawable image = ContextCompat.getDrawable(context, payTypeBean.drawableId);
-            image.setBounds(0, 0, Uitils.getDensityDimen(context, 18), Uitils.getDensityDimen(context, 18));
-            ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
-            SpannableStringBuilder ss = new SpannableStringBuilder(" ");
-            ss.setSpan(imageSpan, 0, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ss.append(" " + payTypeBean.text);
+            SpannableStringBuilder ss = SpannableUtils.imageToTextHead(context, payTypeBean.text, payTypeBean.drawableId,
+                    Uitils.getDensityDimen(context, 18), Uitils.getDensityDimen(context, 18));
             return ss;
         }
     }

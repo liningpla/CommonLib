@@ -17,8 +17,8 @@
     <color name="pay_center_org">#FF7200</color>
     <color name="pay_coupon_gray">#F5F5F5</color>
     <color name="pay_coupon_unuse">#F8F8F8</color>
-
-
-
+    <color name="pay_coupon_account_blue">#4C96E0</color>
+    <color name="pay_card_input_warning">#FDEFE9</color>
+    <color name="pay_card_input_text">#666666</color>
 
 </resources>
