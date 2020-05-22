@@ -11,15 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
 import com.example.notificationtest.biz.GooglePlayBiz;
-import com.example.notificationtest.biz.LeDeviceBiz;
-import com.example.notificationtest.biz.LenovoGameApi;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
 import com.lenove.httplibrary.OkGoManager;
@@ -179,8 +176,6 @@ public class MainActivity extends BaseAcivity {
 
 //        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.qq.com/");
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=dm5AZA9xgybW");
-        LeDeviceBiz.INIT.getImeiByOaid("");
-//        LeDeviceBiz.INIT.testGet();
     }
 
     public void intentShort(View view){
