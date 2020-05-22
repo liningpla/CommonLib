@@ -14,26 +14,50 @@
 
 
 
+
+
+    <string name="com_lenovo_pay_order_coupon">优惠券抵扣</string>
+    <string name="com_lenovo_pay_order_v">V币抵扣</string>
+    <string name="com_lenovo_pay_order_charge">应付金额</string>
+    <string name="com_lenovo_pay_select_pay_type">选择支付方式</string>
+    <string name="com_lenovo_pay_type_weixin">微信支付</string>
+    <string name="com_lenovo_pay_type_ali">支付宝</string>
+    <string name="com_lenovo_pay_type_szf">手机充值卡</string>
+    <string name="com_lenovo_pay_immediate">立即支付</string>
+    <string name="com_lenovo_pay_select_coupon">我的优惠券</string>
+    <string name="com_lenovo_pay_no_use_coupon">不使用优惠券</string>
+    <string name="com_lenovo_pay_coupon_warning">温馨提示：使用满减券后将不能与其他优惠活</string>
+    <string name="com_lenovo_pay_no_coupons">暂无可使用的优惠券</string>
+    <string name="com_lenovo_pay_coupon_item_limit">无金额门槛</string>
+    <string name="com_lenovo_lsf_pay_charge_success">支付成功</string>
+    <string name="com_lenovo_lsf_pay_charge_error">道具购买失败，支付金额已转为V币存入您的账户</string>
+    <string name="com_lenovo_pay_qr_title">扫码支付</string>
+    <string name="com_lenovo_pay_qr_tip">打开手机支付宝扫一扫付款</string>
+    <string name="com_lenovo_pay_qr_error">二维码生成失败</string>
+    <string name="com_lenovo_pay_qr_refresh">刷新</string>
+    <string name="com_lenovo_pay_card_input_info">请填写卡号和密码</string>
+    <string name="com_lenovo_pay_card_number">充值卡卡号</string>
+    <string name="com_lenovo_pay_card_passw">充值卡密码</string>
+
+
+
+    <string name="pay_name_weixin">微信</string>
+
     <string name="pay_center_title">支付中心</string>
     <string name="pay_order_info">订单信息</string>
-    <string name="pay_order_v">V币抵扣</string>
-    <string name="pay_order_coupon">优惠券</string>
-    <string name="pay_order_amount">应付金额</string>
     <string name="pay_order_payment">支付方式</string>
     <string name="pay_order_confirm">确定支付</string>
     <string name="pay_order_v_coin">%1$sV币</string>
-    <string name="pay_type_weixin">微信支付</string>
-    <string name="pay_type_ali">支付宝支付</string>
-    <string name="pay_name_weixin">微信</string>
-    <string name="pay_name_ali">支付宝</string>
-    <string name="pay_type_phone">手机充值卡</string>
+
     <string name="pay_coupon_used">%1$s个可用</string>
     <string name="pay_detials_info">付款详情</string>
     <string name="pay_select_coupon">选择优惠券</string>
-    <string name="pay_coupon_warning">温馨提示：使用优惠卷抵扣的金额不参入消费返利</string>
+    <string name="pay_coupon_warning">温馨提示：使用满减券后将不能与其他优惠活</string>
     <string name="pay_rmb_cny">¥</string>
     <string name="pay_rmb_cny_number">¥%1$s</string>
     <string name="pay_coupon_details">优惠券详情</string>
+    <string name="pay_coupon_item_balance">¥%1$s剩余</string>
+    <string name="pay_coupon_item_limit">面额：%1$s元</string>
     <string name="pay_coupon_unuse">不可使用</string>
     <string name="pay_type_warning">优先使用所选付款方式，如付款失败将尝试使用其他方式完成付款</string>
     <string name="pay_card_limit_title">充值卡面额选择</string>
@@ -50,5 +74,6 @@
     <string name="pay_card_number_hint">请输入充值卡序列号</string>
     <string name="pay_card_passwd_hint">请输入充值卡密码</string>
     <string name="pay_card_input_immediate">立即支付</string>
+
 
 </resources>

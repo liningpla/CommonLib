@@ -7,18 +7,31 @@
     <color name="zui_title">#191919</color>
 
 
-    <color name="pay_center_white_bg">#FFFFFFFF</color>
-    <color name="pay_center_title">#151F33</color>
-    <color name="pay_center_black">#000000</color>
-    <color name="pay_center_dialog_bg">#40000000</color>
-    <color name="pay_center_gray">#808080</color>
-    <color name="pay_center_red">#FF0000</color>
-    <color name="pay_center_blue">#0B7CDC</color>
-    <color name="pay_center_org">#FF7200</color>
-    <color name="pay_coupon_gray">#F5F5F5</color>
-    <color name="pay_coupon_unuse">#F8F8F8</color>
-    <color name="pay_coupon_account_blue">#4C96E0</color>
-    <color name="pay_card_input_warning">#FDEFE9</color>
-    <color name="pay_card_input_text">#666666</color>
+    <color name="com_lenovo_pay_center_bg">#FAFAFA</color>
+    <color name="com_lenovo_pay_center_title">#191919</color>
+    <color name="com_lenovo_pay_center_text">#666666</color>
+    <color name="com_lenovo_pay_center_value">#333333</color>
+    <color name="com_lenovo_pay_center_line_color">#CCCCCC</color>
+    <color name="com_lenovo_pay_center_blue">#579DFF</color>
+    <color name="com_lenovo_pay_center_white">#FFFFFF</color>
+    <color name="com_lenovo_pay_center_text_gray">#999999</color>
+    <color name="com_lenovo_pay_coupon_user_gray">#EFEFEF</color>
+    <color name="com_lenovo_pay_coupon_unuser_gray">#F5F5F5</color>
+    <color name="com_lenovo_pay_coupon_unuser_text">#C5C5C5</color>
+    <color name="com_lenovo_pay_coupon_unuser_rbn">#C6C6C6</color>
+    <color name="com_lenovo_pay_card_input_warning">#FDEFE9</color>
+
+
+
+
+    <color name="com_lenovo_pay_center_black">#000000</color>
+    <color name="com_lenovo_pay_center_dialog_bg">#40000000</color>
+    <color name="com_lenovo_pay_center_gray">#808080</color>
+    <color name="com_lenovo_pay_center_red">#FF0000</color>
+    <color name="com_lenovo_pay_center_org">#FF7200</color>
+    <color name="com_lenovo_pay_coupon_gray">#F5F5F5</color>
+    <color name="com_lenovo_pay_coupon_unuse">#F8F8F8</color>
+    <color name="com_lenovo_pay_coupon_account_blue">#4C96E0</color>
+    <color name="com_lenovo_pay_card_input_text">#666666</color>
 
 </resources>

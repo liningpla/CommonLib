@@ -11,13 +11,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
 import com.example.notificationtest.biz.GooglePlayBiz;
-import com.example.notificationtest.gameSdk.ui.PayActionActivity;
+import com.example.notificationtest.biz.LeDeviceBiz;
+import com.example.notificationtest.biz.LenovoGameApi;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
 import com.lenove.httplibrary.OkGoManager;
@@ -32,7 +34,7 @@ public class MainActivity extends BaseAcivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        activity_main_layout = findViewById(R.id.activity_main_layout);
+        LenovoGameApi.mApp = getApplication();
         getLifecycle().addObserver(new StudyLifecycle());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "chat";
@@ -175,12 +177,10 @@ public class MainActivity extends BaseAcivity {
 
 //        new LeAboradHomePanelView(this, activity_main_layout).laodView();
 
-        Intent intent = new Intent(this, PayActionActivity.class);
-        startActivity(intent);
-
 //        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.qq.com/");
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=dm5AZA9xgybW");
-
+        LeDeviceBiz.INIT.getImeiByOaid("");
+//        LeDeviceBiz.INIT.testGet();
     }
 
     public void intentShort(View view){

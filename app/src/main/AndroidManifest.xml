@@ -20,9 +20,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SetInfoActivity"
-            >
-        </activity>
         <activity android:name=".ui.PullRefreshActivity"></activity>
 
         <activity android:name=".ui.PullRefreshCommonActivity"></activity>

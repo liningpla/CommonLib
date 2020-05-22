@@ -147,7 +147,7 @@ public class SignatureUtils {
         if (params == null) {
             return null;
         }
-        params.remove("sign");
+//        params.remove("sign");
         StringBuilder content = new StringBuilder();
         List<String> keys = new ArrayList<>(params.keySet());
         Collections.sort(keys);

@@ -10,6 +10,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.ConnectException;
@@ -17,18 +18,35 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Request<T> implements Serializable {
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
+public class Request<T> implements Serializable {
+    // 键值对参数
+    public static final String MEDIA_TYPE_NORAML_FORM = "application/x-www-form-urlencoded;charset=utf-8";
+    // 既可以提交普通键值对，也可以提交(多个)文件键值对。
+    public static final String MEDIA_TYPE_MULTIPART_FORM = "multipart/form-data;charset=utf-8";
+    // 只能提交二进制，而且只能提交一个二进制，如果提交文件的话，只能提交一个文件,后台接收参数只能有一个，而且只能是流（或者字节数组）
+    public static final String MEDIA_TYPE_STREAM = "application/octet-stream";
+    // JSON参数
+    public static final String MEDIA_TYPE_JSON = "application/json;charset=utf-8";
     private static final int DEFAULT_RETRY_COUNT = 3;
     private static final int CONNECT_OUT_TIME = 30000;//连接超时时间30秒
     private static final int READ_OUT_TIME = 600000;//60秒
     private String url;
-    private String contentType = "application/json";
+    private String contentType = "";
     private HttpMethod httpMethod;
     private HttpParams requestHttpParams;
     private HttpHeaders requestHttpHeaders;
@@ -89,6 +107,7 @@ public class Request<T> implements Serializable {
      * Json字符串参数，使用后自动将键值参数合并到Json字符中
      */
     public Request paramsJson(String paramsString) {
+        contentType = MEDIA_TYPE_JSON;
         this.paramsJson = paramsString;
         return this;
     }
@@ -97,6 +116,7 @@ public class Request<T> implements Serializable {
      * 键值对参数
      */
     public Request params(HttpParams params) {
+        contentType = MEDIA_TYPE_NORAML_FORM;
         requestHttpParams.put(params);
         return this;
     }
@@ -150,6 +170,7 @@ public class Request<T> implements Serializable {
 
     /**键值参数转化字符，有父节点，全局键值参数下使用，paramsJson同时使用时，只执行paramsJson逻辑*/
     public Request toJson(String parent) {
+        contentType = MEDIA_TYPE_JSON;
         isToJson = true;
         mParent = parent;
         return this;
@@ -157,6 +178,7 @@ public class Request<T> implements Serializable {
 
     /**键值参数转化字符，无父节点，全局键值参数下使用，paramsJson同时使用时，只执行paramsJson逻辑*/
     public Request toJson() {
+        contentType = MEDIA_TYPE_JSON;
         isToJson = true;
         return this;
     }
@@ -164,6 +186,7 @@ public class Request<T> implements Serializable {
      * @param parameterName 文件的上传字段名
      * * */
     public Request multipart(String parameterName, File file){
+        contentType = MEDIA_TYPE_MULTIPART_FORM;
         if(fileParams == null){
             fileParams = new LinkedHashMap<>();
         }
@@ -177,15 +200,25 @@ public class Request<T> implements Serializable {
         try {
             URL url = new URL(getUrl());
             httpConn = (HttpURLConnection) url.openConnection();
-            httpConn.setRequestMethod(httpMethod.toString());      //设置连接方式
             //设置参数
-            httpConn.setDoOutput(true);     //需要输出
-            httpConn.setDoInput(true);      //需要输入
-            httpConn.setUseCaches(false);   //不允许缓存
-            httpConn.setRequestProperty("Content-Type", contentType);
+            if(httpMethod != HttpMethod.GET){
+                httpConn.setRequestMethod(httpMethod.toString());      //设置连接方式
+                //需要输入
+                httpConn.setDoInput(true);
+                httpConn.setUseCaches(false);   //不允许缓存
+                httpConn.setDoOutput(true);     //需要输出
+                httpConn.setRequestProperty("Content-Type", contentType);
+            }
             httpConn.setConnectTimeout(connectTimeout);
             httpConn.setReadTimeout(readTimeout);
             bulidHead();
+            boolean useHttps = getUrl().startsWith("https");
+            if (useHttps) {
+                HttpsURLConnection https = (HttpsURLConnection) httpConn;
+                trustAllHosts(https);
+                https.setHostnameVerifier(DO_NOT_VERIFY);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             HiLog.e(HiHttp.TAG, e.getMessage());
@@ -365,7 +398,14 @@ public class Request<T> implements Serializable {
                 printWriter.flush();
             }
             //开始获取数据
-            BufferedInputStream bis = new BufferedInputStream(httpConn.getInputStream());
+            InputStream is;
+            int status = httpConn.getResponseCode();
+            if(status> 200){  //此处一定要根据返回的状态码state来初始化输入流。如果为错误
+                is = httpConn.getErrorStream();
+            }else{
+                is = httpConn.getInputStream();
+            }
+            BufferedInputStream bis = new BufferedInputStream(is);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             int len;
             byte[] arr = new byte[1024];
@@ -373,8 +413,8 @@ public class Request<T> implements Serializable {
                 bos.write(arr, 0, len);
                 bos.flush();
             }
-            bos.close();
             result = bos.toString("utf-8");
+            bos.close();
         } catch (Exception e) {
             e.printStackTrace();
             mResponse.setThrowable(e);
@@ -412,21 +452,21 @@ public class Request<T> implements Serializable {
         mCallBack = cllBack;
         mCallBack.onStart(this);
         mResponse = new Response<>();
-        HiLog.i("------------execute:");
         HiThreadManger.getInstance().execute(priority, new Runnable() {
             @Override
             public void run() {
                 String params = bulidParams();//构建参数
+                HiLog.i("------------params:" + params);
                 bulidHttpConntect();//构建Http请求并连接
+                HiLog.i("------------url:" + url);
                 String result;
                 if(fileParams != null){//上传表单文件参数
                     result = new Multipart(httpConn, fileParams, params, mCallBack).multipart();
                 }else{
                     result = connectStreamResult(params);//普通文本参数
                 }
-
                 if(!TextUtils.isEmpty(result)){
-                    HiLog.i("------------result:");
+                    HiLog.i("------------result:"+result);
                     backSuccessToUI(result);
                 }else{
                     backErrorToUI();
@@ -435,5 +475,48 @@ public class Request<T> implements Serializable {
         });
     }
 
+    /**
+     * 覆盖java默认的证书验证
+     */
+    private static final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return new java.security.cert.X509Certificate[]{};
+        }
+
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+        }
+
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+        }
+    }};
+
+    /**
+     * 设置不验证主机
+     */
+    private static final HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    };
+
+    /**
+     * 信任所有
+     * @param connection
+     * @return
+     */
+    private static SSLSocketFactory trustAllHosts(HttpsURLConnection connection) {
+        SSLSocketFactory oldFactory = connection.getSSLSocketFactory();
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            SSLSocketFactory newFactory = sc.getSocketFactory();
+            connection.setSSLSocketFactory(newFactory);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return oldFactory;
+    }
 
 }
