@@ -464,10 +464,6 @@ public enum LeDeviceBiz {
 
 	}
 
-	public static void testGet(){
-		Request.testGet();
-	}
-
 	/**
 	 * 从服务器获取随机数 并保存
 	 */
