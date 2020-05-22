@@ -31,7 +31,6 @@ public class MainActivity extends BaseAcivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        LenovoGameApi.mApp = getApplication();
         getLifecycle().addObserver(new StudyLifecycle());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "chat";
