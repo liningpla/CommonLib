@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,26 +54,6 @@ public class MainActivity extends BaseAcivity {
         } catch (PackageManager.NameNotFoundException e) {
         }
         SDLog.i("lining","启动MainActivity 线程ID："+Thread.currentThread().getId());
-//        PauseTimer countDownTimer = new PauseTimer(1000*1000, 10*1000, true) {
-//            @Override
-//            public void onTick(final long millisUntilFinished) {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        tv_countdown.setText("倒计时剩余时间："+millisUntilFinished);
-//                    }
-//                });
-//                HiLog.create().i("lining","test","启动MainActivity" +millisUntilFinished+" 当前线程ID："+Thread.currentThread().getId());
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//
-//            }
-//        };
-//
-//        countDownTimer.start();
-
         OkGoManager.getInstance().initOkGo(getApplication(), null, null);
     }
 
@@ -131,9 +112,9 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-//        Uri uri= Uri.parse("common://common.com/BrowserActivity");
-//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-//        startActivity(intent);
+        Uri uri= Uri.parse("common://common.com/commonactivity");
+        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);

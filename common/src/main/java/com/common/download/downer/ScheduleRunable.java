@@ -227,6 +227,7 @@ public class ScheduleRunable implements Runnable {
             readConnection.setDoOutput(false);
             readConnection.setConnectTimeout(Downer.CONNECT_TIMEOUT);
             readConnection.setReadTimeout(Downer.READ_TIMEOUT);
+            readConnection.setRequestProperty("Accept-Encoding", "identity");
             readConnection.connect();
             int statusCode = readConnection.getResponseCode();
             Log.i(Downer.TAG, "ScheduleRunable:  connectHttp  statusCode:" + statusCode);
@@ -258,6 +259,8 @@ public class ScheduleRunable implements Runnable {
 
     private long getContentSize(HttpURLConnection conn) {
         long contentSize = conn.getContentLength();
+        if(contentSize < 0){
+        }
         return contentSize;
     }
 

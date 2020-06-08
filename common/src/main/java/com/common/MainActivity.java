@@ -72,11 +72,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void checkUpdates() {
         Downer.downLoad(new Object()).setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
-                .setTitle("腾讯QQ")
+                .setTitle("tourCustomer")
                 // 通知栏描述（可选）
-                .setDescription("更新通知栏")
+                .setDescription("tourCustomer更新通知栏")
                 // 下载链接或更新文档链接
-                .setUrl("http://gdown.baidu.com/data/wisegame/2965a5c112549eb8/QQ_996.apk")
+                .setUrl("http://pvts.bjrcb.com/tourCustomer.apk")
                 // 下载文件存储路径（可选）
                 .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/qq.apk"))
                 // 文件MD5（可选）
