@@ -1,2 +1,1 @@
-include ':app', ':common', ':floatingwindow', ':httplibrary', ':kotlin'
-
+include ':app', ':common', ':floatingwindow', ':httplibrary', ':kotlin',':websocket'

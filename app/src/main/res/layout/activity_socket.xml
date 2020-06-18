@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/cardview_light_background"
+    android:clickable="true"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/btn_startServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开启服务端连接通道"
+        />
+    <Button
+        android:id="@+id/btn_connectServer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="客户端连接服务端"
+        />
+    <Button
+        android:id="@+id/btn_clientSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="客户端发送服务端"
+        />
+    <Button
+        android:id="@+id/btn_serverSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="服务端发送客户端"
+        />
+</LinearLayout>

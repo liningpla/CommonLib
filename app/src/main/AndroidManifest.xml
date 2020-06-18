@@ -23,6 +23,7 @@
         <activity android:name=".ui.PullRefreshActivity"></activity>
 
         <activity android:name=".ui.PullRefreshCommonActivity"></activity>
+        <activity android:name=".activity.SocketActivity"></activity>
 
 
         <activity android:name="com.example.notificationtest.pluginloader.PluginActivity"></activity>
@@ -35,20 +36,6 @@
 
 
 
-        <activity android:name="com.example.notificationtest.gameSdk.ui.PayActionActivity"
-            android:theme="@style/lenovo_theme_dialog"
-            android:configChanges="orientation|keyboardHidden|navigation"
-            android:exported="false"
-            android:screenOrientation="behind"
-            >
-        </activity>
-        <activity android:name="com.example.notificationtest.gameSdk.ui.PayPhoneCardActivity"
-            android:theme="@style/AppTheme"
-            android:configChanges="orientation|keyboardHidden|navigation"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            >
-        </activity>
 
         <meta-data android:value="test_channel" android:name="ID_CHANNEL"></meta-data>
     </application>

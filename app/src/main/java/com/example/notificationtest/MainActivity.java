@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
+import com.example.notificationtest.activity.SocketActivity;
 import com.example.notificationtest.biz.GooglePlayBiz;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
@@ -112,9 +113,9 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-        Uri uri= Uri.parse("common://common.com/commonactivity");
-        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-        startActivity(intent);
+//        Uri uri= Uri.parse("common://common.com/commonactivity");
+//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+//        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);
@@ -124,7 +125,7 @@ public class MainActivity extends BaseAcivity {
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
 //        startActivity(new Intent(this, SetInfoActivity.class));
 
-//        startActivity(new Intent(this, PullRefreshActivity.class));
+        startActivity(new Intent(this, SocketActivity.class));
 
 //        RxjavaBiz.INSTANCE.testRxjava();
 //        RxjavaBiz.INSTANCE.doRxJava();

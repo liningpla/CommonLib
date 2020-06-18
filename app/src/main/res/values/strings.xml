@@ -12,10 +12,6 @@
     <string name="dilaog_not_present">不再提示</string>
 
 
-
-
-
-
     <string name="com_lenovo_pay_order_coupon">优惠券抵扣</string>
     <string name="com_lenovo_pay_order_v">V币抵扣</string>
     <string name="com_lenovo_pay_order_charge">应付金额</string>
@@ -38,7 +34,6 @@
     <string name="com_lenovo_pay_card_input_info">请填写卡号和密码</string>
     <string name="com_lenovo_pay_card_number">充值卡卡号</string>
     <string name="com_lenovo_pay_card_passw">充值卡密码</string>
-
 
 
     <string name="pay_name_weixin">微信</string>
@@ -74,6 +69,7 @@
     <string name="pay_card_number_hint">请输入充值卡序列号</string>
     <string name="pay_card_passwd_hint">请输入充值卡密码</string>
     <string name="pay_card_input_immediate">立即支付</string>
+    <string name="title_websocket">Module Title</string>
 
 
 </resources>
