@@ -65,7 +65,12 @@ public class SocketActivity extends BaseAcivity {
 
     /**客户端发送服务端*/
     public void clientSend(){
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NettyBiz.INIT.clientSendMsg("这是单独发送的");
+            }
+        }).start();
     }
 
     /**服务端发送客户端*/

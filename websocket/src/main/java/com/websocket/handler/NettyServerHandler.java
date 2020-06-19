@@ -1,51 +1,36 @@
 package com.websocket.handler;
 
+import android.util.Log;
+
+import com.websocket.biz.NettyBiz;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.CharsetUtil;
 
-public class NettyServerHandler extends ChannelHandlerAdapter {
-    /**
-     * 业务处理逻辑  用于处理读取数据请求的逻辑。它里面的方法和参数如下
-     * @param ctx 上下文对象，其中包含于客户端建立连接的所有资源，比如说对应的Channel
-     * @param msg 读取到的数据，默认类型是bytebuf 这个ByteBuf 是对ByteBuffer的一个封装。简化了操作
-     * @throws Exception
-     */
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        //强制类型转换
-        ByteBuf readBuffer = (ByteBuf) msg;
-        // 创建一个字节数组，用于保存缓存中的数据。readableBytes 在原生的ByteBuffer也有同样的功能的方法
-        byte[] tempDatas = new byte[readBuffer.readableBytes()];
-        //读取到对应的数据 可以直接读取，这个不需要考虑复位的问题，
-        readBuffer.readBytes(tempDatas);
-        String message = new String(tempDatas,"UTF-8");
-        System.out.println("from client :"+message);
-        if ("exit".equals(message)){
-            //如果客户端断开连接，则关闭上下文
-            ctx.close();
-            return;
-        }
-        String line = "server message to client!";
-        //写操作自动释放缓存，避免内存溢出的问题。
-        ctx.writeAndFlush(Unpooled.copiedBuffer(line.getBytes("UTF-8")));
+public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
-        /**
-         * 如果调用的是write方法，不会刷新缓存，缓存中的数据不会发送到客户端，必须调用flush方法进行强制刷出
-         *  ctx.write(msg);
-         *  ctx.flush();
-         */
+    //数据读取事件
+    public void channelRead(ChannelHandlerContext ctx,Object msg){
+        //传来的消息包装成字节缓冲区
+        ByteBuf byteBuf = (ByteBuf) msg;
+        //Netty提供了字节缓冲区的toString方法，并且可以设置参数为编码格式：CharsetUtil.UTF_8
+        Log.i(NettyBiz.TAG, "客户端发来的消息：" + byteBuf.toString(CharsetUtil.UTF_8));
     }
-    /**
-     * 异常处理逻辑
-     * ChannelHandlerContext关闭代表当前与客户端的连接处理逻辑，当客户端异常退出的时候这个异常也会执行
-     * @param ctx
-     * @param cause
-     * @throws Exception
-     */
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        System.out.println("server exceptionCaught method run …… ");
+
+    //数据读取完毕事件
+    public void channelReadComplete(ChannelHandlerContext ctx){
+        //数据读取完毕，将信息包装成一个Buffer传递给下一个Handler，Unpooled.copiedBuffer会返回一个Buffer
+        //调用的是事件处理器的上下文对象的writeAndFlush方法
+        //意思就是说将  你好  传递给了下一个handler
+        ctx.writeAndFlush(Unpooled.copiedBuffer("你好!", CharsetUtil.UTF_8));
+    }
+
+    //异常发生的事件
+    public void exceptionCaught(ChannelHandlerContext ctx,Throwable cause){
+        //异常发生时关闭上下文对象
         ctx.close();
     }
 }
