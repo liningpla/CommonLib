@@ -3,11 +3,12 @@ package com.example.notificationtest.activity;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.Nullable;
 
 import com.common.BaseAcivity;
 import com.example.notificationtest.R;
 import com.websocket.biz.NettyBiz;
+
+import org.jetbrains.annotations.Nullable;
 
 public class SocketActivity extends BaseAcivity {
     @Override
@@ -68,14 +69,19 @@ public class SocketActivity extends BaseAcivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                NettyBiz.INIT.clientSendMsg("这是单独发送的");
+                NettyBiz.INIT.clientSendMsg("这是客户端单独发送的");
             }
         }).start();
     }
 
     /**服务端发送客户端*/
     public void serverSend(){
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NettyBiz.INIT.severSendMsg("这是服务端单独发送的");
+            }
+        }).start();
     }
 
 }

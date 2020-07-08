@@ -24,11 +24,16 @@ public enum  NettyBiz {
     public void startServerConnect(Context context){
         String ipHost = DeviceUtils.getIPAddress(context);
         Log.i(TAG, "------startServerConnect-----ipHost = "+ipHost);
-        NettyServer.init(9999);
+        NettyServer.INIT.init(9999);
     }
 
     /**客户端发送消息*/
     public void clientSendMsg(String msg){
         NettyClient.INIT.sendMessage(msg);
+    }
+
+    /**服务端发送消息*/
+    public void severSendMsg(String msg){
+        NettyServer.INIT.severSendMsg(msg);
     }
 }

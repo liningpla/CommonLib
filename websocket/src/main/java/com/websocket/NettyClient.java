@@ -1,9 +1,12 @@
 package com.websocket;
 
+import android.os.Environment;
 import android.util.Log;
 
 import com.websocket.biz.NettyBiz;
 import com.websocket.handler.NettyClientHandler;
+
+import java.io.File;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -52,6 +55,10 @@ public enum  NettyClient {
     public void sendMessage(String msg){
         if(channel.isActive()){
             //向服务器端发消息
+            String filepath = Environment.getExternalStorageDirectory() + File.separator + "com.lenovo.ChangePayServerAddress/files/lds.cfg";
+            Log.i("ChangePayServerAddress", filepath);
+            File localFile = new File(filepath);
+
             channel.writeAndFlush(Unpooled.copiedBuffer(msg, CharsetUtil.UTF_8));
         }
     }
