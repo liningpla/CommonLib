@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -45,8 +44,6 @@ public class MainActivity extends BaseAcivity {
             importance = NotificationManager.IMPORTANCE_DEFAULT;
             createNotificationChannel(channelId, channelName, importance);
         }
-        LayoutInflater.from(this).inflate(R.layout.activity_down_main, null, false);
-
         tv_countdown = findViewById(R.id.tv_countdown);
         try {
             ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
@@ -109,7 +106,7 @@ public class MainActivity extends BaseAcivity {
 //                .build();
 //        manager.notify(2, notification);
 
-        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.jd.com/");
+        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.jd.com?");
     }
 
     public void intentCommon(View view){
@@ -125,7 +122,7 @@ public class MainActivity extends BaseAcivity {
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
 //        startActivity(new Intent(this, SetInfoActivity.class));
 
-        startActivity(new Intent(this, SocketActivity.class));
+//        startActivity(new Intent(this, SocketActivity.class));
 
 //        RxjavaBiz.INSTANCE.testRxjava();
 //        RxjavaBiz.INSTANCE.doRxJava();
@@ -155,12 +152,15 @@ public class MainActivity extends BaseAcivity {
 
 //        new LeAboradHomePanelView(this, activity_main_layout).laodView();
 
-//        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.qq.com/");
-//        ContextManager.intentUri(this, "push://push.com/small_video?small_id=dm5AZA9xgybW");
+//        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://mil.news.sina.com.cn/china/2020-08-25/doc-iivhvpwy2898699.shtml?");
+//        ContextManager.intentUri(this, "push://push.com/small_game?gameId=212113");
+
+//        YLyGVnK7A5KO
+        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
     }
 
     public void intentShort(View view){
-        ContextManager.intentUri(this, "push://push.com/short_video?channel=音乐&short_url=https://sh5.yladm.com/html/001/M8v/RJj0g4NnkM8v.html?id=RJj0g4NnkM8v&access_key=yl8zcrb9th5m&udid=6275aeeb9c5d780dc33f1d626f5a35b8&logid=3644750884&imei=6275aeeb9c5d780dc33f1d626f5a35b8&imeimd5=6275aeeb9c5d780dc33f1d626f5a35b8&pkg_name=com.zui.browser&referpage=openv2%2Fvideo%2Ffeed%3F13033&prid=9");
+        ContextManager.intentUri(this, "push://push.com/short_video?channel=音乐&short_url=https://sh5.yladm.com/html/001/M8v/RJj0g4NnkM8v.html?id=RJj0g4NnkM8v&access_key=yl8zcrb9th5m&udid=6275aeeb9c5d780dc33f1d626f5a35b8&logid=3644750884&imei=6275aeeb9c5d780dc33f1d626f5a35b8&imeimd5=6275aeeb9c5d780dc33f1d626f5a35b8&pkg_name=com.zui.browser&referpage=openv2%2Fvideo%2Ffeed%3F13033&prid=9?");
     }
     public void intentUser(View view){
         ContextManager.intentUri(this, "push://push.com/user_center");

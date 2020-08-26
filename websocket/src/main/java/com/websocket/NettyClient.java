@@ -7,6 +7,7 @@ import com.websocket.biz.NettyBiz;
 import com.websocket.handler.NettyClientHandler;
 
 import java.io.File;
+import java.io.RandomAccessFile;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -14,7 +15,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.DefaultFileRegion;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.FileRegion;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -54,12 +57,25 @@ public enum  NettyClient {
     /**发送消息*/
     public void sendMessage(String msg){
         if(channel.isActive()){
-            //向服务器端发消息
-            String filepath = Environment.getExternalStorageDirectory() + File.separator + "com.lenovo.ChangePayServerAddress/files/lds.cfg";
-            Log.i("ChangePayServerAddress", filepath);
-            File localFile = new File(filepath);
-
             channel.writeAndFlush(Unpooled.copiedBuffer(msg, CharsetUtil.UTF_8));
+        }
+        sendFile();
+    }
+
+    /**发送消息*/
+    public void sendFile(){
+        try{
+            if(channel.isActive()){
+                //向服务器端发消息
+                String filepath = Environment.getExternalStorageDirectory() + File.separator + "Download/greentea.apk";
+                Log.i(NettyBiz.TAG, filepath);
+                RandomAccessFile randomAccessFile=new RandomAccessFile(filepath, "r");
+                FileRegion region=new DefaultFileRegion(
+                        randomAccessFile.getChannel(), 0, randomAccessFile.length());
+                channel.write(region);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

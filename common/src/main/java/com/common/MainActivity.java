@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.button_check_updates_custom_download).setOnClickListener(this);
         findViewById(R.id.button_cancle).setOnClickListener(this);
 
-        Downer.init() .setMultithreadEnabled(true)// 是否支持多线程下载
+        Downer.init().setMultithreadEnabled(true)// 是否支持多线程下载
                       // 线程池大小
                       .setMultithreadPools(1)
-                      .setSupportRange(false)
+                      .setSupportRange(true)
                       // 文件MD5（可选）
                       .setAutoInstallEnabled(true)
                       //覆盖下载
@@ -104,9 +104,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void forceCheckUpdates() {
 //        String url = "http://s9.pstatp.com/package/apk/aweme/app_aweGW_v6.8.0_e140aa5.apk?v=1560868759";
-        String url = "http://imtt.dd.qq.com/16891/AE8CC4DE0DA8A563BD60E4147B0F70A5.apk?fsname=com.lenovo.browser_8.3.0.0publicrls_800300000.apk&csr=264f&dn=com.lenovo.browser.apk&f=appsearch";
-
-
+        //http://pr1-greentea-test.mbgcdn.lenovo.com.cn/default/2020/08/11/e3a2a3d6-b8a3-4ca4-b707-64fa8ecc3e55.apk
+        String url = "http://pr1-greentea-test.mbgcdn.lenovo.com.cn/default/2020/08/11/e3a2a3d6-b8a3-4ca4-b707-64fa8ecc3e55.apk";
         Downer.downLoad(new Object()).setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
                 .setTitle("抖音APP")
