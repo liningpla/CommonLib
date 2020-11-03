@@ -183,7 +183,7 @@ public class DragFloatView extends LeBaseView {
                     break;
                 case MotionEvent.ACTION_UP:
                     long stopTime = SystemClock.elapsedRealtime() - downTime;
-                    if(stopTime < 300){
+                    if(stopTime < 200){
                         Toast.makeText(mContext, "显示会员中心", Toast.LENGTH_LONG).show();
                     }
                     animationSlide();
