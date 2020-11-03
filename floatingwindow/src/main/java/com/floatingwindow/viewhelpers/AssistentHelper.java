@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.common.utils.SDLog;
-import com.common.utils.ScreenUtil;
+import com.common.utils.Utils;
 import com.floatingwindow.R;
 
 import java.util.ArrayList;
@@ -59,8 +59,8 @@ public class AssistentHelper {
         //允许移除屏幕外且不捕获焦点
         mParams.flags = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
-        mParams.height = ScreenUtil.dip2px(context, 54);
-        mParams.width = ScreenUtil.dip2px(context, 54);
+        mParams.height = Utils.dip2px(context, 54);
+        mParams.width = Utils.dip2px(context, 54);
         mParams.x = 0;//窗口位置的偏移量
         mParams.y = 0;
         showWindow();
@@ -82,7 +82,7 @@ public class AssistentHelper {
                         break;
                 }
                 lastX = event.getRawX();
-                lastY = event.getRawY() - ScreenUtil.getStatusBarHeight(context);
+                lastY = event.getRawY() - Utils.getStatusBarHeight(context);
                 return true;
             }
         });
@@ -93,7 +93,7 @@ public class AssistentHelper {
         if (wManager != null && mParams != null && myView != null) {//异常判断
             AssistentModule assistentModule = new AssistentModule();
             AssistentModule.APoint aPoint = assistentModule.initPoints(context, isPortrait, mParams.width,
-                    mParams.x, mParams.y, ScreenUtil.dip2px(context, 45), ScreenUtil.dip2px(context, 81));
+                    mParams.x, mParams.y, Utils.dip2px(context, 45), Utils.dip2px(context, 81));
             mParams.x = aPoint.pointX;
             mParams.y = aPoint.pointY;
             wManager.updateViewLayout(myView, mParams);
@@ -151,8 +151,8 @@ public class AssistentHelper {
         }else{
             SDLog.i(AssistentHelper.UU_TAG,  " 横屏 ");
         }
-        limitMaxX = isPortrait?ScreenUtil.getScreenWidth(context) - mParams.width:ScreenUtil.getScreenHeight(context) - mParams.height;
-        limitMaxY = !isPortrait?ScreenUtil.getScreenWidth(context) - mParams.width:ScreenUtil.getScreenHeight(context) - mParams.height;
+        limitMaxX = isPortrait? Utils.getScreenWidth(context) - mParams.width: Utils.getScreenHeight(context) - mParams.height;
+        limitMaxY = !isPortrait? Utils.getScreenWidth(context) - mParams.width: Utils.getScreenHeight(context) - mParams.height;
     }
 
     /**

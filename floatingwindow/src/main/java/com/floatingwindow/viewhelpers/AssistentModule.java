@@ -3,7 +3,7 @@ package com.floatingwindow.viewhelpers;
 import android.content.Context;
 
 import com.common.utils.SDLog;
-import com.common.utils.ScreenUtil;
+import com.common.utils.Utils;
 import com.floatingwindow.R;
 
 import java.util.ArrayList;
@@ -39,15 +39,15 @@ public class AssistentModule {
     public List<APoint> currChilds = new ArrayList<>();//当前子View点位
 
     public APoint initPoints(Context context, boolean isPortrait, int mainW, int mainX, int mainY, int childW, int sapceR){
-        int barHight = isPortrait?ScreenUtil.getStatusBarHeight(context):0;
+        int barHight = isPortrait? Utils.getStatusBarHeight(context):0;
         SDLog.i(AssistentHelper.UU_TAG," isPortrait:" + isPortrait+" mainW:"+ mainW+" mainX:"+mainX+" mainY:"+mainY+" childW:"+childW+" sapceR:"+sapceR);
         APoint aPoint = new APoint();
         aPoint.startX = mainX;
         aPoint.startY = mainY;
-        int Sx = (isPortrait?ScreenUtil.getScreenWidth(context)/2:ScreenUtil.getScreenHeight(context)/2) - childW/2;//屏幕圆心x
-        int Sy = isPortrait?ScreenUtil.getScreenHeight(context)/2:ScreenUtil.getScreenWidth(context)/2;//屏幕圆心y
+        int Sx = (isPortrait? Utils.getScreenWidth(context)/2: Utils.getScreenHeight(context)/2) - childW/2;//屏幕圆心x
+        int Sy = isPortrait? Utils.getScreenHeight(context)/2: Utils.getScreenWidth(context)/2;//屏幕圆心y
         int location = LOCATION_LEFT;//默认位置左边
-        SDLog.i(AssistentHelper.UU_TAG," getStatusBarHeight:"+ScreenUtil.getStatusBarHeight(context)+" Sx:"+Sx+"  Sy:"+Sy);
+        SDLog.i(AssistentHelper.UU_TAG," getStatusBarHeight:"+ Utils.getStatusBarHeight(context)+" Sx:"+Sx+"  Sy:"+Sy);
         if(mainX < Sx && mainY < Sy){//左上区域
             int leftSpace = mainX;//左边距
             int topSpace = mainY;// 上边距

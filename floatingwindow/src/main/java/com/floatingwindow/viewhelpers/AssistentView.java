@@ -8,7 +8,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.common.utils.SDLog;
-import com.common.utils.ScreenUtil;
+import com.common.utils.Utils;
 
 /**游戏助手悬浮视图辅助类*/
 public class AssistentView {
@@ -46,8 +46,8 @@ public class AssistentView {
         //允许移除屏幕外且不捕获焦点
         mParams.flags = WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
-        mParams.height = ScreenUtil.dip2px(context, 45);
-        mParams.width = ScreenUtil.dip2px(context, 45);
+        mParams.height = Utils.dip2px(context, 45);
+        mParams.width = Utils.dip2px(context, 45);
         showWindow();
 
 //        if (Build.VERSION.SDK_INT >= 23) {

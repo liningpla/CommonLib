@@ -13,7 +13,7 @@ import android.view.WindowManager;
 
 import java.lang.reflect.Method;
 
-public class ScreenUtil {
+public class Utils {
 
     private static final int NO_VALUE = -1;
 
@@ -193,5 +193,29 @@ public class ScreenUtil {
             e.printStackTrace();
         }
         return dpi - display.getHeight();
+    }
+
+    public static int getMax(int [] arr){
+        int max =arr[0];
+        for(int x =1;x<arr.length;x++){//注意这里不要越界
+            if(arr[x]>max){
+                max =arr[x];
+            }
+        }
+        return max;
+    }
+
+
+    //写一个获取最小值的方法
+    //两个明确：int类型
+    //参数列表：int [] arr
+    public static int getMin(int [] arr){
+        int min =arr[0];
+        for(int x =1;x<arr.length;x++){//注意这里不要越界
+            if(arr[x]<min){
+                min =arr[x];
+            }
+        }
+        return min;
     }
 }

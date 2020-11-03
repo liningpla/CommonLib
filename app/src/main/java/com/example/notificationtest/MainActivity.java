@@ -20,6 +20,7 @@ import com.example.notificationtest.activity.SocketActivity;
 import com.example.notificationtest.biz.GooglePlayBiz;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
+import com.floatingwindow.FloatingWindowActivity;
 import com.lenove.httplibrary.OkGoManager;
 
 import static com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED;
@@ -115,7 +116,7 @@ public class MainActivity extends BaseAcivity {
 //        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
-//        ContextManager.intentUri(this, FloatingWindowActivity.URI);
+        ContextManager.intentUri(this, FloatingWindowActivity.URI);
 //        finish();
 
 
@@ -156,7 +157,7 @@ public class MainActivity extends BaseAcivity {
 //        ContextManager.intentUri(this, "push://push.com/small_game?gameId=212113");
 
 //        YLyGVnK7A5KO
-        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
+//        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
     }
 
     public void intentShort(View view){
