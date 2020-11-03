@@ -1,14 +1,20 @@
 package com.floatingwindow.ui;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.common.utils.Utils;
 import com.floatingwindow.R;
@@ -41,11 +47,21 @@ public class DragFloatView extends LeBaseView {
     private int topLength = 0;//悬浮球中心点离上边的具体
     private int bottomLength = 0;//悬浮球中心点离下边的具体
 
+    private int shockSpace = 0;//吸边震荡距离
+
+    private long downTime = 0L;//记录点击的时间
 
 
     public DragFloatView(Activity context, ViewGroup parentView) {
         super(context, parentView, R.layout.layout_drag_float);
         mActivity = context;
+    }
+
+    public void addParent() {
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT
+                , FrameLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.TOP | Gravity.START;
+        addToParent(params);
     }
 
     /**
@@ -54,12 +70,16 @@ public class DragFloatView extends LeBaseView {
     private void initData(View view) {
         boolean isPortrait = (mActivity.getChangingConfigurations() == Configuration.ORIENTATION_PORTRAIT);
         view.measure(0, 0);
+        shockSpace = Utils.dip2px(getContext(), 10);
         width = view.getMeasuredWidth();
         height = view.getMeasuredHeight();
         minX = 0f;
         maxX = Utils.getScreenWidth(getContext()) - width;
         minY = 0f;
-        maxY = Utils.getScreenHeight(getContext()) - height;
+        maxY = Utils.getScreenHeight(getContext()) - height - Utils.dip2px(getContext(), 1);
+        curY = maxY/2;
+        contentView.setY(curY);
+        animationSlide();
         Log.i(FloatBiz.TAG, "----maxX----- = " + maxX + "   maxY = " + maxY + "  width = " + width + "  height = " + height + "  isPortrait = " + isPortrait);
     }
 
@@ -69,27 +89,54 @@ public class DragFloatView extends LeBaseView {
      */
     private void animationSlide() {
         if (contentView != null) {
+            float[] moveValues = null;
+            float[] shockValues = null;
+            String propertyName = "translationX";
             leftLength = centerX;
             rightLength = Utils.getScreenWidth(getContext()) - centerX;
             topLength = centerY;
             bottomLength = Utils.getScreenHeight(getContext()) - centerY;
             int lengths[] = {leftLength, rightLength, topLength, bottomLength};
 
-            Log.i(FloatBiz.TAG, "leftLength = "+leftLength+"  rightLength = "+rightLength+"  topLength = "+topLength+"  bottomLength = "+bottomLength);
-            Log.i(FloatBiz.TAG, "curX = "+curX+"  curY = "+curY);
+            Log.i(FloatBiz.TAG, "leftLength = " + leftLength + "  rightLength = " + rightLength + "  topLength = " + topLength + "  bottomLength = " + bottomLength);
+            Log.i(FloatBiz.TAG, "curX = " + curX + "  curY = " + curY);
             int min = Utils.getMin(lengths);
-            if(min == leftLength){//向左移动
-                Log.i(FloatBiz.TAG, "----向左移动-----");
-            }
-            if(min == rightLength){//向右移动
-                Log.i(FloatBiz.TAG, "----向右移动-----");
-            }
-            if(min == topLength){//向上移动
-                Log.i(FloatBiz.TAG, "----向上移动-----");
-            }
-            if(min == bottomLength){//向下移动
+            if (min == bottomLength) {//向下移动
                 Log.i(FloatBiz.TAG, "----向下移动-----");
+                propertyName = "translationY";
+                moveValues = new float[]{curY, maxY};
+                shockValues = new float[]{maxY, maxY - shockSpace, maxY + (height / 2)};
             }
+            if (min == topLength) {//向上移动
+                Log.i(FloatBiz.TAG, "----向上移动-----");
+                propertyName = "translationY";
+                moveValues = new float[]{curY, 0};
+                shockValues = new float[]{0, shockSpace, -(height / 2)};
+            }
+            if (min == rightLength) {//向右移动
+                Log.i(FloatBiz.TAG, "----向右移动-----");
+                propertyName = "translationX";
+                moveValues = new float[]{curX, maxX};
+                shockValues = new float[]{maxX, maxX - shockSpace, maxX + (width / 2)};
+            }
+            if (min == leftLength) {//向左移动
+                Log.i(FloatBiz.TAG, "----向左移动-----");
+                propertyName = "translationX";
+                moveValues = new float[]{curX, 0};
+                shockValues = new float[]{0, shockSpace, -(width / 2)};
+            }
+            //移动动画
+            ObjectAnimator move = ObjectAnimator.ofFloat(contentView, propertyName, moveValues);
+            move.setInterpolator(new DecelerateInterpolator());
+            move.setDuration(200);
+            //震荡动画
+            ObjectAnimator shock = ObjectAnimator.ofFloat(contentView, propertyName, shockValues);
+            shock.setInterpolator(new DecelerateInterpolator());
+            shock.setDuration(150);
+            AnimatorSet animatorSet = new AnimatorSet();//创建动画集
+            animatorSet.play(move).before(shock);
+            animatorSet.setDuration(350);
+            animatorSet.start();//开始执行动画
         }
     }
 
@@ -110,6 +157,7 @@ public class DragFloatView extends LeBaseView {
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    downTime = SystemClock.elapsedRealtime();
                     touchX = event.getX();
                     touchY = event.getY();
                     break;
@@ -130,10 +178,14 @@ public class DragFloatView extends LeBaseView {
                     }
                     contentView.setX(curX);
                     contentView.setY(curY);
-                    centerX = (int) (curX + width/2);
-                    centerY = (int) (curY + height/2);
+                    centerX = (int) (curX + width / 2);
+                    centerY = (int) (curY + height / 2);
                     break;
                 case MotionEvent.ACTION_UP:
+                    long stopTime = SystemClock.elapsedRealtime() - downTime;
+                    if(stopTime < 300){
+                        Toast.makeText(mContext, "显示会员中心", Toast.LENGTH_LONG).show();
+                    }
                     animationSlide();
                     break;
             }

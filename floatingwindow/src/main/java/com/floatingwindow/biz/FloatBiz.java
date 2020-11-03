@@ -45,10 +45,8 @@ public enum  FloatBiz {
                     ViewGroup mRootView = activity.findViewById(android.R.id.content);
                     Rect rootViewRect = new Rect();
                     mRootView.getGlobalVisibleRect(rootViewRect);
-                    FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-                    params.gravity = Gravity.CENTER_VERTICAL|Gravity.START;
                     dragFloatView = new DragFloatView(activity, mRootView);
-                    dragFloatView.addToParent(params);
+                    dragFloatView.addParent();
                 }
             }
 
