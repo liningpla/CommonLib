@@ -147,6 +147,7 @@ public class MultiWindowActivity extends ComponentActivity {
 
         @Override
         public void onBind(RecyclerView.ViewHolder viewHolder, int RealPosition, LeWindowInfo data) {
+            viewHolder.setIsRecyclable(false);
             final MutiliWinHolder holder = (MutiliWinHolder) viewHolder;
             RecyclerView.LayoutParams layoutParams = new GridLayoutManager.LayoutParams(itemWidth, itemHeight);
             if (!isMultiType && RealPosition == currentIndex) {//当前显示的窗口
