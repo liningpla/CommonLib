@@ -117,7 +117,7 @@ public class MainActivity extends BaseAcivity {
 //        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
-//        ContextManager.intentUri(this, FloatingWindowActivity.URI);
+        ContextManager.intentUri(this, FloatingWindowActivity.URI);
 
 
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
@@ -159,7 +159,7 @@ public class MainActivity extends BaseAcivity {
 //        YLyGVnK7A5KO
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
 
-        startActivity(new Intent(this, MultiWindowActivity.class));
+//        startActivity(new Intent(this, MultiWindowActivity.class));
     }
 
     public void intentShort(View view){

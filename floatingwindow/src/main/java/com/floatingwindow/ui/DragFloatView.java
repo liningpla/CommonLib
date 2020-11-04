@@ -184,6 +184,7 @@ public class DragFloatView extends LeBaseView {
                 case MotionEvent.ACTION_UP:
                     long stopTime = SystemClock.elapsedRealtime() - downTime;
                     if(stopTime < 200){
+                        TODO://PopupWindow实现会员中心，可以实现返回键关闭
                         Toast.makeText(mContext, "显示会员中心", Toast.LENGTH_LONG).show();
                     }
                     animationSlide();
