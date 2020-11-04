@@ -88,7 +88,6 @@ public class MultiWindowActivity extends ComponentActivity {
             rv_multi.setLayoutManager(layoutManager);
             rv_multi.setAdapter(mutliWinAdapter);
             rv_multi.removeItemDecoration(smallVideoDecoration);
-            rv_multi.setNestedScrollingEnabled(false);
         } else {
             Log.i(TAG, "----updateWindowState 2 = " + isMultiType);
             layoutManager = new GridLayoutManager(this, 2){
@@ -100,7 +99,6 @@ public class MultiWindowActivity extends ComponentActivity {
             rv_multi.addItemDecoration(smallVideoDecoration);
             rv_multi.setLayoutManager(layoutManager);
             rv_multi.setAdapter(mutliWinAdapter);
-            rv_multi.setNestedScrollingEnabled(true);
             mItemTouchHelper.attachToRecyclerView(rv_multi);
         }
         layoutManager.setOrientation(GridLayout.VERTICAL);
