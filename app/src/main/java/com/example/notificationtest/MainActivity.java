@@ -18,6 +18,7 @@ import com.common.BaseAcivity;
 import com.common.utils.SDLog;
 import com.example.notificationtest.activity.SocketActivity;
 import com.example.notificationtest.biz.GooglePlayBiz;
+import com.example.notificationtest.homemulity.MultiWindowActivity;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
 import com.floatingwindow.FloatingWindowActivity;
@@ -116,8 +117,7 @@ public class MainActivity extends BaseAcivity {
 //        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
-        ContextManager.intentUri(this, FloatingWindowActivity.URI);
-//        finish();
+//        ContextManager.intentUri(this, FloatingWindowActivity.URI);
 
 
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
@@ -158,6 +158,8 @@ public class MainActivity extends BaseAcivity {
 
 //        YLyGVnK7A5KO
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
+
+        startActivity(new Intent(this, MultiWindowActivity.class));
     }
 
     public void intentShort(View view){
