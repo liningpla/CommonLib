@@ -96,6 +96,7 @@ public class MultiWindowActivity extends ComponentActivity {
                     return true;
                 }
             };
+            rv_multi.removeItemDecoration(smallVideoDecoration);
             rv_multi.addItemDecoration(smallVideoDecoration);
             rv_multi.setLayoutManager(layoutManager);
             rv_multi.setAdapter(mutliWinAdapter);
@@ -142,12 +143,12 @@ public class MultiWindowActivity extends ComponentActivity {
         public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {
             View itemView = new LeHomeView(mContext, parent).contentView;
             RecyclerView.ViewHolder holder = new MutiliWinHolder(itemView);
+            holder.setIsRecyclable(false);
             return holder;
         }
 
         @Override
         public void onBind(RecyclerView.ViewHolder viewHolder, int RealPosition, LeWindowInfo data) {
-            viewHolder.setIsRecyclable(false);
             final MutiliWinHolder holder = (MutiliWinHolder) viewHolder;
             RecyclerView.LayoutParams layoutParams = new GridLayoutManager.LayoutParams(itemWidth, itemHeight);
             if (!isMultiType && RealPosition == currentIndex) {//当前显示的窗口
