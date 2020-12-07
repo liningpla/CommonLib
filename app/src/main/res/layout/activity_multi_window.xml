@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/com_lenovo_pay_center_black"
     >
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_multi"
+    <com.example.notificationtest.homemulity.MyConstraintLayout
+        android:id="@+id/myConstraint"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
