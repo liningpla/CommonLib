@@ -3,13 +3,13 @@ package com.example.notificationtest.homemulity;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.ComponentActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.common.utils.Utils;
 import com.example.notificationtest.R;
@@ -42,19 +42,17 @@ public class MultiWindowActivity extends ComponentActivity {
         TextView textView = new TextView(this);
         textViews.add(textView);
         textView.setText("布局"+textViews.size());
-        myConstraint.addView(textView);
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) textView.getLayoutParams();
-        params.width = Utils.getScreenWidth(this);
-        params.height = Utils.getScreenHeight(this);
-        textView.setLayoutParams(params);
+        ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(screenWidth, screenHeight);
+        myConstraint.addView(textView, params);
+        Log.i(TAG, "-----addView-----");
     }
 
     private void initData() {
         screenWidth = Utils.getScreenWidth(this);
         screenHeight = Utils.getScreenHeight(this);
-        sreenRatio = new BigDecimal((float) screenWidth / screenHeight);
-        Log.i(TAG, "----initData scaleSize = " + scaleSize.doubleValue());
+        sreenRatio = new BigDecimal((float) screenWidth / (float) screenHeight);
         scaleSize = new BigDecimal(0.8f);
+        Log.i(TAG, "----initData scaleSize = " + scaleSize.doubleValue());
     }
     private void initView() {
         myConstraint = findViewById(R.id.myConstraint);
@@ -80,6 +78,8 @@ public class MultiWindowActivity extends ComponentActivity {
     public void updateMultiType(){
         for(int i = 0; i < textViews.size(); i ++){
             TextView textView = textViews.get(i);
+
+            Log.i(TAG, "-----updateMultiType-----scaleSize = "+scaleSize.doubleValue()+" isMultiType = "+isMultiType);
             if(isMultiType){
                 animaSmall(textView, (float) scaleSize.doubleValue());
             }else{

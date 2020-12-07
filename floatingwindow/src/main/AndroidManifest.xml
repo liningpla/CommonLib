@@ -4,7 +4,6 @@
     <application android:allowBackup="true">
 
         <activity android:name=".FloatingWindowActivity"
-            android:theme="@style/AppTheme"
             >
             <intent-filter>
                 <data android:host="window.com"  android:scheme="floating" android:pathPrefix="/floatingwindowactivity"/>

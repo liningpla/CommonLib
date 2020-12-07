@@ -1,12 +1,12 @@
 package com.example.notificationtest.homemulity;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.customview.widget.ViewDragHelper;
 
 
