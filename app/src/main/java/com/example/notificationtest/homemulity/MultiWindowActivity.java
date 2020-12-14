@@ -6,10 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.activity.ComponentActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.common.utils.Utils;
 import com.example.notificationtest.R;
@@ -22,9 +21,14 @@ import java.util.List;
 
 public class MultiWindowActivity extends ComponentActivity {
     public static final String TAG = "MultiMain";
-    private MyConstraintLayout myConstraint;
+
+    private List<LeWindowInfo> windowInfos = new ArrayList<>();
+    private HomeViewPager homePager;
+    private HomePagerAdapter pagerAdapter;
+    private OverlayTransformer transformer;
+
+
     private Button btn_add, btn_show;
-    private List<TextView> textViews = new ArrayList<>();
     private int currentIndex;
     private BigDecimal sreenRatio;//当前手机屏幕的宽高比
     private boolean isMultiType = false;//是否是多窗口模式
@@ -37,30 +41,42 @@ public class MultiWindowActivity extends ComponentActivity {
         initData();
         initView();
     }
-
-    private void addView(){
-        TextView textView = new TextView(this);
-        textViews.add(textView);
-        textView.setText("布局"+textViews.size());
-        ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(screenWidth, screenHeight);
-        myConstraint.addView(textView, params);
-        Log.i(TAG, "-----addView-----");
-    }
-
     private void initData() {
         screenWidth = Utils.getScreenWidth(this);
         screenHeight = Utils.getScreenHeight(this);
         sreenRatio = new BigDecimal((float) screenWidth / (float) screenHeight);
         scaleSize = new BigDecimal(0.8f);
+        LeWindowInfo windowInfo = new LeWindowInfo();
+        windowInfos.add(windowInfo);
+        currentIndex = 0;
         Log.i(TAG, "----initData scaleSize = " + scaleSize.doubleValue());
     }
     private void initView() {
-        myConstraint = findViewById(R.id.myConstraint);
+        homePager = findViewById(R.id.home_pager);
+        transformer = new OverlayTransformer(3, -1, -1);
+        pagerAdapter = new HomePagerAdapter(this, windowInfos);
+        homePager.setAdapter(pagerAdapter);
+        homePager.setNoScroll(true);
+        homePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageSelected(int position) {
+                currentIndex = position;
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addView();
+                isMultiType = false;
+                addWindow();
+                updateMultiType();
             }
         });
         btn_show = findViewById(R.id.btn_show);
@@ -71,20 +87,30 @@ public class MultiWindowActivity extends ComponentActivity {
                 updateMultiType();
             }
         });
-        addView();
+    }
+    private void addWindow(){
+        if(windowInfos != null){
+            currentIndex = windowInfos.size() - 1;
+            LeWindowInfo windowInfo = new LeWindowInfo(currentIndex);
+            windowInfos.add(windowInfo);
+            pagerAdapter.notifyChange(windowInfos);
+            homePager.setCurrentItem(currentIndex);
+            Log.i(TAG, "----addWindow currentIndex = " + currentIndex);
+        }
     }
 
-    /**更新多窗口的展示*/
-    public void updateMultiType(){
-        for(int i = 0; i < textViews.size(); i ++){
-            TextView textView = textViews.get(i);
 
-            Log.i(TAG, "-----updateMultiType-----scaleSize = "+scaleSize.doubleValue()+" isMultiType = "+isMultiType);
+    /**更新多窗口的展示*/
+    private void updateMultiType(){
+        if(homePager != null && transformer != null){
             if(isMultiType){
-                animaSmall(textView, (float) scaleSize.doubleValue());
+                homePager.setNoScroll(false);
+                homePager.setPageTransformer(true, transformer);
             }else{
-                animaSmall(textView, 1/(float) scaleSize.doubleValue());
+                homePager.setNoScroll(true);
+                homePager.setPageTransformer(false, transformer);
             }
+            Log.i(TAG, "----updateMultiType isMultiType = " + isMultiType);
         }
     }
 

@@ -68,7 +68,7 @@ public class OldMultiWindowActivity extends ComponentActivity {
         btn_show = findViewById(R.id.btn_show);
         btn_add.setOnClickListener(clickListener);
         btn_show.setOnClickListener(clickListener);
-//        rv_multi = findViewById(R.id.rv_multi);
+        rv_multi = findViewById(R.id.rv_multi);
         mutliWinAdapter = new MutliWinAdapter(this, windowList);
         smallVideoDecoration = new SmallVideoDecoration(Utils.dp2px(this, 2));
         mItemTouchHelper = new ItemTouchHelper(new DragItemHelperCallBack());

@@ -2,12 +2,20 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/com_lenovo_pay_center_black"
+    android:background="@color/com_lenovo_pay_center_white"
     >
-    <com.example.notificationtest.homemulity.MyConstraintLayout
-        android:id="@+id/myConstraint"
+
+    <com.example.notificationtest.homemulity.HomeViewPager
+        android:id="@+id/home_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_multi"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
         />
     <Button
         android:id="@+id/btn_add"

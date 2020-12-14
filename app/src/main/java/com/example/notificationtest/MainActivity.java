@@ -19,6 +19,7 @@ import com.common.utils.SDLog;
 import com.example.notificationtest.activity.SocketActivity;
 import com.example.notificationtest.biz.GooglePlayBiz;
 import com.example.notificationtest.homemulity.MultiWindowActivity;
+import com.example.notificationtest.homemulity.OldMultiWindowActivity;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
 import com.floatingwindow.FloatingWindowActivity;
