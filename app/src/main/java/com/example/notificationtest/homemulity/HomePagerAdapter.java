@@ -49,7 +49,7 @@ public class HomePagerAdapter extends PagerAdapter {
             windowInfo.position = position;
             homeView = LeHomeView.buildFragemnt(container, windowInfo);
             homeView.addToParent();
-            Log.i(MultiWindowActivity.TAG, "----instantiateIteme----position = "+position);
+//            Log.i(MultiWindowActivity.TAG, "----instantiateIteme----position = "+position);
         }
         return homeView.contentView;
     }

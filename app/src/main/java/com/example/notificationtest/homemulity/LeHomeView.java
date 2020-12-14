@@ -46,6 +46,6 @@ public class LeHomeView extends LeBaseView {
         fl_content = findView(R.id.fl_content);
         tv_home_name = findView(R.id.tv_home_name);
         tv_home_name.setText("第"+position+"个页面");
-        Log.i(MultiWindowActivity.TAG, "----initView position = " + position);
+//        Log.i(MultiWindowActivity.TAG, "----initView position = " + position);
     }
 }

@@ -1,27 +1,24 @@
 package com.example.notificationtest.homemulity;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.viewpager.widget.ViewPager;
+
+import com.common.utils.Utils;
 
 /**
  * 叠加卡片效果
  */
 public class OverlayTransformer implements ViewPager.PageTransformer {
-    private float scaleOffset = 40;
-    private float transOffset = 40;
-    private int overlayCount;
+    private float transOffect;
+    private float scaleSize = 0.8f;//page的缩放比例
+    private int overlayCount; //显示在前端的page
+    private HomeViewPager homePager;
 
-    public OverlayTransformer(int overlayCount) {
+    public OverlayTransformer(HomeViewPager homePager, int overlayCount) {
         this.overlayCount = overlayCount;
-    }
-
-    public OverlayTransformer(int overlayCount, float scaleOffset, float transOffset) {
-        this.overlayCount = overlayCount;
-        if (Float.compare(scaleOffset, -1) != 0)
-            this.scaleOffset = scaleOffset;
-        if (Float.compare(transOffset, -1) != 0)
-            this.transOffset = transOffset;
+        this.homePager = homePager;
     }
 
     public int getOverlayCount() {
@@ -30,34 +27,17 @@ public class OverlayTransformer implements ViewPager.PageTransformer {
 
     @Override
     public void transformPage(View page, float position) {
-        if (position <= 0.0f) {//当前页
-            page.setTranslationX(0f);
-            page.setAlpha(1 - 0.5f * Math.abs(position));
-            page.setClickable(true);
-        } else {
-            otherTrans(page, position);
-            page.setClickable(false);
+        Log.i(MultiWindowActivity.TAG, "----transformPage position = " + position + "  getHeight = "+page.getHeight());
+        int mOffset = Utils.dip2px(page.getContext(), 72);
+        if (position <= 0.0f) {
+//被滑动的那页，设置水平位置偏移量为0，即无偏移
+            page.setTranslationY(0f);
+            page.setAlpha(0.1f);
+        } else {//未被滑动的页
+            page.setTranslationY((-(page.getHeight()-mOffset) * position));
+            page.setAlpha(position * 0.1f);
         }
-    }
 
-    private void otherTrans(View page, float position) {
-        //缩放比例
-        float scale = (page.getHeight() - scaleOffset * position) / (float) (page.getHeight());
-        page.setScaleX(scale);
-        page.setScaleY(scale);
 
-        page.setAlpha(1f);
-        if (position > overlayCount - 1 && position < overlayCount) { //当前页向右滑动时,最右面第四个及以后页面应消失
-            float curPositionOffset = transOffset * (float) Math.floor(position); //向下取整
-            float lastPositionOffset = transOffset * (float) Math.floor(position - 1); //上一个卡片的偏移量
-            float singleOffset = 1 - Math.abs(position % (int) position);
-            float transY = (-page.getHeight() * position) + (lastPositionOffset + singleOffset * (curPositionOffset - lastPositionOffset));
-            page.setTranslationY(transY);
-        } else if (position <= overlayCount - 1) {
-            float transY = (-page.getHeight() * position) + (transOffset * position);
-            page.setTranslationY(transY);
-        } else {
-            page.setAlpha(0f);
-        }
     }
 }

@@ -2,6 +2,7 @@ package com.example.notificationtest.homemulity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,10 +31,8 @@ public class MultiWindowActivity extends ComponentActivity {
 
     private Button btn_add, btn_show;
     private int currentIndex;
-    private BigDecimal sreenRatio;//当前手机屏幕的宽高比
     private boolean isMultiType = false;//是否是多窗口模式
     private int screenWidth, screenHeight;
-    private BigDecimal scaleSize;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,18 +43,17 @@ public class MultiWindowActivity extends ComponentActivity {
     private void initData() {
         screenWidth = Utils.getScreenWidth(this);
         screenHeight = Utils.getScreenHeight(this);
-        sreenRatio = new BigDecimal((float) screenWidth / (float) screenHeight);
-        scaleSize = new BigDecimal(0.8f);
         LeWindowInfo windowInfo = new LeWindowInfo();
         windowInfos.add(windowInfo);
         currentIndex = 0;
-        Log.i(TAG, "----initData scaleSize = " + scaleSize.doubleValue());
+        Log.i(TAG, "----initData------");
     }
     private void initView() {
         homePager = findViewById(R.id.home_pager);
-        transformer = new OverlayTransformer(3, -1, -1);
+        transformer = new OverlayTransformer(homePager, 3);
         pagerAdapter = new HomePagerAdapter(this, windowInfos);
         homePager.setAdapter(pagerAdapter);
+        homePager.setOffscreenPageLimit(10);
         homePager.setNoScroll(true);
         homePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -104,11 +102,15 @@ public class MultiWindowActivity extends ComponentActivity {
     private void updateMultiType(){
         if(homePager != null && transformer != null){
             if(isMultiType){
-                homePager.setNoScroll(false);
+//                homePager.setScaleX(0.8f);
+//                homePager.setScaleY(0.8f);
+                homePager.setNoScroll(true);
                 homePager.setPageTransformer(true, transformer);
             }else{
-                homePager.setNoScroll(true);
-                homePager.setPageTransformer(false, transformer);
+                homePager.setNoScroll(false);
+                homePager.setPageTransformer(false, null);
+//                homePager.setScaleX(1.0f);
+//                homePager.setScaleY(1.0f);
             }
             Log.i(TAG, "----updateMultiType isMultiType = " + isMultiType);
         }
