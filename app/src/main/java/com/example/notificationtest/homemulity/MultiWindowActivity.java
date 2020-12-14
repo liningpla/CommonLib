@@ -50,7 +50,7 @@ public class MultiWindowActivity extends ComponentActivity {
     }
     private void initView() {
         homePager = findViewById(R.id.home_pager);
-        transformer = new OverlayTransformer(homePager, 3);
+        transformer = new OverlayTransformer(homePager, 5);
         pagerAdapter = new HomePagerAdapter(this, windowInfos);
         homePager.setAdapter(pagerAdapter);
         homePager.setOffscreenPageLimit(10);
