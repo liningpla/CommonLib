@@ -13,6 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.OverScroller;
 import android.widget.Scroller;
 
+import com.common.utils.Utils;
+
 public class MyMultiView extends FrameLayout {
     private static final String TAG = MyMultiWindowActivity.TAG;
     private Context mContext;
@@ -25,6 +27,7 @@ public class MyMultiView extends FrameLayout {
     private float mLastY;
     private int downX = 0;
     private boolean isPull;
+    private int offset;
 
     public MyMultiView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -43,6 +46,7 @@ public class MyMultiView extends FrameLayout {
         ViewConfiguration config = ViewConfiguration.get(context);
         mTouchSlop = config.getScaledPagingTouchSlop();
         mMinimumVelocity = config.getScaledMinimumFlingVelocity();
+        offset = Utils.dip2px(mContext, 108);
     }
 
     /***
@@ -98,10 +102,9 @@ public class MyMultiView extends FrameLayout {
             measureChild(childView, widthMeasureSpec, heightMeasureSpec);
         }
         //设置viewGroup的宽高，也可以在onlayout中通过layoutParams设置
-        totalHeight = getScreenSize(mContext).heightPixels * childCount;
+        totalHeight = mScreenHeight + childCount * offset;
         setMeasuredDimension(measureSelfWidth, totalHeight);
     }
-
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -113,10 +116,48 @@ public class MyMultiView extends FrameLayout {
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View childView = getChildAt(i);
-            childView.layout(l, i * mScreenHeight, r, (i + 1) * mScreenHeight);
+            childView.layout(l, i * mScreenHeight - i *(mScreenHeight-  offset),
+                            r, (i + 1) * mScreenHeight - i *(mScreenHeight-  offset));
         }
     }
-
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        final int action = ev.getActionMasked();
+        Log.d(MyMultiWindowActivity.TAG, "onInterceptTouchEvent----action: " + action);
+        if (action == MotionEvent.ACTION_DOWN && ev.getEdgeFlags() != 0) {
+            // 该事件可能不是我们的
+            return false;
+        }
+        boolean isIntercept = false;
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                // 如果动画还未结束，则将此事件交给onTouchEvet()处理，
+                // 否则，先分发给子View
+                isIntercept = !mScroller.isFinished();
+                // 如果此时不拦截ACTION_DOWN时间，应该记录下触摸地址及手指id，当我们决定拦截ACTION_MOVE的event时，
+                // 将会需要这些初始信息（因为我们的onTouchEvent将可能接收不到ACTION_DOWN事件）
+                mLastY = ev.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float my = ev.getY();
+                // 根据方向进行拦截，（其实这样，如果我们的方向是水平的，里面有一个ScrollView，那么我们是支持嵌套的）
+                if (Math.abs(mLastY - my) >= mTouchSlop) {
+                    isIntercept = true;
+                }
+                if (isIntercept) {
+                    mLastY = my;
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                // 这是触摸的最后一个事件，无论如何都不会拦截
+                recycleVelocityTracker();
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                break;
+        }
+        return isIntercept;
+    }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         initVelocityTrackerIfNotExists();
@@ -150,7 +191,7 @@ public class MyMultiView extends FrameLayout {
                 int initVelocity = (int) velocityTracker.getXVelocity();
                 if ((Math.abs(initVelocity) > mMinimumVelocity)) {
                     completeMove(isPull?-initVelocity:initVelocity);
-                } else if (mScroller.springBack(getScrollX(), getScrollY(), 0, 0, 0,
+                } else if (mScroller.springBack(0, getScrollY(), 0, 0, 0,
                         getScrollRange())) {
                     postInvalidateOnAnimation();
                 }
