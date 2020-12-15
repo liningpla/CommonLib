@@ -5,13 +5,12 @@
     android:background="@color/cardview_dark_background"
     >
 
-    <com.example.notificationtest.homemulity.MyScrollView
+    <com.example.notificationtest.homemulity.MyMultiView
         android:id="@+id/home_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="40dp"
         >
-    </com.example.notificationtest.homemulity.MyScrollView>
+    </com.example.notificationtest.homemulity.MyMultiView>
 
     <com.example.notificationtest.homemulity.HomeViewPager
         android:id="@+id/home_pager"

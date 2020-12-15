@@ -10,7 +10,7 @@ import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-public class MyScrollView extends FrameLayout {
+public class MyMultiView extends FrameLayout {
 
     private int mLastY;
 
@@ -23,17 +23,17 @@ public class MyScrollView extends FrameLayout {
      */
     private int mCurrentPage = 0;
 
-    public MyScrollView(Context context) {
+    public MyMultiView(Context context) {
         super(context);
         init(context);
     }
 
-    public MyScrollView(Context context, AttributeSet attrs) {
+    public MyMultiView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public MyScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MyMultiView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
@@ -79,22 +79,6 @@ public class MyScrollView extends FrameLayout {
                 break;
             case MotionEvent.ACTION_MOVE:
                 int dy = mLastY - y;
-                /* 注释的里面是使用startScroll（）来进行滑动的
-                int oldScrollX = getScrollX();//原来的偏移量
-                int preScrollX = oldScrollX + dx;//本次滑动后形成的偏移量
-                if (preScrollX > (getChildCount() - 1) * getWidth()) {
-                    preScrollX = (getChildCount() - 1) * getWidth();
-                    dx = preScrollX - oldScrollX;
-                }
-                if (preScrollX < 0) {
-                    preScrollX = 0;
-                    dx = preScrollX - oldScrollX;
-                }
-                mScroller.startScroll(mScroller.getFinalX(), mScroller.getFinalY(), dx, 0);
-                //注意，使用startScroll后面一定要进行invalidate刷新界面，触发computeScroll()方法，因为单纯的startScroll()是属于Scroller的，只是一个辅助类，并不会触发界面的绘制
-                invalidate();
-                */
-                //但是一般在ACTION_MOVE中我们直接使用scrollTo或者scrollBy更加方便
                 scrollBy(0,dy);
                 mLastY = y;
                 break;

@@ -21,7 +21,7 @@ public class MyMultiWindowActivity extends ComponentActivity {
     public static final String TAG = "MultiMain";
 
     private List<LeHomeView> homeViews = new ArrayList<>();
-    private MyScrollView myScrollView;
+    private MyMultiView myScrollView;
 
 
     private Button btn_add, btn_show;
@@ -62,7 +62,7 @@ public class MyMultiWindowActivity extends ComponentActivity {
                 updateMultiType();
             }
         });
-//        initData();
+        initData();
     }
     private void addWindow(){
         if(homeViews != null){
