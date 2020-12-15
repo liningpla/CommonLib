@@ -28,7 +28,7 @@
 
         <activity android:name="com.example.notificationtest.pluginloader.PluginActivity"></activity>
         <activity android:name="com.example.notificationtest.homemulity.MultiWindowActivity"></activity>
-
+        <activity android:name="com.example.notificationtest.homemulity.MyMultiWindowActivity"></activity>
         <activity android:name="com.example.notificationtest.homemulity.OldMultiWindowActivity"></activity>
         <service android:name=".services.MyJobService"
                 android:permission="android.permission.BIND_JOB_SERVICE"

@@ -27,17 +27,16 @@ public class OverlayTransformer implements ViewPager.PageTransformer {
 
     @Override
     public void transformPage(View page, float position) {
-        Log.i(MultiWindowActivity.TAG, "----transformPage position = " + position + "  getHeight = "+page.getHeight());
-        int mOffset = Utils.dip2px(page.getContext(), 72);
-        if (position <= 0.0f) {
-//被滑动的那页，设置水平位置偏移量为0，即无偏移
-            page.setTranslationY(0f);
-            page.setAlpha(0.1f);
-        } else {//未被滑动的页
-            page.setTranslationY((-(page.getHeight()-mOffset) * position));
-            page.setAlpha(position * 0.1f);
-        }
+        int cPosition = homePager.getCurrentItem();
+        Log.i(MultiWindowActivity.TAG, "----transformPage  position:" + position + " cPosition:" + cPosition + " page:" + page);
+        int mOffset = Utils.dip2px(page.getContext(), 108);
 
+        page.setTranslationY((-page.getHeight() * position) + (cPosition - position) * mOffset);
 
+//        if (position <= 0.0f) {//被滑动的那页，设置水平位置偏移量为0，即无偏移
+//            page.setTranslationY(mOffset * position);
+//        } else {//未被滑动的页
+//            page.setTranslationY((-(page.getHeight()*mOffset) * position));
+//        }
     }
 }
