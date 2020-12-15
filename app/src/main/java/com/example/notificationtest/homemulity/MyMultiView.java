@@ -61,10 +61,9 @@ public class MyMultiView extends FrameLayout {
         Log.i(MyMultiWindowActivity.TAG, "--l-->"+l+",--t-->"+t+",-->r-->"+r+",--b-->"+b);
         for(int i = 0; i < count; i++){
             View child = getChildAt(i);
-            child.layout(i * getWidth(), t, (i + 1) * getWidth(), b);
+            child.layout(l, i*getHeight(), r, (i + 1) * getHeight());
         }
     }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         initVelocityTrackerIfNotExists();
@@ -134,10 +133,10 @@ public class MyMultiView extends FrameLayout {
     public void computeScroll() {
         Log.i(MyMultiWindowActivity.TAG, "---------computeScrollcomputeScrollcomputeScroll--------------");
         super.computeScroll();
-        if(mScroller.computeScrollOffset()){
-            scrollTo(mScroller.getCurrX(),mScroller.getCurrY());
-            invalidate();
-        }
+//        if(mScroller.computeScrollOffset()){
+//            scrollTo(mScroller.getCurrX(),mScroller.getCurrY());
+//            invalidate();
+//        }
     }
 
     private void recycleVelocityTracker() {
