@@ -28,6 +28,7 @@ public class MyMultiView extends FrameLayout {
     private int downX = 0;
     private boolean isPull;
     private int offset;
+    private int mOverflingDistance;
 
     public MyMultiView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -46,6 +47,7 @@ public class MyMultiView extends FrameLayout {
         ViewConfiguration config = ViewConfiguration.get(context);
         mTouchSlop = config.getScaledPagingTouchSlop();
         mMinimumVelocity = config.getScaledMinimumFlingVelocity();
+        mOverflingDistance = config.getScaledOverflingDistance();
         offset = Utils.dip2px(mContext, 108);
     }
 
@@ -189,12 +191,7 @@ public class MyMultiView extends FrameLayout {
                 final VelocityTracker velocityTracker = mVelocityTracker;
                 velocityTracker.computeCurrentVelocity(1000);
                 int initVelocity = (int) velocityTracker.getXVelocity();
-                if ((Math.abs(initVelocity) > mMinimumVelocity)) {
-                    completeMove(isPull?-initVelocity:initVelocity);
-                } else if (mScroller.springBack(0, getScrollY(), 0, 0, 0,
-                        getScrollRange())) {
-                    postInvalidateOnAnimation();
-                }
+                completeMove(isPull?-initVelocity:initVelocity);
                 recycleVelocityTracker();
                 break;
         }
@@ -212,10 +209,15 @@ public class MyMultiView extends FrameLayout {
     @Override
     public void computeScroll() {
         super.computeScroll();
-//        Log.d(TAG, "mScroller.getCurrY() " + mScroller.getCurrY());
-        if (mScroller.computeScrollOffset()) {//是否已经滚动完成
-            scrollTo(0, mScroller.getCurrY());//获取当前值，startScroll（）初始化后，调用就能获取区间值
-            postInvalidate();
+        if (mScroller.computeScrollOffset()) {
+            int oldY = getScrollY();
+            int y = mScroller.getCurrY();
+            if (oldY != y) {
+                scrollTo(0, y);
+            }
+            if (!awakenScrollBars()) {
+                postInvalidateOnAnimation();
+            }
         }
     }
     private int getScrollRange() {
