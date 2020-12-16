@@ -38,7 +38,7 @@ public class MyMultiWindowActivity extends ComponentActivity {
         screenWidth = Utils.getScreenWidth(this);
         screenHeight = Utils.getScreenHeight(this);
         LeHomeView leHomeView = LeHomeView.buildFragemnt(myScrollView, new LeWindowInfo(0));
-        leHomeView.addToParent();
+        myScrollView.addContent(leHomeView.contentView);
         homeViews.add(leHomeView);
         currentIndex = 0;
         Log.i(TAG, "----initData------");
@@ -68,7 +68,7 @@ public class MyMultiWindowActivity extends ComponentActivity {
         if(homeViews != null){
             currentIndex = homeViews.size();
             LeHomeView leHomeView = LeHomeView.buildFragemnt(myScrollView, new LeWindowInfo(currentIndex));
-            leHomeView.addToParent();
+            myScrollView.addContent(leHomeView.contentView);
             homeViews.add(leHomeView);
             Log.i(TAG, "----addWindow currentIndex = " + currentIndex);
         }

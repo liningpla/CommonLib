@@ -21,7 +21,9 @@ public class LeHomeView extends LeBaseView {
     public static LeHomeView buildFragemnt(ViewGroup parentView, LeWindowInfo windowInfo) {
         return new LeHomeView(parentView.getContext(), parentView, windowInfo);
     }
-
+    public static LeHomeView buildFragemnt(Context context, LeWindowInfo windowInfo) {
+        return new LeHomeView(context, windowInfo);
+    }
     /**
      * 调用
      *
@@ -33,7 +35,14 @@ public class LeHomeView extends LeBaseView {
         this.windowInfo = windowInfo;
         this.position = windowInfo.position;
     }
-
+    /**
+     * 调用
+     *
+     * @param context
+     */
+    public LeHomeView(Context context, LeWindowInfo windowInfo) {
+        super(context, R.layout.layout_multi_home);
+    }
     /**
      * 调用
      *
