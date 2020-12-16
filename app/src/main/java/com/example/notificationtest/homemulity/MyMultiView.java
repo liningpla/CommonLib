@@ -1,10 +1,16 @@
 package com.example.notificationtest.homemulity;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.OverScroller;
 import android.widget.ScrollView;
 
 import com.common.utils.Utils;
@@ -12,11 +18,15 @@ import com.common.utils.Utils;
 public class MyMultiView extends ScrollView {
     private static final String TAG = MyMultiWindowActivity.TAG;
     private Context context;
+    private OverScroller mScroller;
     private MyParent myParent;
     private int mScreenHeight;
     private int mScreenWidth;
     private int totalHeight;
     private int offset;
+    private int mTouchSlop;
+    private int lastScrollY;
+
 
     public MyMultiView(Context context) {
         super(context);
@@ -33,22 +43,44 @@ public class MyMultiView extends ScrollView {
         init(context);
     }
 
-    private void init(Context context){
+    private void init(Context context) {
         this.context = context;
+        ViewConfiguration config = ViewConfiguration.get(context);
+        mTouchSlop = config.getScaledPagingTouchSlop();
         setFillViewport(true);
         mScreenHeight = Utils.getScreenHeight(context);
         mScreenWidth = Utils.getScreenWidth(context);
-        offset = Utils.dip2px(context, 108);
+        offset = Utils.dip2px(context, 180);
         myParent = new MyParent(context);
         ScrollView.LayoutParams params = new ScrollView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(myParent, params);
     }
 
-    public void addContent(View view){
-        if(myParent != null && view != null){
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        int rawY = (int) getY();
+        int scollY = getScrollY();
+//        Log.d(TAG, "onScrollChanged l:" + l+" oldl:" +oldl+"  t:"+ t+" oldt:"+oldt+"rawY:" + rawY+" scollY:" +scollY);
+    }
+
+    @Override
+    protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
+        super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
+        if (myParent != null) {
+            int deltaY = lastScrollY - scrollY;
+            myParent.transformPage(deltaY);
+            Log.d(TAG, "onOverScrolled  clampedX:"+ clampedX+" clampedY:"+clampedY);
+        }
+        lastScrollY = scrollY;
+    }
+
+    public void addContent(View view) {
+        if (myParent != null && view != null) {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(mScreenWidth, mScreenHeight);
             myParent.addView(view, params);
-            postInvalidate();
+            fullScroll(ScrollView.FOCUS_DOWN);//滚动到底部
         }
     }
 
@@ -60,11 +92,12 @@ public class MyMultiView extends ScrollView {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        Log.d(TAG, "MyMultiView onLayout left:" + l+" top:" + t+" right:"+r+" bottom:"+b);
+        Log.d(TAG, "MyMultiView onLayout left:" + l + " top:" + t + " right:" + r + " bottom:" + b);
     }
 
-    private class MyParent extends ViewGroup{
+    private class MyParent extends ViewGroup {
         private Context mContext;
+
         public MyParent(Context context) {
             super(context);
             init(context);
@@ -79,7 +112,8 @@ public class MyMultiView extends ScrollView {
             super(context, attrs, defStyleAttr);
             init(context);
         }
-        private void init(Context context){
+
+        private void init(Context context) {
             mContext = context;
         }
 
@@ -136,12 +170,44 @@ public class MyMultiView extends ScrollView {
 
         @Override
         protected void onLayout(boolean changed, int l, int t, int r, int b) {
-            Log.d(TAG, "MyParent onLayout left:" + l+" top:" + t+" right:"+r+" bottom:"+b+" height:"+mScreenHeight);
+            Log.d(TAG, "MyParent onLayout left:" + l + " top:" + t + " right:" + r + " bottom:" + b + " height:" + mScreenHeight);
             int childCount = getChildCount();
             for (int i = 0; i < childCount; i++) {
                 View childView = getChildAt(i);
-                childView.layout(l, i * mScreenHeight - i *(mScreenHeight-  offset),
-                        r, (i + 1) * mScreenHeight - i *(mScreenHeight-  offset));
+                childView.layout(l, i * mScreenHeight - i * (mScreenHeight - offset),
+                        r, (i + 1) * mScreenHeight - i * (mScreenHeight - offset));
+            }
+        }
+
+        public void transformPage(int deltaY) {
+            int childCount = getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View childView = getChildAt(i);
+                View beforeView = null;//前一个view
+                View nextView = null;//后一个view
+                int currY = (int) childView.getY();
+                int beforeY = 0, nextY = 0;
+                if(i - 1>=0){
+                    beforeView = getChildAt(i - 1);
+                    beforeY = (int) beforeView.getY();
+                }
+                if(i + 1 < childCount){
+                    nextView = getChildAt(i + 1);
+                    nextY = (int) nextView.getY();
+                }
+                if (i == 0) {
+                    childView.setTranslationY(currY-deltaY);
+                }else{
+//                    if(currY <= beforeY){
+//                        childView.setTranslationY(beforeY);
+//                    }
+//                    childView.setTranslationY(beforeY - currY - deltaY);
+                }
+                Log.d(TAG, "MyParent transformPage currY:" + currY + " beforeY:" + beforeY + " nextY:" + nextY + " deltaY:" + deltaY +" i-->" + i);
+                if (deltaY < 0) {//上滑
+                } else {//下拉
+                }
+                MyParent.this.postInvalidate();
             }
         }
     }

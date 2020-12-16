@@ -14,7 +14,7 @@ import com.floatingwindow.views.LeBaseView;
 public class LeHomeView extends LeBaseView {
 
     private FrameLayout fl_content;
-    private TextView tv_home_name;
+    private TextView tv_home_name, tv_home_conent;
     private LeWindowInfo windowInfo;
     private int position;
 
@@ -58,7 +58,10 @@ public class LeHomeView extends LeBaseView {
         super.initView();
         fl_content = findView(R.id.fl_content);
         tv_home_name = findView(R.id.tv_home_name);
+        tv_home_conent = findView(R.id.tv_home_conent);
         tv_home_name.setText("第" + position + "个页面");
+        tv_home_conent.setText("第" + position + "个页面");
+        fl_content.setAlpha((float) (0.2*(position+1)));
         fl_content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
