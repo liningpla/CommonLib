@@ -42,7 +42,7 @@ public class MyMultiView extends FrameLayout {
 
     private void init(Context context) {
         mContext = context;
-        mScreenHeight = getScreenSize(mContext).heightPixels;
+        mScreenHeight = Utils.getScreenHeight(mContext);
         mScroller = new OverScroller(mContext);
         ViewConfiguration config = ViewConfiguration.get(context);
         mTouchSlop = config.getScaledPagingTouchSlop();
@@ -88,33 +88,23 @@ public class MyMultiView extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d(TAG, "widthMeasureSpec " + widthMeasureSpec);
-        Log.d(TAG, "heightMeasureSpec " + heightMeasureSpec);
         /***自身宽*/
         int measureSelfWidth = measureRealWidth(widthMeasureSpec);
         int measureSelfHeight = MeasureSpec.getSize(heightMeasureSpec);
-        Log.d(TAG, "widthMeasure " + measureSelfWidth);
-        Log.d(TAG, "widthMode " + MeasureSpec.getMode(widthMeasureSpec));
-        Log.d(TAG, "heightMeasure " + MeasureSpec.getSize(heightMeasureSpec));
-        Log.d(TAG, "heightMode " + MeasureSpec.getMode(heightMeasureSpec));
-
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View childView = getChildAt(i);
             measureChild(childView, widthMeasureSpec, heightMeasureSpec);
         }
         //设置viewGroup的宽高，也可以在onlayout中通过layoutParams设置
+
         totalHeight = mScreenHeight + childCount * offset;
         setMeasuredDimension(measureSelfWidth, totalHeight);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.d(TAG, "onLayout left " + l);
-        Log.d(TAG, "onLayout top " + t);
-        Log.d(TAG, "onLayout right " + r);
-        Log.d(TAG, "onLayout bottom " + b);
-        Log.d(TAG, "onLayout heightPixels " + getScreenSize(mContext).heightPixels);
+        Log.d(TAG, "onLayout left:" + l+" top:" + t+" right:"+r+" bottom:"+b+" height:"+mScreenHeight);
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View childView = getChildAt(i);
@@ -199,10 +189,9 @@ public class MyMultiView extends FrameLayout {
     }
     private void completeMove(float velocityY) {
         int mScrollY = getScrollY();
-        Log.d(TAG, "computeScroll  mScrollY:"+mScrollY+"  velocityY:"+velocityY+"  totalHeight:"+totalHeight);
+        Log.d(TAG, "completeMove  mScrollY:"+mScrollY+"  currY:"+mScroller.getCurrY()+"  velocityY:"+velocityY+"  totalHeight:"+totalHeight);
         mScroller.fling(0, mScrollY, 0, (int) (velocityY * 2f), 0, 0, 0, totalHeight);
         postInvalidate();
-        postInvalidateOnAnimation();
     }
     /**
      */
@@ -212,6 +201,7 @@ public class MyMultiView extends FrameLayout {
         if (mScroller.computeScrollOffset()) {
             int oldY = getScrollY();
             int y = mScroller.getCurrY();
+//            Log.d(TAG, "computeScroll  oldY:"+oldY+"  y:"+y);
             if (oldY != y) {
                 scrollTo(0, y);
             }
@@ -229,18 +219,7 @@ public class MyMultiView extends FrameLayout {
         }
         return scrollRange;
     }
-    /**
-     * 获取屏幕大小，这个可以用一个常量不用每次都获取
-     *
-     * @param context
-     * @return
-     */
-    public static DisplayMetrics getScreenSize(Context context) {
-        DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(metrics);
-        return metrics;
-    }
+
     private void recycleVelocityTracker() {
         if (mVelocityTracker != null) {
             mVelocityTracker.recycle();
