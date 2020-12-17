@@ -72,7 +72,7 @@ public class MyMultiView extends ScrollView {
         if (myParent != null && view != null) {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(mScreenWidth, mScreenHeight);
             myParent.addView(view, params);
-            fullScroll(ScrollView.FOCUS_DOWN);//滚动到底部
+//            fullScroll(ScrollView.FOCUS_DOWN);//滚动到底部
         }
     }
 
@@ -175,6 +175,7 @@ public class MyMultiView extends ScrollView {
             for (int i = 0; i < childCount; i++) {
                 View childView = getChildAt(i);
                 int currY = (int) childView.getY();
+                int firstY = (int) getChildAt(0).getY();
                 int beforeY = 0;
                 if (i - 1 >= 0) {
                     beforeY = (int) getChildAt(i - 1).getY();
@@ -192,7 +193,7 @@ public class MyMultiView extends ScrollView {
                         }
                     }
                 }
-                Log.d(TAG, "MyParent transformPage currY:" + currY + " beforeY:" + beforeY + " baseTop:" + baseTop + " i-->" + i);
+                Log.d(TAG, "MyParent transformPage firstY:"+firstY+" currY:" + currY + " beforeY:" + beforeY + " baseTop:" + baseTop + " i-->" + i);
             }
         }
     }
