@@ -43,7 +43,7 @@ public class MyMultiView extends ScrollView {
         this.context = context;
         ViewConfiguration config = ViewConfiguration.get(context);
         mTouchSlop = config.getScaledPagingTouchSlop();
-        setFillViewport(true);
+        setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
         mScreenHeight = Utils.getScreenHeight(context);
         mScreenWidth = Utils.getScreenWidth(context);
         offset = Utils.dip2px(context, 180);
@@ -84,6 +84,11 @@ public class MyMultiView extends ScrollView {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+    }
+
+    @Override
+    public void fling(int velocityY) {
+        super.fling(velocityY/2);
     }
 
     private class MyParent extends ViewGroup {
