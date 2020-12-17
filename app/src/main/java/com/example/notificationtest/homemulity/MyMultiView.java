@@ -207,9 +207,7 @@ public class MyMultiView extends ScrollView {
 
                         }
                     }
-                    if(beforeY <= i * baseTop){
-                        childView.setY(currY - deltaY);
-                    }
+                    Log.d(TAG, "MyParent transformPage currY:" + currY + " beforeY:" + beforeY + " deltaY:" + deltaY + " i-->" + i);
                 }
             }
         }
