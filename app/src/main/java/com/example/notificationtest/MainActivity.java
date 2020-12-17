@@ -18,6 +18,7 @@ import com.common.BaseAcivity;
 import com.common.utils.SDLog;
 import com.example.notificationtest.activity.SocketActivity;
 import com.example.notificationtest.biz.GooglePlayBiz;
+import com.example.notificationtest.homemulity.MMultiWindowActivity;
 import com.example.notificationtest.homemulity.MultiWindowActivity;
 import com.example.notificationtest.homemulity.MyMultiWindowActivity;
 import com.example.notificationtest.homemulity.OldMultiWindowActivity;
@@ -161,7 +162,7 @@ public class MainActivity extends BaseAcivity {
 //        YLyGVnK7A5KO
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
 
-        startActivity(new Intent(this, MyMultiWindowActivity.class));
+        startActivity(new Intent(this, MMultiWindowActivity.class));
     }
 
     public void intentShort(View view){
