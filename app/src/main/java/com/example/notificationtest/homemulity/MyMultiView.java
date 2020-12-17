@@ -1,12 +1,8 @@
 package com.example.notificationtest.homemulity;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -60,9 +56,6 @@ public class MyMultiView extends ScrollView {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-//        int rawY = (int) getY();
-//        int scollY = getScrollY();
-//        Log.d(TAG, "onScrollChanged l:" + l+" oldl:" +oldl+"  t:"+ t+" oldt:"+oldt+"rawY:" + rawY+" scollY:" +scollY);
     }
 
     @Override
@@ -71,7 +64,6 @@ public class MyMultiView extends ScrollView {
         if (myParent != null) {
             int deltaY = lastScrollY - scrollY;
             myParent.transformPage(deltaY);
-            Log.d(TAG, "onOverScrolled  clampedX:" + clampedX + " clampedY:" + clampedY);
         }
         lastScrollY = scrollY;
     }
@@ -80,7 +72,7 @@ public class MyMultiView extends ScrollView {
         if (myParent != null && view != null) {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(mScreenWidth, mScreenHeight);
             myParent.addView(view, params);
-//            fullScroll(ScrollView.FOCUS_DOWN);//滚动到底部
+            fullScroll(ScrollView.FOCUS_DOWN);//滚动到底部
         }
     }
 
@@ -92,7 +84,6 @@ public class MyMultiView extends ScrollView {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        Log.d(TAG, "MyMultiView onLayout left:" + l + " top:" + t + " right:" + r + " bottom:" + b);
     }
 
     private class MyParent extends ViewGroup {
@@ -174,7 +165,7 @@ public class MyMultiView extends ScrollView {
             for (int i = 0; i < childCount; i++) {
                 View childView = getChildAt(i);
                 baseTop = i * mScreenHeight - i * (mScreenHeight - offset);
-                childView.layout(l, baseTop,r, baseTop + mScreenHeight);
+                childView.layout(l, baseTop, r, baseTop + mScreenHeight);
                 Log.d(TAG, "MyParent onLayout testTop:" + baseTop);
             }
         }
@@ -183,32 +174,25 @@ public class MyMultiView extends ScrollView {
             int childCount = getChildCount();
             for (int i = 0; i < childCount; i++) {
                 View childView = getChildAt(i);
-                View beforeView;//前一个view
                 int currY = (int) childView.getY();
                 int beforeY = 0;
                 if (i - 1 >= 0) {
-                    beforeView = getChildAt(i - 1);
-                    beforeY = (int) beforeView.getY();
+                    beforeY = (int) getChildAt(i - 1).getY();
                 }
                 if (i == 0) {
                     childView.setTranslationY(currY - deltaY);
-                }else{
+                } else {
                     if (deltaY < 0) {//上滑
                         if (currY <= beforeY) {
                             childView.setY(currY - deltaY);
                         }
                     } else {//下拉
-                        if(i == 1){
-                            if(beforeY <= i * baseTop){
-                                childView.setY(currY - deltaY);
-                            }
-                        }
-                        if(i == 2){
-
+                        if (beforeY <= baseTop) {
+                            childView.setY(currY - deltaY);
                         }
                     }
-                    Log.d(TAG, "MyParent transformPage currY:" + currY + " beforeY:" + beforeY + " deltaY:" + deltaY + " i-->" + i);
                 }
+                Log.d(TAG, "MyParent transformPage currY:" + currY + " beforeY:" + beforeY + " baseTop:" + baseTop + " i-->" + i);
             }
         }
     }
