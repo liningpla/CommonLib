@@ -50,11 +50,12 @@ public class MultiWindowActivity extends ComponentActivity {
     }
     private void initView() {
         homePager = findViewById(R.id.home_pager);
-        transformer = new OverlayTransformer(homePager, 5);
+        transformer = new OverlayTransformer(homePager, 3);
         pagerAdapter = new HomePagerAdapter(this, windowInfos);
         homePager.setAdapter(pagerAdapter);
-        homePager.setOffscreenPageLimit(10);
-        homePager.setNoScroll(true);
+        homePager.setCurrentItem(100000); //伪无限循环
+        homePager.setScroll(true);
+        homePager.setPageTransformer(true, transformer);
         homePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -104,11 +105,11 @@ public class MultiWindowActivity extends ComponentActivity {
             if(isMultiType){
 //                homePager.setScaleX(0.8f);
 //                homePager.setScaleY(0.8f);
-                homePager.setNoScroll(true);
-                homePager.setPageTransformer(true, transformer);
+//                homePager.setNoScroll(true);
+//                homePager.setPageTransformer(true, transformer);
             }else{
-                homePager.setNoScroll(false);
-                homePager.setPageTransformer(false, null);
+//                homePager.setNoScroll(false);
+//                homePager.setPageTransformer(false, null);
 //                homePager.setScaleX(1.0f);
 //                homePager.setScaleY(1.0f);
             }
