@@ -45,6 +45,8 @@ public class MyMultiWindowActivity extends ComponentActivity {
     }
     private void initView() {
         myScrollView = findViewById(R.id.home_scrollview);
+        myScrollView.setScaleX(0.8f);
+        myScrollView.setScaleY(0.8f);
         btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -159,7 +159,7 @@ public class MyMultiView extends ScrollView {
                 measureChild(childView, widthMeasureSpec, heightMeasureSpec);
             }
             //设置viewGroup的宽高，也可以在onlayout中通过layoutParams设置
-            totalHeight = mScreenHeight + childCount * offset;
+            totalHeight = mScreenHeight + (childCount - 1) * offset;
             setMeasuredDimension(measureSelfWidth, totalHeight);
             Log.d(TAG, "onMeasure totalHeight:" + totalHeight);
         }
@@ -188,15 +188,15 @@ public class MyMultiView extends ScrollView {
                 if (i == 0) {
                     childView.setTranslationY(currY - deltaY);
                 } else {
-                    if (deltaY < 0) {//上滑
-                        if (currY <= beforeY) {
-                            childView.setY(currY - deltaY);
-                        }
-                    } else {//下拉
-                        if (beforeY <= baseTop) {
-                            childView.setY(currY - deltaY);
-                        }
-                    }
+//                    if (deltaY < 0) {//上滑
+//                        if (currY <= beforeY) {
+//                            childView.setY(currY - deltaY);
+//                        }
+//                    } else {//下拉
+//                        if (beforeY <= baseTop) {
+//                            childView.setY(currY - deltaY);
+//                        }
+//                    }
                 }
                 Log.d(TAG, "MyParent transformPage firstY:"+firstY+" currY:" + currY + " beforeY:" + beforeY + " baseTop:" + baseTop + " i-->" + i);
             }

@@ -70,4 +70,13 @@ public class LeHomeView extends LeBaseView {
         });
         Log.i(MultiWindowActivity.TAG, "----initView position = " + position);
     }
+
+    public void onBind(LeWindowInfo data, int position){
+        this.windowInfo = data;
+        this.position = data.position;
+        if(tv_home_name != null && tv_home_conent != null){
+            tv_home_name.setText("第" + position + "个页面");
+            tv_home_conent.setText("第" + position + "个页面");
+        }
+    }
 }

@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
 import com.example.notificationtest.biz.GooglePlayBiz;
+import com.example.notificationtest.cardstack.ui.CardMainActivity;
+import com.example.notificationtest.cardstack.ui.CardstackActivity;
 import com.example.notificationtest.homemulity.MultiWindowActivity;
 import com.example.notificationtest.homemulity.MyMultiWindowActivity;
 import com.example.notificationtest.homemulity.OldMultiWindowActivity;
@@ -158,7 +160,7 @@ public class MainActivity extends BaseAcivity {
 //        YLyGVnK7A5KO
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
 
-        startActivity(new Intent(this, MultiWindowActivity.class));
+        startActivity(new Intent(this, CardMainActivity.class));
     }
 
     public void intentShort(View view){
