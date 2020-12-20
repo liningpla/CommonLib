@@ -6,7 +6,9 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.notificationtest.R;
+import com.example.notificationtest.cardstack.AllMoveDownAnimatorAdapter;
 import com.example.notificationtest.cardstack.CardStackView;
+import com.example.notificationtest.cardstack.UpDownAnimatorAdapter;
 import com.example.notificationtest.cardstack.UpDownStackAnimatorAdapter;
 
 import java.util.Arrays;
