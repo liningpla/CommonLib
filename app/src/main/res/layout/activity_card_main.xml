@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
     <com.example.notificationtest.cardstack.CardStackView
         android:id="@+id/stackview_main"
         android:layout_width="match_parent"
@@ -10,4 +13,25 @@
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:paddingTop="2dp"/>
-</merge>
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        android:gravity="center">
+        <Button
+            android:id="@+id/btn_ad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@color/color_1"
+            android:text="添加"/>
+        <Button
+            android:id="@+id/btn_expand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="多窗口"/>
+    </LinearLayout>
+
+</FrameLayout>

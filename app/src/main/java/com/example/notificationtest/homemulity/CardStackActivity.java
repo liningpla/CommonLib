@@ -57,7 +57,6 @@ public class CardStackActivity extends AppCompatActivity implements CardStackVie
         mTestStackAdapter = new TestStackAdapter(this);
         mStackView.setAdapter(mTestStackAdapter);
 
-
         new Handler().postDelayed(
                 new Runnable() {
                     @Override

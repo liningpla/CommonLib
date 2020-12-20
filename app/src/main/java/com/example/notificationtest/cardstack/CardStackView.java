@@ -63,6 +63,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
 
     private ScrollDelegate mScrollDelegate;
     private ItemExpendListener mItemExpendListener;
+    private boolean expandType;//true是扩展类型，false是滑动类型
 
     public CardStackView(Context context) {
         this(context, null);
@@ -205,6 +206,10 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
         refreshView();
     }
 
+    public void setExpandType(boolean expandType){
+        this.expandType = expandType;
+    }
+
     public void setAnimationType(int type) {
         AnimatorAdapter animatorAdapter;
         switch (type) {
@@ -288,6 +293,9 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
     }
 
     public void performItemClick(ViewHolder viewHolder) {
+        if(expandType){
+            return;
+        }
         doCardClickAnimation(viewHolder, viewHolder.position);
     }
 

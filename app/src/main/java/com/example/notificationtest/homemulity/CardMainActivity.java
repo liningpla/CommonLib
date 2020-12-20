@@ -2,6 +2,8 @@ package com.example.notificationtest.homemulity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,6 +33,7 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
     };
     private CardStackView mStackView;
     private CardStackAdapter mTestStackAdapter;
+    private Button btn_ad, btn_expand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,21 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
         setContentView(R.layout.activity_card_main);
 
         mStackView = (CardStackView) findViewById(R.id.stackview_main);
+        btn_ad = findViewById(R.id.btn_ad);
+        btn_ad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAddClick();
+            }
+        });
+        btn_expand = findViewById(R.id.btn_expand);
+        btn_expand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onExpandClick();
+            }
+        });
+
         mStackView.setItemExpendListener(this);
         mTestStackAdapter = new CardStackAdapter(this);
         mStackView.setAdapter(mTestStackAdapter);
@@ -46,13 +64,18 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
 //        mStackView.setAnimatorAdapter(new AllMoveDownAnimatorAdapter(mStackView));
 //        mStackView.setAnimatorAdapter(new UpDownAnimatorAdapter(mStackView));
         mStackView.setAnimatorAdapter(new UpDownStackAnimatorAdapter(mStackView));
-        mStackView.setSelectPosition(5);
-        mStackView.updateSelectPosition(5);
     }
 
     @Override
     public void onItemExpend(boolean expend) {
         Log.i(LeCardView.TAG, "--Activity-onItemExpend-expend = " + expend);
+    }
+
+    public void onAddClick(){
+        mStackView.setExpandType(false);
+    }
+    public void onExpandClick(){
+        mStackView.setExpandType(true);
     }
 }
 
