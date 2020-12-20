@@ -17,6 +17,7 @@ import com.common.BaseAcivity;
 import com.common.utils.SDLog;
 import com.example.notificationtest.biz.GooglePlayBiz;
 import com.example.notificationtest.homemulity.CardMainActivity;
+import com.example.notificationtest.homemulity.CardStackActivity;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
 import com.lenove.httplibrary.OkGoManager;
@@ -166,12 +167,13 @@ public class MainActivity extends BaseAcivity {
         ContextManager.intentUri(this, "push://push.com/user_center");
     }
     public void intentVideo(View view){
-        ContextManager.intentUri(this, "push://push.com/video_home");
-
+//        ContextManager.intentUri(this, "push://push.com/video_home");
+        startActivity(new Intent(this, CardStackActivity.class));
     }
     public void intentHome(View view){
         ContextManager.intentUri(this, "push://push.com/news_home");
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

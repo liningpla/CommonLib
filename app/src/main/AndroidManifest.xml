@@ -32,6 +32,8 @@
         <activity android:name="com.example.notificationtest.oldmutil.OldMultiWindowActivity"></activity>
         <activity android:name="com.example.notificationtest.oldmutil.MMultiWindowActivity"></activity>
         <activity android:name="com.example.notificationtest.homemulity.CardMainActivity"></activity>
+        <activity android:name="com.example.notificationtest.homemulity.CardStackActivity"></activity>
+
 
         <service android:name=".services.MyJobService"
                 android:permission="android.permission.BIND_JOB_SERVICE"

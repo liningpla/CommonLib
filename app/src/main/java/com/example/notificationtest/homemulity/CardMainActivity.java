@@ -1,13 +1,12 @@
 package com.example.notificationtest.homemulity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.notificationtest.R;
-import com.example.notificationtest.cardstack.AllMoveDownAnimatorAdapter;
 import com.example.notificationtest.cardstack.CardStackView;
-import com.example.notificationtest.cardstack.UpDownAnimatorAdapter;
 import com.example.notificationtest.cardstack.UpDownStackAnimatorAdapter;
 
 import java.util.Arrays;
@@ -29,7 +28,7 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
             R.color.color_10,
     };
     private CardStackView mStackView;
-    private TestStackAdapter mTestStackAdapter;
+    private CardStackAdapter mTestStackAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +37,20 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
 
         mStackView = (CardStackView) findViewById(R.id.stackview_main);
         mStackView.setItemExpendListener(this);
-        mTestStackAdapter = new TestStackAdapter(this);
+        mTestStackAdapter = new CardStackAdapter(this);
         mStackView.setAdapter(mTestStackAdapter);
         mTestStackAdapter.updateData(Arrays.asList(TEST_DATAS));
 
-        mStackView.setAnimatorAdapter(new AllMoveDownAnimatorAdapter(mStackView));
-        mStackView.setAnimatorAdapter(new UpDownAnimatorAdapter(mStackView));
+//        mStackView.setAnimatorAdapter(new AllMoveDownAnimatorAdapter(mStackView));
+//        mStackView.setAnimatorAdapter(new UpDownAnimatorAdapter(mStackView));
         mStackView.setAnimatorAdapter(new UpDownStackAnimatorAdapter(mStackView));
+        mStackView.setSelectPosition(5);
+        mStackView.updateSelectPosition(5);
     }
 
     @Override
     public void onItemExpend(boolean expend) {
+        Log.i(LeCardView.TAG, "--Activity-onItemExpend-expend = " + expend);
     }
 }
 
