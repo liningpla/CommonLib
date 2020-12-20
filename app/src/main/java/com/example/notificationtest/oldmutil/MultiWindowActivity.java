@@ -1,4 +1,4 @@
-package com.example.notificationtest.homemulity;
+package com.example.notificationtest.oldmutil;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.activity.ComponentActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import com.common.utils.Utils;
 import com.example.notificationtest.R;
@@ -17,11 +18,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MMultiWindowActivity extends ComponentActivity {
+public class MultiWindowActivity extends ComponentActivity {
     public static final String TAG = "MultiMain";
 
-    private List<LeHomeView> homeViews = new ArrayList<>();
-    private MMultiView home_multiview;
+    private List<LeWindowInfo> windowInfos = new ArrayList<>();
+    private HomeViewPager homePager;
+    private HomePagerAdapter pagerAdapter;
+    private OverlayTransformer transformer;
 
 
     private Button btn_add, btn_show;
@@ -32,19 +35,38 @@ public class MMultiWindowActivity extends ComponentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_window);
+        initData();
         initView();
     }
     private void initData() {
         screenWidth = Utils.getScreenWidth(this);
         screenHeight = Utils.getScreenHeight(this);
-        LeHomeView leHomeView = LeHomeView.buildFragemnt(home_multiview, new LeWindowInfo(0));
-        leHomeView.addToParent();
-        homeViews.add(leHomeView);
+        LeWindowInfo windowInfo = new LeWindowInfo();
+        windowInfos.add(windowInfo);
         currentIndex = 0;
         Log.i(TAG, "----initData------");
     }
     private void initView() {
-        home_multiview = findViewById(R.id.home_multiview);
+        homePager = findViewById(R.id.home_pager);
+        transformer = new OverlayTransformer(homePager, 3);
+        pagerAdapter = new HomePagerAdapter(this, windowInfos);
+        homePager.setAdapter(pagerAdapter);
+        homePager.setCurrentItem(100000); //伪无限循环
+        homePager.setScroll(true);
+        homePager.setPageTransformer(true, transformer);
+        homePager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageSelected(int position) {
+                currentIndex = position;
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,14 +84,14 @@ public class MMultiWindowActivity extends ComponentActivity {
                 updateMultiType();
             }
         });
-        initData();
     }
     private void addWindow(){
-        if(homeViews != null){
-            currentIndex = homeViews.size();
-            LeHomeView leHomeView = LeHomeView.buildFragemnt(home_multiview, new LeWindowInfo(currentIndex));
-            leHomeView.addToParent();
-            homeViews.add(leHomeView);
+        if(windowInfos != null){
+            currentIndex = windowInfos.size() - 1;
+            LeWindowInfo windowInfo = new LeWindowInfo(currentIndex);
+            windowInfos.add(windowInfo);
+            pagerAdapter.notifyChange(windowInfos);
+            homePager.setCurrentItem(currentIndex);
             Log.i(TAG, "----addWindow currentIndex = " + currentIndex);
         }
     }
@@ -77,10 +99,20 @@ public class MMultiWindowActivity extends ComponentActivity {
 
     /**更新多窗口的展示*/
     private void updateMultiType(){
+        if(homePager != null && transformer != null){
             if(isMultiType){
+//                homePager.setScaleX(0.8f);
+//                homePager.setScaleY(0.8f);
+//                homePager.setNoScroll(true);
+//                homePager.setPageTransformer(true, transformer);
             }else{
+//                homePager.setNoScroll(false);
+//                homePager.setPageTransformer(false, null);
+//                homePager.setScaleX(1.0f);
+//                homePager.setScaleY(1.0f);
             }
             Log.i(TAG, "----updateMultiType isMultiType = " + isMultiType);
+        }
     }
 
     /**

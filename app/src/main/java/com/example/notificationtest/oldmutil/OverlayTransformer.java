@@ -1,12 +1,8 @@
-package com.example.notificationtest.homemulity;
+package com.example.notificationtest.oldmutil;
 
-import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import androidx.viewpager.widget.ViewPager;
-
-import com.common.utils.Utils;
 
 /**
  * 叠加卡片效果

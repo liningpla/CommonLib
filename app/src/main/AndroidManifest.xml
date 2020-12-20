@@ -27,12 +27,11 @@
 
 
         <activity android:name="com.example.notificationtest.pluginloader.PluginActivity"></activity>
-        <activity android:name="com.example.notificationtest.homemulity.MultiWindowActivity"></activity>
-        <activity android:name="com.example.notificationtest.homemulity.MyMultiWindowActivity"></activity>
-        <activity android:name="com.example.notificationtest.homemulity.OldMultiWindowActivity"></activity>
-        <activity android:name="com.example.notificationtest.homemulity.MMultiWindowActivity"></activity>
-        <activity android:name="com.example.notificationtest.cardstack.ui.CardstackActivity"></activity>
-        <activity android:name="com.example.notificationtest.cardstack.ui.CardMainActivity"></activity>
+        <activity android:name="com.example.notificationtest.oldmutil.MultiWindowActivity"></activity>
+        <activity android:name="com.example.notificationtest.oldmutil.MyMultiWindowActivity"></activity>
+        <activity android:name="com.example.notificationtest.oldmutil.OldMultiWindowActivity"></activity>
+        <activity android:name="com.example.notificationtest.oldmutil.MMultiWindowActivity"></activity>
+        <activity android:name="com.example.notificationtest.homemulity.CardMainActivity"></activity>
 
         <service android:name=".services.MyJobService"
                 android:permission="android.permission.BIND_JOB_SERVICE"

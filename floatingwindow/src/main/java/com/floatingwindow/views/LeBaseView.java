@@ -26,7 +26,7 @@ public class LeBaseView implements LifecycleOwner {
     public LeBaseView(Context context, ViewGroup parentView, int layoutId) {
         this.parentView = parentView;
         mContext = context;
-        contentView = LayoutInflater.from(mContext).inflate(layoutId, null);
+        contentView = LayoutInflater.from(mContext).inflate(layoutId, parentView, false);
         setAttachStateChangeListener();
     }
 

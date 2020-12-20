@@ -1,4 +1,4 @@
-package com.example.notificationtest.cardstack.ui;
+package com.example.notificationtest.homemulity;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +14,7 @@ import com.example.notificationtest.cardstack.AllMoveDownAnimatorAdapter;
 import com.example.notificationtest.cardstack.CardStackView;
 import com.example.notificationtest.cardstack.UpDownAnimatorAdapter;
 import com.example.notificationtest.cardstack.UpDownStackAnimatorAdapter;
+import com.example.notificationtest.homemulity.TestStackAdapter;
 
 import java.util.Arrays;
 

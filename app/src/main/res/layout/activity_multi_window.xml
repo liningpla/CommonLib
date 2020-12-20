@@ -5,22 +5,22 @@
     android:background="@color/cardview_dark_background"
     >
 
-    <com.example.notificationtest.homemulity.MyMultiView
+    <com.example.notificationtest.oldmutil.MyMultiView
         android:id="@+id/home_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-    </com.example.notificationtest.homemulity.MyMultiView>
+    </com.example.notificationtest.oldmutil.MyMultiView>
 
-    <com.example.notificationtest.homemulity.MMultiView
+    <com.example.notificationtest.oldmutil.MMultiView
         android:id="@+id/home_multiview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
         >
-    </com.example.notificationtest.homemulity.MMultiView>
+    </com.example.notificationtest.oldmutil.MMultiView>
 
-    <com.example.notificationtest.homemulity.HomeViewPager
+    <com.example.notificationtest.oldmutil.HomeViewPager
         android:id="@+id/home_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

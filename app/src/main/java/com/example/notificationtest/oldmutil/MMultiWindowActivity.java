@@ -1,4 +1,4 @@
-package com.example.notificationtest.homemulity;
+package com.example.notificationtest.oldmutil;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -17,11 +17,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyMultiWindowActivity extends ComponentActivity {
+public class MMultiWindowActivity extends ComponentActivity {
     public static final String TAG = "MultiMain";
 
     private List<LeHomeView> homeViews = new ArrayList<>();
-    private MyMultiView myScrollView;
+    private MMultiView home_multiview;
 
 
     private Button btn_add, btn_show;
@@ -37,16 +37,14 @@ public class MyMultiWindowActivity extends ComponentActivity {
     private void initData() {
         screenWidth = Utils.getScreenWidth(this);
         screenHeight = Utils.getScreenHeight(this);
-        LeHomeView leHomeView = LeHomeView.buildFragemnt(myScrollView, new LeWindowInfo(0));
-        myScrollView.addContent(leHomeView.contentView);
+        LeHomeView leHomeView = LeHomeView.buildFragemnt(home_multiview, new LeWindowInfo(0));
+        leHomeView.addToParent();
         homeViews.add(leHomeView);
         currentIndex = 0;
         Log.i(TAG, "----initData------");
     }
     private void initView() {
-        myScrollView = findViewById(R.id.home_scrollview);
-        myScrollView.setScaleX(0.8f);
-        myScrollView.setScaleY(0.8f);
+        home_multiview = findViewById(R.id.home_multiview);
         btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,8 +67,8 @@ public class MyMultiWindowActivity extends ComponentActivity {
     private void addWindow(){
         if(homeViews != null){
             currentIndex = homeViews.size();
-            LeHomeView leHomeView = LeHomeView.buildFragemnt(myScrollView, new LeWindowInfo(currentIndex));
-            myScrollView.addContent(leHomeView.contentView);
+            LeHomeView leHomeView = LeHomeView.buildFragemnt(home_multiview, new LeWindowInfo(currentIndex));
+            leHomeView.addToParent();
             homeViews.add(leHomeView);
             Log.i(TAG, "----addWindow currentIndex = " + currentIndex);
         }
