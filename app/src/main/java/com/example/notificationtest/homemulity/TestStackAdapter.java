@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat;
 import com.example.notificationtest.R;
 import com.example.notificationtest.cardstack.CardStackView;
 import com.example.notificationtest.cardstack.StackAdapter;
-import com.example.notificationtest.homemulity.LeCardView;
 
 public class TestStackAdapter extends StackAdapter<Integer> {
 
@@ -21,15 +20,14 @@ public class TestStackAdapter extends StackAdapter<Integer> {
 
     @Override
     public void bindView(Integer data, int position, CardStackView.ViewHolder holder) {
-        ColorItemViewHolder h = (ColorItemViewHolder) holder;
+        CardMainHolder h = (CardMainHolder) holder;
         h.onBind(data, position);
     }
 
     @Override
     protected CardStackView.ViewHolder onCreateView(ViewGroup parent, int viewType) {
-//        View view = getLayoutInflater().inflate(R.layout.list_card_item, parent, false);
-        View view = LeCardView.buildFragemnt(parent).contentView;
-        return new ColorItemViewHolder(view);
+        LeCardView leCardView = LeCardView.buildFragemnt(parent);
+        return new CardMainHolder(leCardView);
     }
 
     @Override
@@ -37,15 +35,16 @@ public class TestStackAdapter extends StackAdapter<Integer> {
         return 0;
     }
 
-    static class ColorItemViewHolder extends CardStackView.ViewHolder {
+    static class CardMainHolder extends CardStackView.ViewHolder {
+        View contentView;
         View mLayout;
-        View mContainerContent;
         TextView mTextTitle;
 
-        public ColorItemViewHolder(View view) {
-            super(view);
-            mLayout = view.findViewById(R.id.frame_list_card_item);
-            mTextTitle = (TextView) view.findViewById(R.id.text_list_card_title);
+        public CardMainHolder(LeCardView leCardView) {
+            super(leCardView.contentView);
+            contentView = leCardView.contentView;
+            mLayout = contentView.findViewById(R.id.frame_list_card_item);
+            mTextTitle = (TextView) contentView.findViewById(R.id.text_list_card_title);
         }
 
         @Override
@@ -56,6 +55,5 @@ public class TestStackAdapter extends StackAdapter<Integer> {
             mLayout.getBackground().setColorFilter(ContextCompat.getColor(getContext(), data), PorterDuff.Mode.SRC_IN);
             mTextTitle.setText(String.valueOf(position));
         }
-
     }
 }

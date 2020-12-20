@@ -6,11 +6,10 @@ import android.view.ViewGroup;
 
 import com.example.notificationtest.R;
 import com.example.notificationtest.oldmutil.LeWindowInfo;
-import com.example.notificationtest.oldmutil.MultiWindowActivity;
 import com.floatingwindow.views.LeBaseView;
 
 public class LeCardView extends LeBaseView {
-
+    public static final String TAG = CardMainActivity.TAG;
     private LeWindowInfo windowInfo;
     private int position;
     public static LeCardView buildFragemnt(ViewGroup parent, LeWindowInfo windowInfo) {
@@ -40,7 +39,7 @@ public class LeCardView extends LeBaseView {
     @Override
     public void initView() {
         super.initView();
-        Log.i(MultiWindowActivity.TAG, "----initView position = " + position);
+        Log.i(TAG, "----initView position = " + position);
     }
 
     public void onBind(LeWindowInfo data, int position){
