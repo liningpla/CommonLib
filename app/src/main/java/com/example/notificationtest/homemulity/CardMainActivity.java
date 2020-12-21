@@ -8,17 +8,17 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.notificationtest.R;
-import com.example.notificationtest.cardstack.AllMoveDownAnimatorAdapter;
 import com.example.notificationtest.cardstack.CardStackView;
-import com.example.notificationtest.cardstack.UpDownAnimatorAdapter;
 import com.example.notificationtest.cardstack.UpDownStackAnimatorAdapter;
+import com.example.notificationtest.oldmutil.LeWindowInfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class CardMainActivity extends AppCompatActivity implements CardStackView.ItemExpendListener {
 
     public static final String TAG = "MultiWindow";
-
     public static Integer[] TEST_DATAS = new Integer[]{
             R.color.color_1,
             R.color.color_2,
@@ -34,6 +34,7 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
     private CardStackView mStackView;
     private CardStackAdapter mTestStackAdapter;
     private Button btn_ad, btn_expand;
+    private List<LeWindowInfo> windowInfos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +60,13 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
         mStackView.setItemExpendListener(this);
         mTestStackAdapter = new CardStackAdapter(this);
         mStackView.setAdapter(mTestStackAdapter);
-        mTestStackAdapter.updateData(Arrays.asList(TEST_DATAS));
-
+        List<Integer> datas = Arrays.asList(TEST_DATAS);
+        for(Integer integer:datas){
+            LeWindowInfo windowInfo = new LeWindowInfo();
+            windowInfo.bgColor = integer;
+            windowInfos.add(windowInfo);
+        }
+        mTestStackAdapter.updateData(windowInfos);
 //        mStackView.setAnimatorAdapter(new AllMoveDownAnimatorAdapter(mStackView));
 //        mStackView.setAnimatorAdapter(new UpDownAnimatorAdapter(mStackView));
         mStackView.setAnimatorAdapter(new UpDownStackAnimatorAdapter(mStackView));

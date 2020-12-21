@@ -12,15 +12,16 @@ import androidx.core.content.ContextCompat;
 import com.example.notificationtest.R;
 import com.example.notificationtest.cardstack.CardStackView;
 import com.example.notificationtest.cardstack.StackAdapter;
+import com.example.notificationtest.oldmutil.LeWindowInfo;
 
-public class CardStackAdapter extends StackAdapter<Integer> {
+public class CardStackAdapter extends StackAdapter<LeWindowInfo> {
 
     public CardStackAdapter(Context context) {
         super(context);
     }
 
     @Override
-    public void bindView(Integer data, int position, CardStackView.ViewHolder holder) {
+    public void bindView(LeWindowInfo data, int position, CardStackView.ViewHolder holder) {
         CardMainHolder h = (CardMainHolder) holder;
         h.onBind(data, position);
     }
@@ -51,10 +52,15 @@ public class CardStackAdapter extends StackAdapter<Integer> {
         @Override
         public void onItemExpand(boolean b) {
             Log.i(LeCardView.TAG, "----onItemExpand = " + b);
+            if(b){
+                mLayout.setBackgroundResource(R.drawable.shape_rectangle_no_radius);
+            }else{
+                mLayout.setBackgroundResource(R.drawable.shape_rectangle_with_radius);
+            }
         }
 
-        public void onBind(Integer data, int position) {
-            mLayout.getBackground().setColorFilter(ContextCompat.getColor(getContext(), data), PorterDuff.Mode.SRC_IN);
+        public void onBind(LeWindowInfo data, int position) {
+            mLayout.getBackground().setColorFilter(ContextCompat.getColor(getContext(), data.bgColor), PorterDuff.Mode.SRC_IN);
             mTextTitle.setText(String.valueOf(position));
         }
     }
