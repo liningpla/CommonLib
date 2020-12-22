@@ -78,10 +78,8 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
     }
 
     public void onAddClick(){
-        mStackView.setExpandType(false);
     }
     public void onExpandClick(){
-        mStackView.setExpandType(true);
     }
 }
 

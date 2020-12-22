@@ -63,7 +63,6 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
 
     private ScrollDelegate mScrollDelegate;
     private ItemExpendListener mItemExpendListener;
-    private boolean expandType;//true是扩展类型，false是滑动类型
 
     public CardStackView(Context context) {
         this(context, null);
@@ -90,7 +89,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
         setOverlapGapsCollapse(array.getDimensionPixelSize(R.styleable.CardStackView_stackOverlapGapsCollapse, dp2px(20)));
         setDuration(array.getInt(R.styleable.CardStackView_stackDuration, AnimatorAdapter.ANIMATION_DURATION));
         setAnimationType(array.getInt(R.styleable.CardStackView_stackAnimationType, UP_DOWN_STACK));
-        setNumBottomShow(array.getInt(R.styleable.CardStackView_stackNumBottomShow, 3));
+        setNumBottomShow(array.getInt(R.styleable.CardStackView_stackNumBottomShow, 0));
         array.recycle();
 
         mViewHolders = new ArrayList<>();
@@ -206,9 +205,6 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
         refreshView();
     }
 
-    public void setExpandType(boolean expandType){
-        this.expandType = expandType;
-    }
 
     public void setAnimationType(int type) {
         AnimatorAdapter animatorAdapter;
@@ -293,9 +289,6 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
     }
 
     public void performItemClick(ViewHolder viewHolder) {
-        if(expandType){
-            return;
-        }
         doCardClickAnimation(viewHolder, viewHolder.position);
     }
 

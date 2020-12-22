@@ -21,8 +21,8 @@ public class UpDownStackAnimatorAdapter extends AnimatorAdapter {
             final View child = mCardStackView.getChildAt(i);
             child.clearAnimation();
             if (i > mCardStackView.getSelectPosition() && collapseShowItemCount < mCardStackView.getNumBottomShow()) {
-//                childTop = mCardStackView.getShowHeight() - getCollapseStartTop(collapseShowItemCount); //点击扩展底部预留
-                childTop = mCardStackView.getShowHeight();//点击扩展全屏显示
+                childTop = mCardStackView.getShowHeight() - getCollapseStartTop(collapseShowItemCount); //点击扩展底部预留
+//                childTop = mCardStackView.getShowHeight();//点击扩展全屏显示
                 ObjectAnimator oAnim = ObjectAnimator.ofFloat(child, View.Y, child.getY(), childTop);
                 mSet.play(oAnim);
                 collapseShowItemCount++;
