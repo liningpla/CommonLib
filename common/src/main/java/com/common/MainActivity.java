@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Downer.init().setMultithreadEnabled(true)// 是否支持多线程下载
                       // 线程池大小
                       .setMultithreadPools(1)
-                      .setSupportRange(true)
+                      .setSupportRange(false)
                       // 文件MD5（可选）
                       .setAutoInstallEnabled(true)
                       //覆盖下载
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 通知栏描述（可选）
                 .setDescription("tourCustomer更新通知栏")
                 // 下载链接或更新文档链接
-                .setUrl("http://pvts.bjrcb.com/tourCustomer.apk")
+                .setUrl("http://imtt.dd.qq.com/16891/apk/26B2754677EA904F8A19C82E80605134.apk?fsname=com.shuqi.controller_11.2.7.125_206.apk&csr=a24f")
                 // 下载文件存储路径（可选）
                 .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/qq.apk"))
                 // 文件MD5（可选）
@@ -103,18 +103,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void forceCheckUpdates() {
-//        String url = "http://s9.pstatp.com/package/apk/aweme/app_aweGW_v6.8.0_e140aa5.apk?v=1560868759";
+        String url = "https://8496e715f8c254b4cf90d53453d10e9e.dlied1.cdntips.net/dlied1.qq.com/qqweb/QQ_1/android_apk/Android_8.5.0.5025_537066738.apk?mkey=5fe326f76fcd0d12&f=5807&cip=111.205.43.231&proto=https&access_type=$header_ApolloNet";
         //http://pr1-greentea-test.mbgcdn.lenovo.com.cn/default/2020/08/11/e3a2a3d6-b8a3-4ca4-b707-64fa8ecc3e55.apk
-        String url = "http://pr1-greentea-test.mbgcdn.lenovo.com.cn/default/2020/08/11/e3a2a3d6-b8a3-4ca4-b707-64fa8ecc3e55.apk";
+//        String url = "http://pr1-greentea-test.mbgcdn.lenovo.com.cn/default/2020/08/11/e3a2a3d6-b8a3-4ca4-b707-64fa8ecc3e55.apk";
         Downer.downLoad(new Object()).setIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
                 // 通知栏标题（可选）
-                .setTitle("抖音APP")
+                .setTitle("QQ")
                 // 通知栏描述（可选）
                 .setDescription("更新通知栏")
                 // 下载链接或更新文档链接
                 .setUrl(url)
                 // 下载文件存储路径（可选）
-                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/douyin.apk"))
+                .setStorage(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/QQ.apk"))
                 // 文件MD5（可选）
                 .setMd5(null).execute(MainActivity.this, new DownerCallBack() {
             @Override
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 通知栏描述（可选）
                 .setDescription("更新通知栏")
                 .setMultithreadPools(1)
-                .setSupportRange(false)
+                .setSupportRange(true)
                 // 下载链接或更新文档链接
                 .setUrl("http://dldir1.qq.com/weixin/android/weixin704android1420.apk")
                 // 下载文件存储路径（可选）

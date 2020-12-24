@@ -1,17 +1,24 @@
 package com.example.notificationtest;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
 
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
@@ -67,52 +74,52 @@ public class MainActivity extends BaseAcivity {
 
     int i = 0;
     public void sendChatMsg(View view) {
-//        i++;
-//        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            NotificationChannel channel = manager.getNotificationChannel("chat");
-//            if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
-//                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
-//                intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-//                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel.getId()+i);
-//                startActivity(intent);
-//                Toast.makeText(this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        Notification notification = new NotificationCompat.Builder(this, "chat")
-//                .setContentTitle("收到一条聊天消息")
-//                .setContentText("今天中午吃什么？")
-//                .setWhen(System.currentTimeMillis())
-//                .setSmallIcon(R.drawable.icon)
-//                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
-//                .setAutoCancel(true)
-//                .build();
-//        manager.notify(1, notification);
+        i++;
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = manager.getNotificationChannel("chat");
+            if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
+                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel.getId()+i);
+                startActivity(intent);
+                Toast.makeText(this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
+            }
+        }
+        Notification notification = new NotificationCompat.Builder(this, "chat")
+                .setContentTitle("收到一条聊天消息")
+                .setContentText("今天中午吃什么？")
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.icon)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
+                .setAutoCancel(true)
+                .build();
+        manager.notify(1, notification);
 //                ContextManager.intentUri(this, "push://push.com/news_details?p_url=https://www.qq.com/");
-        ContextManager.intentUri(this, "push://push.com/news_detail?p_url=http://m.uczzd.cn/webapp/webview/article/news.html?app=greentea-iflow&aid=16488175894108642468&cid=100&zzd_from=uc-iflow&uc_param_str=dndseiwifrvesvntgipf&recoid=&readId=&rd_type=reco&previewdl=1/");
+//        ContextManager.intentUri(this, "push://push.com/news_detail?p_url=http://m.uczzd.cn/webapp/webview/article/news.html?app=greentea-iflow&aid=16488175894108642468&cid=100&zzd_from=uc-iflow&uc_param_str=dndseiwifrvesvntgipf&recoid=&readId=&rd_type=reco&previewdl=1/");
 
     }
 
     public void sendSubscribeMsg(View view) {
-//        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//        Notification notification = new NotificationCompat.Builder(MainActivity.this, "subscribe")
-//                .setContentTitle("收到一条订阅消息")
-//                .setContentText("地铁沿线30万商铺抢购中！")
-//                .setWhen(System.currentTimeMillis())
-//                .setSmallIcon(R.drawable.icon)
-//                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
-//                .setAutoCancel(true)
-//                .setNumber(2)
-//                .build();
-//        manager.notify(2, notification);
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notification = new NotificationCompat.Builder(MainActivity.this, "subscribe")
+                .setContentTitle("收到一条订阅消息")
+                .setContentText("地铁沿线30万商铺抢购中！")
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.icon)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
+                .setAutoCancel(true)
+                .setNumber(2)
+                .build();
+        manager.notify(2, notification);
 
-        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.jd.com?");
+//        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://www.jd.com?");
     }
 
     public void intentCommon(View view){
-//        Uri uri= Uri.parse("common://common.com/commonactivity");
-//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-//        startActivity(intent);
+        Uri uri= Uri.parse("common://common.com/commonactivity");
+        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);
@@ -157,7 +164,7 @@ public class MainActivity extends BaseAcivity {
 //        YLyGVnK7A5KO
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
 
-        startActivity(new Intent(this, CardMainActivity.class));
+//        startActivity(new Intent(this, CardMainActivity.class));
     }
 
     public void intentShort(View view){

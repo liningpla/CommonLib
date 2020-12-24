@@ -39,28 +39,28 @@ public class CardStackAdapter extends StackAdapter<LeWindowInfo> {
 
     static class CardMainHolder extends CardStackView.ViewHolder {
         View contentView;
-        View mLayout;
+        View linear_list_card_item;
         TextView mTextTitle;
 
         public CardMainHolder(LeCardView leCardView) {
             super(leCardView.contentView);
             contentView = leCardView.contentView;
-            mLayout = contentView.findViewById(R.id.frame_list_card_item);
+            linear_list_card_item = contentView.findViewById(R.id.linear_list_card_item);
             mTextTitle = (TextView) contentView.findViewById(R.id.text_list_card_title);
         }
 
         @Override
         public void onItemExpand(boolean b) {
             Log.i(LeCardView.TAG, "----onItemExpand = " + b);
-            if(b){
-                mLayout.setBackgroundResource(R.drawable.shape_rectangle_no_radius);
-            }else{
-                mLayout.setBackgroundResource(R.drawable.shape_rectangle_with_radius);
-            }
+//            if(b){
+//                mLayout.setBackgroundResource(R.drawable.shape_rectangle_no_radius);
+//            }else{
+//                mLayout.setBackgroundResource(R.drawable.shape_rectangle_with_radius);
+//            }
         }
 
         public void onBind(LeWindowInfo data, int position) {
-            mLayout.getBackground().setColorFilter(ContextCompat.getColor(getContext(), data.bgColor), PorterDuff.Mode.SRC_IN);
+            linear_list_card_item.getBackground().setColorFilter(ContextCompat.getColor(getContext(), data.bgColor), PorterDuff.Mode.SRC_IN);
             mTextTitle.setText(String.valueOf(position));
         }
     }
