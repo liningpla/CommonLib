@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -86,10 +88,16 @@ public class MainActivity extends BaseAcivity {
                 Toast.makeText(this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
             }
         }
+        Intent intentMian = new Intent(Intent.ACTION_VIEW);
+        intentMian.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+        intentMian.setData(Uri.parse("push://push.com/news_details?p_url=https://www.qq.com/"));
+        intentMian.putExtra("test", "test");
+        PendingIntent pendingWeather = PendingIntent.getActivity(this, 0, intentMian, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(this, "chat")
                 .setContentTitle("收到一条聊天消息")
                 .setContentText("今天中午吃什么？")
                 .setWhen(System.currentTimeMillis())
+                .setContentIntent(pendingWeather)
                 .setSmallIcon(R.drawable.icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
                 .setAutoCancel(true)
@@ -101,10 +109,18 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void sendSubscribeMsg(View view) {
+
+        Intent intentMian = new Intent(Intent.ACTION_VIEW);
+        intentMian.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+        intentMian.setData(Uri.parse("push://push.com/news_details?p_url=https://www.qq.com/"));
+        intentMian.putExtra("test", "test");
+        PendingIntent pendingWeather = PendingIntent.getActivity(this, 0, intentMian, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Notification notification = new NotificationCompat.Builder(MainActivity.this, "subscribe")
                 .setContentTitle("收到一条订阅消息")
                 .setContentText("地铁沿线30万商铺抢购中！")
+                .setContentIntent(pendingWeather)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon))
@@ -117,9 +133,9 @@ public class MainActivity extends BaseAcivity {
     }
 
     public void intentCommon(View view){
-        Uri uri= Uri.parse("common://common.com/commonactivity");
-        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
-        startActivity(intent);
+//        Uri uri= Uri.parse("common://common.com/commonactivity");
+//        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
+//        startActivity(intent);
 
 //        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
 //        ContextManager.intentUri(this, FloatingWindowActivity.URI);
@@ -164,7 +180,7 @@ public class MainActivity extends BaseAcivity {
 //        YLyGVnK7A5KO
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
 
-//        startActivity(new Intent(this, CardMainActivity.class));
+        startActivity(new Intent(this, CardMainActivity.class));
     }
 
     public void intentShort(View view){

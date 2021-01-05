@@ -67,9 +67,8 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
             windowInfos.add(windowInfo);
         }
         mTestStackAdapter.updateData(windowInfos);
-//        mStackView.setAnimatorAdapter(new AllMoveDownAnimatorAdapter(mStackView));
-//        mStackView.setAnimatorAdapter(new UpDownAnimatorAdapter(mStackView));
         mStackView.setAnimatorAdapter(new UpDownStackAnimatorAdapter(mStackView));
+        mStackView.setExpendType(true);
     }
 
     @Override
@@ -78,10 +77,12 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
     }
 
     public void onAddClick(){
-        mStackView.pre();
+//        mStackView.pre();
+        mStackView.setExpendType(true);
     }
     public void onExpandClick(){
-        mStackView.next();
+//        mStackView.next();
+        mStackView.setExpendType(false);
     }
 }
 

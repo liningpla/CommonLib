@@ -33,6 +33,18 @@ public abstract class AnimatorAdapter {
             mSet.end();
     }
 
+    public void itemClick(final CardStackView.ViewHolder viewHolder, int position, boolean isExpendType) {
+        if (mSet != null && mSet.isRunning()) return;
+        initAnimatorSet();
+        if (!isExpendType) {
+            onItemCollapse(viewHolder);
+        } else {
+            onItemExpand(viewHolder, position);
+        }
+        if (mCardStackView.getChildCount() == 1)
+            mSet.end();
+    }
+
     protected abstract void itemExpandAnimatorSet(CardStackView.ViewHolder viewHolder, int position);
 
     protected abstract void itemCollapseAnimatorSet(CardStackView.ViewHolder viewHolder);

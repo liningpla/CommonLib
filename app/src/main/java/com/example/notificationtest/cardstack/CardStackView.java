@@ -16,11 +16,13 @@ import android.view.ViewParent;
 import android.widget.OverScroller;
 
 import com.example.notificationtest.R;
+import com.example.notificationtest.homemulity.LeCardView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CardStackView extends ViewGroup implements ScrollDelegate {
+
 
     private static final int INVALID_POINTER = -1;
     public static final int INVALID_TYPE = -1;
@@ -28,7 +30,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
     public static final int ANIMATION_STATE_END = 1;
     public static final int ANIMATION_STATE_CANCEL = 2;
 
-    private static final String TAG = "CardStackView";
+    private static final String TAG = "MultiWindow";
 
     public static final int ALL_DOWN = 0;
     public static final int UP_DOWN = 1;
@@ -63,6 +65,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
 
     private ScrollDelegate mScrollDelegate;
     private ItemExpendListener mItemExpendListener;
+    private boolean isExpendType;
 
     public CardStackView(Context context) {
         this(context, null);
@@ -153,6 +156,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.i(TAG, "--onLayout l:" + l+"  t:"+t+"  r:"+r+"  b:"+b);
         layoutChild();
     }
 
@@ -235,6 +239,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
     private void refreshView() {
         removeAllViews();
         mViewHolders.clear();
+        mSelectPosition = mStackAdapter.getItemCount() - 1;
         for (int i = 0; i < mStackAdapter.getItemCount(); i++) {
             ViewHolder holder = getViewHolder(i);
             holder.position = i;
@@ -262,6 +267,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG, "--CardStackView----setOnClickListener---");
                 if (mSelectPosition == DEFAULT_SELECT_POSITION) return;
                 performItemClick(mViewHolders.get(mSelectPosition));
             }
@@ -269,14 +275,42 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                performItemClick(holder);
+                Log.i(TAG, "--CardStackView----itemView- setOnClickListener--isExpendType:"+isExpendType);
+                if(!isExpendType){
+                    performItemClick(holder);
+                    isExpendType = !isExpendType;
+                }
             }
         });
     }
 
+    public void setExpendType(boolean isExpend){
+        this.isExpendType = isExpend;
+        performItemClick();
+        Log.i(TAG, "--CardStackView----setExpendType--isExpendType:"+isExpendType);
+    }
+    public boolean isExpendType(){
+        return isExpendType;
+    }
+
+
+    public void performItemClick(){
+        if(mViewHolders != null && mViewHolders.size() > 0){
+            checkContentHeightByParent();
+            for (int i = 0; i < mViewHolders.size(); i ++){
+                ViewHolder viewHolder = mViewHolders.get(i);
+                mAnimatorAdapter.itemClick(viewHolder, i, isExpendType);
+            }
+        }
+    }
     public void next() {
         if (mSelectPosition == DEFAULT_SELECT_POSITION || mSelectPosition == mViewHolders.size() - 1) return;
         performItemClick(mViewHolders.get(mSelectPosition + 1));
+    }
+
+    public void skip(int positon) {
+        if (positon == DEFAULT_SELECT_POSITION || positon == 0) return;
+        performItemClick(mViewHolders.get(positon));
     }
 
     public void pre() {
