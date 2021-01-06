@@ -3,6 +3,7 @@ package com.example.notificationtest.cardstack;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 public abstract class AnimatorAdapter {
@@ -51,6 +52,7 @@ public abstract class AnimatorAdapter {
 
     private void onItemExpand(final CardStackView.ViewHolder viewHolder, int position) {
         final int preSelectPosition = mCardStackView.getSelectPosition();
+        Log.i(CardStackView.TAG, "--onItemExpand----preSelectPosition:"+preSelectPosition+" position:"+position);
         final CardStackView.ViewHolder preSelectViewHolder = mCardStackView.getViewHolder(preSelectPosition);
         if (preSelectViewHolder != null) {
             preSelectViewHolder.onItemExpand(false);

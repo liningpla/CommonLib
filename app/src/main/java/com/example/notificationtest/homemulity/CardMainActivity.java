@@ -69,6 +69,7 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
         mTestStackAdapter.updateData(windowInfos);
         mStackView.setAnimatorAdapter(new UpDownStackAnimatorAdapter(mStackView));
         mStackView.setExpendType(true);
+        mStackView.setCurrPotition(windowInfos.size() - 1);
     }
 
     @Override
@@ -79,6 +80,7 @@ public class CardMainActivity extends AppCompatActivity implements CardStackView
     public void onAddClick(){
 //        mStackView.pre();
         mStackView.setExpendType(true);
+
     }
     public void onExpandClick(){
 //        mStackView.next();

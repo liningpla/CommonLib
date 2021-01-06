@@ -30,7 +30,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
     public static final int ANIMATION_STATE_END = 1;
     public static final int ANIMATION_STATE_CANCEL = 2;
 
-    private static final String TAG = "MultiWindow";
+    public static final String TAG = "MultiWindow";
 
     public static final int ALL_DOWN = 0;
     public static final int UP_DOWN = 1;
@@ -66,6 +66,7 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
     private ScrollDelegate mScrollDelegate;
     private ItemExpendListener mItemExpendListener;
     private boolean isExpendType;
+    public int currPotition;
 
     public CardStackView(Context context) {
         this(context, null);
@@ -293,13 +294,16 @@ public class CardStackView extends ViewGroup implements ScrollDelegate {
         return isExpendType;
     }
 
+    public void setCurrPotition(int currPotition){
+        this.currPotition = currPotition;
+    }
 
     public void performItemClick(){
         if(mViewHolders != null && mViewHolders.size() > 0){
             checkContentHeightByParent();
-            for (int i = 0; i < mViewHolders.size(); i ++){
-                ViewHolder viewHolder = mViewHolders.get(i);
-                mAnimatorAdapter.itemClick(viewHolder, i, isExpendType);
+            if(currPotition >-1 && currPotition < mViewHolders.size()){
+                ViewHolder viewHolder = mViewHolders.get(currPotition);
+                mAnimatorAdapter.itemClick(viewHolder, currPotition, isExpendType);
             }
         }
     }
