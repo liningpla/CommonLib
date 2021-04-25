@@ -5,7 +5,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -25,10 +24,11 @@ import androidx.core.app.NotificationCompat;
 import com.common.BaseAcivity;
 import com.common.utils.SDLog;
 import com.example.notificationtest.biz.GooglePlayBiz;
-import com.example.notificationtest.homemulity.CardMainActivity;
 import com.example.notificationtest.homemulity.CardStackActivity;
+import com.example.notificationtest.httplib.HiLog;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
+import com.dds.openssl.OpenCipher;
 import com.lenove.httplibrary.OkGoManager;
 
 import static com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED;
@@ -174,17 +174,22 @@ public class MainActivity extends BaseAcivity {
 
 //        new LeAboradHomePanelView(this, activity_main_layout).laodView();
 
-//        ContextManager.intentUri(this, "push://push.com/news_net?p_url=https://mil.news.sina.com.cn/china/2020-08-25/doc-iivhvpwy2898699.shtml?");
+//        ContextManager.intentUri(this, "push://push.com/news_detail?p_url=https://world.huanqiu.com/article/41npjqtdN3A?");
 //        ContextManager.intentUri(this, "push://push.com/small_game?gameId=212113");
 
 //        YLyGVnK7A5KO
 //        ContextManager.intentUri(this, "push://push.com/small_video?small_id=YLyGVnK7A5KO");
 
-        startActivity(new Intent(this, CardMainActivity.class));
+//        startActivity(new Intent(this, MMultiWindowActivity.class));
+
+        String encrypt = OpenCipher.getInstance().Encrypt("lining");
+        String decrypt = OpenCipher.getInstance().Decrypt(encrypt);
+        HiLog.i("encrypt:" + encrypt+"  decrypt:"+decrypt);
     }
 
     public void intentShort(View view){
-        ContextManager.intentUri(this, "push://push.com/short_video?channel=音乐&short_url=https://sh5.yladm.com/html/001/M8v/RJj0g4NnkM8v.html?id=RJj0g4NnkM8v&access_key=yl8zcrb9th5m&udid=6275aeeb9c5d780dc33f1d626f5a35b8&logid=3644750884&imei=6275aeeb9c5d780dc33f1d626f5a35b8&imeimd5=6275aeeb9c5d780dc33f1d626f5a35b8&pkg_name=com.zui.browser&referpage=openv2%2Fvideo%2Ffeed%3F13033&prid=9?");
+        ContextManager.intentUri(this, "https://www.qq.com/");
+//        ContextManager.intentUri(this, "push://push.com/short_video?channel=音乐&short_url=https://sh5.yladm.com/html/001/M8v/RJj0g4NnkM8v.html?id=RJj0g4NnkM8v&access_key=yl8zcrb9th5m&udid=6275aeeb9c5d780dc33f1d626f5a35b8&logid=3644750884&imei=6275aeeb9c5d780dc33f1d626f5a35b8&imeimd5=6275aeeb9c5d780dc33f1d626f5a35b8&pkg_name=com.zui.browser&referpage=openv2%2Fvideo%2Ffeed%3F13033&prid=9?");
     }
     public void intentUser(View view){
         ContextManager.intentUri(this, "push://push.com/user_center");

@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import com.captureinfo.R;
-import com.common.admob.AdMobActivity;
+//import com.common.admob.AdMobActivity;
 import com.common.download.thread.PauseTimer;
 import com.common.utils.SDLog;
 
@@ -58,7 +58,7 @@ public class CommonActivity extends AppCompatActivity {
         btn_ad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(CommonActivity.this, AdMobActivity.class));
+//                startActivity(new Intent(CommonActivity.this, AdMobActivity.class));
             }
         });
 
