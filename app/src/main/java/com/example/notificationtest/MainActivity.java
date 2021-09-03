@@ -29,6 +29,7 @@ import com.example.notificationtest.httplib.HiLog;
 import com.example.notificationtest.manager.ContextManager;
 import com.example.notificationtest.manager.StudyLifecycle;
 import com.dds.openssl.OpenCipher;
+import com.floatingwindow.FloatingWindowActivity;
 import com.lenove.httplibrary.OkGoManager;
 
 import static com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED;
@@ -137,8 +138,8 @@ public class MainActivity extends BaseAcivity {
 //        Intent intent=new Intent(Intent.ACTION_VIEW,uri);
 //        startActivity(intent);
 
-//        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
-//        ContextManager.intentUri(this, FloatingWindowActivity.URI);
+        HiLog.i("--intentCommo ---  FloatingWindowActivityn--");
+        ContextManager.intentUri(this, FloatingWindowActivity.URI);
 
 
 //        ContextManager.intentUri(this, KTActivity.Companion.getURI());
@@ -182,9 +183,9 @@ public class MainActivity extends BaseAcivity {
 
 //        startActivity(new Intent(this, MMultiWindowActivity.class));
 
-        String encrypt = OpenCipher.getInstance().Encrypt("lining");
-        String decrypt = OpenCipher.getInstance().Decrypt(encrypt);
-        HiLog.i("encrypt:" + encrypt+"  decrypt:"+decrypt);
+//        String encrypt = OpenCipher.getInstance().Encrypt("lining");
+//        String decrypt = OpenCipher.getInstance().Decrypt(encrypt);
+//        HiLog.i("encrypt:" + encrypt+"  decrypt:"+decrypt);
     }
 
     public void intentShort(View view){
